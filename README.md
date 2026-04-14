@@ -13,6 +13,7 @@ aed-parciales/
 ├── README.md                    ← este archivo
 ├── guia-de-estudio.md           ← análisis de patrones + plan de estudio priorizado
 ├── letras/                      ← enunciados originales de los parciales
+├── pseudocodigos/               ← pseudocódigo de TDAs y ejercicios de parcial
 ├── soluciones/                  ← soluciones con pseudocódigo + Java + JUnit
 └── codigo-base/                 ← código Java provisto por la cátedra en cada parcial
 ```
@@ -46,6 +47,33 @@ El primer parcial tiene **2 partes**:
 | `practico10-farmachop.md` | Práctico #10 UT01: preparadoViable (lista blanca/negra) |
 | `festivalOtaku-completo.md` | Parcial completo: AVL + Trie + comboViable + Java |
 | `parentesco-parte3.md` | Parte 3 2024 S2: Java calcularParentesco árbol genealógico |
+
+---
+
+## Pseudocódigos
+
+Referencia rápida de TDAs y pseudocódigo de los ejercicios recurrentes en parciales.
+
+### TDAs
+
+| Archivo | Descripción |
+|---------|-------------|
+| `arbol-avl.md` | AVL — propiedad, inserciones, rotaciones simples y dobles |
+| `arbol-bst.md` | ABB/BST — insertar, buscar, recorridos, eliminar |
+| `cola.md` | Cola — arreglo circular y lista enlazada |
+| `conjunto.md` | Conjunto — lista enlazada sin duplicados |
+| `lista-enlazada.md` | Lista simplemente enlazada con puntero `primero` |
+| `pila.md` | Pila — lista enlazada con tope al frente |
+
+### Ejercicios de parcial
+
+| Archivo | Ejercicio | Apareció en |
+|---------|-----------|-------------|
+| `ejercicio-ltim.md` | Longitud de Trayectoria Interna Media (LTIM) | 2024 S1 examen 1 |
+| `ejercicio-separar-hojas-internos.md` | Separar nodos hoja e internos de un BST | 2024 S1 examen 2 |
+| `ejercicio-calcular-parentesco.md` | calcularParentesco en árbol genealógico invertido | 2024 S2 |
+| `ejercicio-bst-peliculas.md` | Recomendador de películas con BST/AVL | 2025 S1 |
+| `ejercicio-combo-viable.md` | preparadoViable / comboViable (lista blanca + negra) | Práctico #10, Festival Otaku |
 
 ---
 
