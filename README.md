@@ -1,0 +1,84 @@
+# AED — Primer Parcial: Material de Estudio
+
+Repositorio de preparación para el **Primer Parcial de Algoritmos y Estructuras de Datos** — Universidad Católica del Uruguay, Ingeniería en Sistemas.
+
+Contiene enunciados de parciales anteriores (2024–2025), soluciones completas con pseudocódigo y Java, y el código base provisto por la cátedra.
+
+---
+
+## Estructura
+
+```
+aed-parciales/
+├── README.md                    ← este archivo
+├── guia-de-estudio.md           ← análisis de patrones + plan de estudio priorizado
+├── letras/                      ← enunciados originales de los parciales
+├── soluciones/                  ← soluciones con pseudocódigo + Java + JUnit
+└── codigo-base/                 ← código Java provisto por la cátedra en cada parcial
+```
+
+---
+
+## Estructura del Parcial (desde 2026)
+
+El primer parcial tiene **2 partes**:
+
+| Parte | Contenido | Duración | Modalidad |
+|-------|-----------|----------|-----------|
+| **Parte 2** | Ejercicios de pseudocódigo | 60 min | Individual |
+| **Parte 3** | Programación Java + JUnit | 60 min | Individual |
+
+---
+
+## Letras disponibles
+
+| Archivo | Descripción |
+|---------|-------------|
+| `2024-S1-parte2-examen1.md` | Parte 2 — 11 mayo 2024, variante 1: AVL (72,24,12,...) + LTIM |
+| `2024-S1-parte2-examen2.md` | Parte 2 — 11 mayo 2024, variante 2: AVL (74,25,10,...) + Hojas/Internos |
+| `2024-S2-parte2.md` | Parte 2 — 2do sem 2024: Árbol genealógico + ListaDePrioridades |
+| `2025-S1-parte2.md` | Parte 2 — 17 mayo 2025: AVL (45,35,...) + Recomendador películas BST |
+| `2025-S2-parte2.md` | Parte 2 — 18 oct 2025: Organismo ectotermo + BST (solo Java) |
+| `2024-S1-parte3-examen1.md` | Parte 3 — 11 mayo 2024, variante 1: Java LTIM en TArbolDeProductos |
+| `2024-S1-parte3-examen2.md` | Parte 3 — 11 mayo 2024, variante 2: Java Hojas/Internos |
+| `2025-S1-parte3.md` | Parte 3 — 17 mayo 2025: Java Recomendador películas |
+| `2025-S1-parte3-recuperatorio.md` | Recuperatorio 2025 S1: Java comboViable Festival Otaku |
+| `practico10-farmachop.md` | Práctico #10 UT01: preparadoViable (lista blanca/negra) |
+| `festivalOtaku-completo.md` | Parcial completo: AVL + Trie + comboViable + Java |
+| `parentesco-parte3.md` | Parte 3 2024 S2: Java calcularParentesco árbol genealógico |
+
+---
+
+## Soluciones
+
+| Archivo | Ejercicio | Incluye |
+|---------|-----------|---------|
+| `avl-inserciones.md` | **AVL insertions** — traza completa de 2 secuencias | Paso a paso, rotaciones, árbol final verificado |
+| `lti-media.md` | **Longitud de Trayectoria Interna Media** | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
+| `separar-hojas-internos.md` | **Separar nodos hoja/internos** de un BST | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
+| `combo-viable.md` | **preparadoViable / comboViable** (lista blanca + negra) | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
+| `calcular-parentesco.md` | **calcularParentesco** en árbol genealógico invertido | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
+| `bst-peliculas.md` | **Recomendador de películas** con BST/AVL | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
+
+---
+
+## Código Base
+
+Código Java provisto por la cátedra en cada parcial:
+
+| Directorio | Parcial | Contenido |
+|------------|---------|-----------|
+| `codigo-base/2024-S1/` | Parcial 2024 S1 | `TArbolBB`, `TElementoAB`, `TArbolDeProductos`, `Producto`, `ManejadorArchivosGenerico`, tests |
+| `codigo-base/farmachop/` | Práctico #10 | `Lista`, `Nodo`, `ILista`, `INodo`, archivos `.txt` de datos |
+| `codigo-base/festival-otaku/` | Recuperatorio 2025 S1 | `TDALista`, `TDACola`, `TDAPila`, `TDAConjunto` + implementaciones |
+| `codigo-base/parentesco/` | Parcial 2024 S2 | `TArbolBB`, `TElementoAB`, `Genealogia` (stub), `Persona`, `ResultadoParentesco`, tests |
+
+---
+
+## Lo más importante para el parcial
+
+El **Ejercicio 1 de la Parte 2** es casi siempre **insertions en AVL**. Lee `guia-de-estudio.md` para el análisis completo de patrones y el plan de estudio priorizado.
+
+---
+
+*Material compilado por estudiantes de Ingeniería en Sistemas — UCU 2026.*
