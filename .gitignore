@@ -1,0 +1,34 @@
+# Compilados de Java
+*.class
+*.jar
+*.war
+*.ear
+/bin/
+/target/
+
+# Archivos de configuración de IDEs
+.project
+.classpath
+.settings/
+.idea/
+*.iml
+.vscode/
+.factorypath
+
+# Logs y archivos temporales
+*.log
+tmp/
+temp/
+
+# Bases de datos y archivos locales
+*.db
+*.sqlite
+.dbeaver/
+DataSource.java.bak
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Configuración de herramientas de automatización
+.pentaho/
