@@ -58,6 +58,7 @@ Referencia rápida de TDAs y pseudocódigo de los ejercicios recurrentes en parc
 
 | Archivo | Descripción |
 |---------|-------------|
+| `arbol-binario.md` | AB — definición, terminología, lleno/completo, propiedades matemáticas, recorridos, árbol de expresión |
 | `arbol-avl.md` | AVL — propiedad, inserciones, rotaciones simples y dobles |
 | `arbol-bst.md` | ABB/BST — insertar, buscar, recorridos, eliminar |
 | `cola.md` | Cola — arreglo circular y lista enlazada |
