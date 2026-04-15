@@ -125,6 +125,107 @@ Todos los parciales siguen esta estructura:
 
 ---
 
+## Fundamentos: Árboles Binarios
+
+Referencia rápida del TDA base. El parcial asume que dominás esto — es el piso de AVL, BST y cualquier algoritmo recursivo.
+
+### Terminología
+
+| Término | Definición |
+|---------|-----------|
+| Raíz | Nodo sin padre |
+| Hoja (nodo externo) | Nodo sin hijos |
+| Nodo interno | Nodo con al menos un hijo |
+| Altura de un nodo | Longitud del camino más largo desde ese nodo hasta una hoja |
+| Nivel / Profundidad | Longitud del camino desde la raíz hasta el nodo |
+
+### Lleno vs. Completo
+
+| Variante | Definición |
+|----------|-----------|
+| **Lleno** | Todos los nodos internos tienen exactamente **dos hijos** |
+| **Completo** | Todos los niveles llenos excepto el último, que se llena **de izquierda a derecha** |
+
+> Un árbol puede ser completo sin ser lleno. El árbol completo es la forma que toman los heaps.
+
+### Propiedades del árbol lleno (para justificar órdenes)
+
+Notación: *n* = nodos, *e* = hojas, *i* = internos, *h* = altura
+
+| Propiedad | Fórmula |
+|-----------|---------|
+| Hojas vs. internos | `e = i + 1` |
+| Total de nodos | `n = 2e − 1` |
+| Altura mínima (árbol balanceado) | `h ≥ log₂(n + 1) − 1` |
+| Altura máxima (árbol degenerado) | `h ≤ (n − 1) / 2` |
+
+### Fórmulas recursivas
+
+```
+Tamaño:  ST = SL + SR + 1
+Altura:  HT = max(HL + 1, HR + 1)
+```
+
+Estas fórmulas son la base de casi todo algoritmo recursivo sobre árboles binarios.
+
+### Recorridos — algoritmos
+
+```
+preOrden(v):           postOrden(v):          inOrden(v):
+    visitar(v)             Para cada hijo w:      Si tiene HijoIzq:
+    Para cada hijo w:          postOrden(w)           HijoIzq.inOrden
+        preOrden(w)        visitar(v)             visitar(v)
+                                                  Si tiene HijoDer:
+                                                      HijoDer.inOrden
+```
+
+| Recorrido | Orden | Aplicación en parcial |
+|-----------|-------|----------------------|
+| **Preorden** | raíz → izq → der | Copiar árbol, serializar |
+| **Inorden** | izq → raíz → der | BST produce valores ordenados; imprimir expresión aritmética |
+| **Postorden** | izq → der → raíz | Calcular tamaño/altura, evaluar expresión aritmética |
+
+### Árbol de Expresión Aritmética
+
+- Nodos internos = **operadores** (`+`, `-`, `×`, `/`)
+- Hojas = **operandos** (números, variables)
+
+**Imprimir expresión** (inorden con paréntesis):
+```
+Algoritmo printExpression
+    Si tiene HijoIzquierdo
+        imprimir("(")
+        HijoIzquierdo.printExpression
+    imprimir(elemento)
+    Si tiene HijoDerecho
+        HijoDerecho.printExpression
+        imprimir(")")
+```
+
+**Evaluar expresión** (postorden):
+```
+Algoritmo evalExpr
+    Si esHoja: Devolver elemento
+    Sino:
+        x ← HijoIzquierdo.evalExpr
+        y ← HijoDerecho.evalExpr
+        ◊ ← operador contenido
+        Devolver x ◊ y
+```
+
+### Ejercicios tipo parcial sobre AB
+
+1. Reconstruir árbol desde preorden + inorden.
+2. Contar hojas de un árbol binario.
+3. Calcular la suma de todos los elementos (árbol de enteros).
+4. Contar nodos en el nivel *n*.
+
+> El ejercicio de reconstrucción (preorden + inorden → árbol) es candidato directo a aparecer en el parcial 2026.
+
+Ver referencia completa en `pseudocodigos/arbol-binario.md`.
+
+---
+
 ## Tipos de Rotaciones AVL (resumen rápido)
 
 | Tipo | BF nodo | BF hijo | Rotación |
