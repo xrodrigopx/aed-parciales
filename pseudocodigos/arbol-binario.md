@@ -67,6 +67,18 @@ HT = max(HL + 1, HR + 1)
 ```
 La altura es el máximo entre la altura del subárbol izquierdo más 1 y la del derecho más 1.
 
+### Algoritmo para calcular la altura del árbol entero
+```
+Algoritmo altura(v)
+    Si v es nulo entonces
+        retornar -1
+    Si no
+        HL ← altura(izquierdo(v))
+        HR ← altura(derecho(v))
+        retornar max(HL, HR) + 1
+```
+Se llama con la raíz: `altura(raiz)`. El caso base retorna `-1` para nodos nulos, de modo que una hoja tiene altura 0.
+
 ---
 
 ## Recorridos
