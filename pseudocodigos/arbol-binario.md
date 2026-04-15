@@ -79,6 +79,8 @@ Algoritmo altura(v)
 ```
 Se llama con la raíz: `altura(raiz)`. El caso base retorna `-1` para nodos nulos, de modo que una hoja tiene altura 0.
 
+**Orden:** O(n) — visita cada nodo exactamente una vez.
+
 ---
 
 ## Recorridos
@@ -91,6 +93,8 @@ Algoritmo preOrden(v)
     Para cada hijo w de v hacer
         preOrden(w)
 ```
+
+**Orden:** O(n) — visita cada nodo exactamente una vez.
 
 **Aplicación:** imprimir documento estructurado, copiar árbol, serializar.
 
@@ -113,6 +117,8 @@ Algoritmo postOrden(v)
         postOrden(w)
     visitar(v)
 ```
+
+**Orden:** O(n) — visita cada nodo exactamente una vez.
 
 **Aplicación:** calcular espacio de directorios, liberar memoria, evaluar expresiones aritméticas.
 
@@ -137,6 +143,8 @@ Algoritmo inOrden(v)
     Si tiene HijoDerecho
         HijoDerecho.inOrden
 ```
+
+**Orden:** O(n) — visita cada nodo exactamente una vez.
 
 **Aplicación:** en BST produce valores ordenados; imprimir expresiones aritméticas.
 
@@ -183,6 +191,8 @@ Algoritmo TNodoAB.printExpression
 
 **Salida:** `((2 × (a − 1)) + (3 × b))`
 
+**Orden:** O(n) — visita cada nodo exactamente una vez.
+
 ### Evaluar expresión (postorden especializado)
 
 ```
@@ -195,6 +205,8 @@ Algoritmo TNodoAB.evalExpr
         ◊  <-- operador contenido
         Devolver x ◊ y
 ```
+
+**Orden:** O(n) — visita cada nodo exactamente una vez.
 
 ---
 

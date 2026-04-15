@@ -48,8 +48,46 @@ Para cada elemento de la lista: si está en la lista blanca, continuar al siguie
 // Variables globales (inicializadas al cargar el sistema)
 listaBlanca: Lista<idElemento>
 listaNegra:  Lista<Par(idContenedor, idElemento)>
+```
 
-// === ALGORITMO PRINCIPAL ===
+### estaEnListaBlanca (auxiliar)
+
+```
+estaEnListaBlanca(elemento: id): booleano
+  aux ← listaBlanca.getPrimero()
+  mientras aux ≠ nulo hacer
+    si aux.getDato() = elemento entonces
+      retornar verdadero
+    fin si
+    aux ← aux.getSiguiente()
+  fin mientras
+  retornar falso
+fin método
+```
+
+**Orden:** O(b) — donde b = tamaño de la lista blanca.
+
+### estaEnListaNegra (auxiliar)
+
+```
+estaEnListaNegra(contenedor: id, elemento: id): booleano
+  aux ← listaNegra.getPrimero()
+  mientras aux ≠ nulo hacer
+    par ← aux.getDato()
+    si par.contenedor = contenedor Y par.elemento = elemento entonces
+      retornar verdadero
+    fin si
+    aux ← aux.getSiguiente()
+  fin mientras
+  retornar falso
+fin método
+```
+
+**Orden:** O(n) — donde n = tamaño de la lista negra.
+
+### preparadoViable (método principal)
+
+```
 preparadoViable(contenedor: id, elementos: Lista<id>): booleano
   aux ← elementos.getPrimero()
   mientras aux ≠ nulo hacer
@@ -65,32 +103,9 @@ preparadoViable(contenedor: id, elementos: Lista<id>): booleano
   fin mientras
   retornar verdadero
 fin método
-
-// === AUXILIAR: lista blanca ===
-estaEnListaBlanca(elemento: id): booleano
-  aux ← listaBlanca.getPrimero()
-  mientras aux ≠ nulo hacer
-    si aux.getDato() = elemento entonces
-      retornar verdadero
-    fin si
-    aux ← aux.getSiguiente()
-  fin mientras
-  retornar falso
-fin método
-
-// === AUXILIAR: lista negra ===
-estaEnListaNegra(contenedor: id, elemento: id): booleano
-  aux ← listaNegra.getPrimero()
-  mientras aux ≠ nulo hacer
-    par ← aux.getDato()
-    si par.contenedor = contenedor Y par.elemento = elemento entonces
-      retornar verdadero
-    fin si
-    aux ← aux.getSiguiente()
-  fin mientras
-  retornar falso
-fin método
 ```
+
+**Orden:** O(m × (b + n)) — donde m = elementos del preparado; por cada elemento se llama a `estaEnListaBlanca` O(b) y en el peor caso a `estaEnListaNegra` O(n).
 
 ---
 

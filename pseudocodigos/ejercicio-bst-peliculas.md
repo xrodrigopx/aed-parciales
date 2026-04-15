@@ -61,8 +61,9 @@ Recorrer el árbol en inorden. Para cada película, si su score está en el rang
 
 ## Pseudocódigo
 
+### recomendarPorScore
+
 ```
-// === FILTRAR POR SCORE ===
 TArbolPeliculas.recomendarPorScore(scoreMin: real): Lista<Pelicula>
   recomendadas ← nueva Lista vacía
   si raiz ≠ nulo entonces
@@ -83,8 +84,13 @@ TElementoAB.filtrarPorScore(scoreMin: real, lista: Lista<Pelicula>): void
     hijoDer.filtrarPorScore(scoreMin, lista)
   fin si
 fin método
+```
 
-// === FILTRAR POR GÉNERO ===
+**Orden:** O(n + m log m) — recorrido inorden completo O(n) + ordenamiento alfabético O(m log m), donde m = películas que pasan el filtro.
+
+### buscarPorGenero
+
+```
 TArbolPeliculas.buscarPorGenero(genero: cadena): Lista<Pelicula>
   resultado ← nueva Lista vacía
   si raiz ≠ nulo entonces
@@ -104,8 +110,13 @@ TElementoAB.filtrarPorGenero(genero: cadena, lista: Lista<Pelicula>): void
     hijoDer.filtrarPorGenero(genero, lista)
   fin si
 fin método
+```
 
-// === FILTRAR POR RANGO DE SCORE ===
+**Orden:** O(n) — recorrido inorden completo; sin ordenamiento extra.
+
+### buscarPorRangoScore
+
+```
 TArbolPeliculas.buscarPorRangoScore(minScore: real, maxScore: real): Lista<Pelicula>
   resultado ← nueva Lista vacía
   si raiz ≠ nulo entonces
@@ -127,6 +138,8 @@ TElementoAB.filtrarPorRango(min: real, max: real, lista: Lista<Pelicula>): void
   fin si
 fin método
 ```
+
+**Orden:** O(n) — recorrido inorden completo; sin ordenamiento extra.
 
 **Nota sobre `ordenarAlfabeticamente`:** corresponde a un algoritmo de ordenamiento sobre la lista resultado. En Java se resuelve con `Collections.sort()` o `List.sort(Comparator.comparing(Pelicula::getTitulo))`.
 

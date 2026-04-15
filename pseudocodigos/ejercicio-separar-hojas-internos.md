@@ -66,6 +66,8 @@ TElementoAB.separarNodos(hojas: Lista, internos: Lista): void
 fin método
 ```
 
+**Orden:** O(n) si la lista soporta inserción O(1) al final; O(n²) con lista simple sin puntero al último (cada `insertar` recorre la lista entera).
+
 **Demostración de invocación:**
 ```
 (hojas, internos) ← arbol.separarNodos()

@@ -65,8 +65,9 @@ Encontrar los caminos desde la raíz hasta cada persona. Si alguno no existe, no
 
 ## Pseudocódigo
 
+### encontrarCamino (auxiliar)
+
 ```
-// === AUXILIAR: encontrar camino desde nodo hasta objetivo ===
 encontrarCamino(nodo: IElementoAB, objetivo: IElementoAB): Lista<IElementoAB>
   si nodo = nulo entonces
     retornar nulo
@@ -90,8 +91,13 @@ encontrarCamino(nodo: IElementoAB, objetivo: IElementoAB): Lista<IElementoAB>
   fin si
   retornar nulo    // objetivo no está en este subárbol
 fin método
+```
 
-// === MÉTODO PRINCIPAL ===
+**Orden:** O(n) — DFS que en el peor caso visita todos los nodos del árbol.
+
+### calcularParentesco (método principal)
+
+```
 calcularParentesco(raiz: IElementoAB,
                    persona1: IElementoAB,
                    persona2: IElementoAB): (entero, cadena)
@@ -127,6 +133,8 @@ calcularParentesco(raiz: IElementoAB,
   retornar (grado, tipo)
 fin método
 ```
+
+**Orden:** O(n) — dos llamadas a `encontrarCamino` O(n) + comparación de caminos O(h) → dominado por O(n).
 
 ---
 
