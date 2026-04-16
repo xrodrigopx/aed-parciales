@@ -11,12 +11,21 @@ Contiene enunciados de parciales anteriores (2024–2025), soluciones completas 
 ```
 aed-parciales/
 ├── README.md                    ← este archivo
+├── cuadernola.md                ← todo lo que necesitas para la primera parte del parcial
 ├── guia-de-estudio.md           ← análisis de patrones + plan de estudio priorizado
 ├── letras/                      ← enunciados originales de los parciales
 ├── pseudocodigos/               ← pseudocódigo de TDAs y ejercicios de parcial
 ├── soluciones/                  ← soluciones con pseudocódigo + Java + JUnit
 └── codigo-base/                 ← código Java provisto por la cátedra en cada parcial
 ```
+
+---
+
+## Cuadernola
+
+**[`cuadernola.md`](cuadernola.md)** — todo lo que necesitas en la cuadernola para cumplir con la primera parte del parcial (antiguamente parte 2, ahora la parte 1).
+
+Contiene: guía de elección de TDA (ABB vs AVL vs Lista vs Cola vs Pila vs Conjunto), pseudocódigos completos con lenguaje natural, pre/postcondiciones y análisis de orden para todos los TDAs del parcial.
 
 ---
 
@@ -38,8 +47,8 @@ El primer parcial tiene **2 partes**:
 | `2024-S1-parte2-examen1.md` | Parte 2 — 11 mayo 2024, variante 1: AVL (72,24,12,...) + LTIM |
 | `2024-S1-parte2-examen2.md` | Parte 2 — 11 mayo 2024, variante 2: AVL (74,25,10,...) + Hojas/Internos |
 | `2024-S2-parte2.md` | Parte 2 — 2do sem 2024: Árbol genealógico + ListaDePrioridades |
-| `2025-S1-parte2.md` | Parte 2 — 17 mayo 2025: AVL (45,35,...) + Recomendador películas BST |
-| `2025-S2-parte2.md` | Parte 2 — 18 oct 2025: Organismo ectotermo + BST (solo Java) |
+| `2025-S1-parte2.md` | Parte 2 — 17 mayo 2025: AVL (45,35,...) + Recomendador películas ABB |
+| `2025-S2-parte2.md` | Parte 2 — 18 oct 2025: Organismo ectotermo + ABB (solo Java) |
 | `2024-S1-parte3-examen1.md` | Parte 3 — 11 mayo 2024, variante 1: Java LTIM en TArbolDeProductos |
 | `2024-S1-parte3-examen2.md` | Parte 3 — 11 mayo 2024, variante 2: Java Hojas/Internos |
 | `2025-S1-parte3.md` | Parte 3 — 17 mayo 2025: Java Recomendador películas |
@@ -60,7 +69,7 @@ Referencia rápida de TDAs y pseudocódigo de los ejercicios recurrentes en parc
 |---------|-------------|
 | `arbol-binario.md` | AB — definición, terminología, lleno/completo, propiedades matemáticas, recorridos, árbol de expresión |
 | `arbol-avl.md` | AVL — propiedad, inserciones, rotaciones simples y dobles |
-| `arbol-bst.md` | ABB/BST — insertar, buscar, recorridos, eliminar |
+| `arbol-bst.md` | ABB — insertar, buscar, recorridos, eliminar |
 | `cola.md` | Cola — arreglo circular y lista enlazada |
 | `conjunto.md` | Conjunto — lista enlazada sin duplicados |
 | `lista-enlazada.md` | Lista simplemente enlazada con puntero `primero` |
@@ -71,9 +80,9 @@ Referencia rápida de TDAs y pseudocódigo de los ejercicios recurrentes en parc
 | Archivo | Ejercicio | Apareció en |
 |---------|-----------|-------------|
 | `ejercicio-ltim.md` | Longitud de Trayectoria Interna Media (LTIM) | 2024 S1 examen 1 |
-| `ejercicio-separar-hojas-internos.md` | Separar nodos hoja e internos de un BST | 2024 S1 examen 2 |
+| `ejercicio-separar-hojas-internos.md` | Separar nodos hoja e internos de un ABB | 2024 S1 examen 2 |
 | `ejercicio-calcular-parentesco.md` | calcularParentesco en árbol genealógico invertido | 2024 S2 |
-| `ejercicio-bst-peliculas.md` | Recomendador de películas con BST/AVL | 2025 S1 |
+| `ejercicio-bst-peliculas.md` | Recomendador de películas con ABB/AVL | 2025 S1 |
 | `ejercicio-combo-viable.md` | preparadoViable / comboViable (lista blanca + negra) | Práctico #10, Festival Otaku |
 
 ---
@@ -84,10 +93,10 @@ Referencia rápida de TDAs y pseudocódigo de los ejercicios recurrentes en parc
 |---------|-----------|---------|
 | `avl-inserciones.md` | **AVL insertions** — traza completa de 2 secuencias | Paso a paso, rotaciones, árbol final verificado |
 | `lti-media.md` | **Longitud de Trayectoria Interna Media** | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
-| `separar-hojas-internos.md` | **Separar nodos hoja/internos** de un BST | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
+| `separar-hojas-internos.md` | **Separar nodos hoja/internos** de un ABB | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
 | `combo-viable.md` | **preparadoViable / comboViable** (lista blanca + negra) | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
 | `calcular-parentesco.md` | **calcularParentesco** en árbol genealógico invertido | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
-| `bst-peliculas.md` | **Recomendador de películas** con BST/AVL | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
+| `bst-peliculas.md` | **Recomendador de películas** con ABB/AVL | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
 
 ---
 

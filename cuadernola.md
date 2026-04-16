@@ -6,7 +6,7 @@ Material de estudio consolidado para el primer parcial de Algoritmos y Estructur
 
 ## Cómo elegir la estructura de datos correcta
 
-La justificación del TDA vale puntos en el parcial. No alcanza con decir "uso BST porque sí" — hay que razonar. El proceso tiene dos fases: **diagnosticar el problema**, luego **comparar las opciones**.
+La justificación del TDA vale puntos en el parcial. No alcanza con decir "uso ABB porque sí" — hay que razonar. El proceso tiene dos fases: **diagnosticar el problema**, luego **comparar las opciones**.
 
 ---
 
@@ -24,14 +24,14 @@ Es la pregunta más importante. El problema siempre tiene una operación que se 
 
 **2. ¿Importa el orden de los elementos?**
 
-- ¿El problema pide resultados ordenados (por año, alfabéticamente, por score)? → Estructura con orden implícito (BST/AVL con la clave correcta) o estructura + sorting al final.
+- ¿El problema pide resultados ordenados (por año, alfabéticamente, por score)? → Estructura con orden implícito (ABB/AVL con la clave correcta) o estructura + sorting al final.
 - ¿El orden de llegada importa? → Lista, Cola, Pila según FIFO/LIFO.
 - ¿El orden no importa para nada? → Conjunto o Lista simple.
 
 **3. ¿Qué tan frecuentes son las inserciones?**
 
 - Inserciones frecuentes + búsquedas frecuentes → AVL (O(log n) garantizado, no se degrada)
-- Pocas inserciones o datos ya cargados una vez → BST simple puede ser suficiente
+- Pocas inserciones o datos ya cargados una vez → ABB simple puede ser suficiente
 - Solo se inserta una vez al principio → da igual, elegí lo más simple
 
 **4. ¿Puede haber duplicados?**
@@ -52,8 +52,8 @@ Es la pregunta más importante. El problema siempre tiene una operación que se 
 | Si el problema requiere… | Estructura | Orden de operación clave |
 |--------------------------|------------|--------------------------|
 | Búsquedas rápidas, inserciones frecuentes, datos crecen | **AVL** | O(log n) garantizado |
-| Búsquedas + inserciones, datos relativamente estables | **BST** | O(log n) promedio, O(n) peor caso |
-| Recorrer en orden ascendente automáticamente | **BST o AVL** (inorden) | O(n) |
+| Búsquedas + inserciones, datos relativamente estables | **ABB** | O(log n) promedio, O(n) peor caso |
+| Recorrer en orden ascendente automáticamente | **ABB o AVL** (inorden) | O(n) |
 | Procesar en orden de llegada (primero en entrar, primero en salir) | **Cola** | O(1) encolar/desencolar |
 | Deshacer, historial, recursión simulada | **Pila** | O(1) apilar/desapilar |
 | Verificar pertenencia, sin duplicados | **Conjunto** | O(n) buscar |
@@ -61,13 +61,13 @@ Es la pregunta más importante. El problema siempre tiene una operación que se 
 
 ---
 
-### La trampa más común: BST vs AVL
+### La trampa más común: ABB vs AVL
 
 La pregunta que separa uno del otro es:
 
 > ¿El conjunto de datos crece continuamente en tiempo de uso?
 
-- **Datos que se cargan una sola vez y luego solo se consultan** → BST puede servir, si la secuencia de inserción no lo degenera. Pero si no se controla el orden de inserción (datos de un archivo externo), puede degenerar a O(n).
+- **Datos que se cargan una sola vez y luego solo se consultan** → ABB puede servir, si la secuencia de inserción no lo degenera. Pero si no se controla el orden de inserción (datos de un archivo externo), puede degenerar a O(n).
 - **Datos que se insertan frecuentemente durante la ejecución** → AVL obligatorio. Garantiza O(log n) sin importar el orden de llegada.
 
 En los parciales, si el enunciado dice cosas como "el catálogo se actualiza con nuevas entradas frecuentemente" → **AVL**.
@@ -84,14 +84,14 @@ El examinador espera esta estructura:
 
 **Ejemplo (problema de películas con búsquedas por año):**
 
-> "Se elige **BST** con clave = año de estreno. La operación crítica es la búsqueda y el filtrado por rango cronológico, que se resuelve eficientemente con el recorrido inorden (O(n)), el cual produce los resultados en orden ascendente sin costo adicional de ordenamiento. Una Lista realizaría las mismas operaciones en O(n) pero sin orden implícito, requiriendo un paso extra de ordenamiento. Una Pila o Cola no son adecuadas porque no ofrecen acceso por clave. Como los datos se cargan una sola vez desde el archivo, un BST simple es suficiente; si hubiera inserciones frecuentes en producción, se preferiría AVL para garantizar O(log n)."
+> "Se elige **ABB** con clave = año de estreno. La operación crítica es la búsqueda y el filtrado por rango cronológico, que se resuelve eficientemente con el recorrido inorden (O(n)), el cual produce los resultados en orden ascendente sin costo adicional de ordenamiento. Una Lista realizaría las mismas operaciones en O(n) pero sin orden implícito, requiriendo un paso extra de ordenamiento. Una Pila o Cola no son adecuadas porque no ofrecen acceso por clave. Como los datos se cargan una sola vez desde el archivo, un ABB simple es suficiente; si hubiera inserciones frecuentes en producción, se preferiría AVL para garantizar O(log n)."
 
 ---
 
 ### Regla de oro
 
 > **¿El problema me pide encontrar algo específico entre muchos elementos?**
-> - Sí → árbol (BST o AVL según frecuencia de inserción)
+> - Sí → árbol (ABB o AVL según frecuencia de inserción)
 > - No, solo procesarlos en orden de llegada → Cola/Pila
 > - No, solo guardarlos sin duplicados → Conjunto
 > - No, con acceso posicional → Lista
@@ -355,7 +355,7 @@ fin método
 
 ---
 
-### BST — Árbol Binario de Búsqueda
+### ABB — Árbol Binario de Búsqueda
 
 **Casos de uso típicos:**
 - Catálogos con búsqueda por clave (películas por año, productos por código) cuando los datos se cargan una sola vez y no crecen dinámicamente.
@@ -369,7 +369,7 @@ fin método
 **Lenguaje natural:** Crea un nuevo elemento. Si el árbol está vacío, lo coloca como raíz. Si no, delega recursivamente al nodo raíz: menores van a la izquierda, mayores a la derecha, duplicados se rechazan.
 
 **Precondición:** `etiqueta ≠ nulo`.  
-**Postcondición:** el elemento queda insertado respetando la propiedad BST, o retorna `falso` si la etiqueta ya existía.
+**Postcondición:** el elemento queda insertado respetando la propiedad ABB, o retorna `falso` si la etiqueta ya existía.
 
 ```
 TArbolBB.insertar(etiqueta: Comparable, dato: T): booleano
@@ -455,7 +455,7 @@ fin método
 **Lenguaje natural:** Localiza el nodo y lo elimina según tres casos: (1) sin hijos → se desvincula directamente; (2) un hijo → el hijo lo reemplaza; (3) dos hijos → se reemplaza por el predecesor inorden (máximo del subárbol izquierdo) y se elimina ese predecesor.
 
 **Precondición:** ninguna.  
-**Postcondición:** si existía un nodo con esa etiqueta, es eliminado manteniendo la propiedad BST.
+**Postcondición:** si existía un nodo con esa etiqueta, es eliminado manteniendo la propiedad ABB.
 
 ```
 TArbolBB.eliminar(etiqueta: Comparable): void
@@ -510,7 +510,7 @@ Los tres recorridos visitan todos los nodos exactamente una vez — todos son O(
 
 | Recorrido | Orden | Cuándo usarlo |
 |-----------|-------|---------------|
-| **Inorden** | izq → raíz → der | BST produce valores en orden ascendente; filtrar y recolectar resultados ordenados |
+| **Inorden** | izq → raíz → der | ABB produce valores en orden ascendente; filtrar y recolectar resultados ordenados |
 | **Preorden** | raíz → izq → der | Copiar o serializar el árbol; procesar el nodo antes de sus hijos |
 | **Postorden** | izq → der → raíz | Calcular tamaño/altura/suma; liberar memoria; necesitás los hijos antes que el padre |
 
@@ -518,7 +518,7 @@ Los tres recorridos visitan todos los nodos exactamente una vez — todos son O(
 
 #### inOrden()
 
-**Lenguaje natural:** Recorre izquierda → raíz → derecha. En un BST produce los valores en orden ascendente de etiqueta. Es el recorrido más usado en los parciales para obtener resultados ordenados.
+**Lenguaje natural:** Recorre izquierda → raíz → derecha. En un ABB produce los valores en orden ascendente de etiqueta. Es el recorrido más usado en los parciales para obtener resultados ordenados.
 
 **Precondición:** ninguna.  
 **Postcondición:** retorna una lista con los datos en orden ascendente de etiqueta.
@@ -603,7 +603,7 @@ fin método
 - Catálogos que **crecen continuamente** con inserciones frecuentes (ej: nuevas películas cada semana, nuevos usuarios, nuevas temperaturas).
 - Cualquier escenario donde no se controla el orden de inserción y se necesita garantizar O(log n) en búsquedas.
 - Sistemas en tiempo real donde una degradación a O(n) es inaceptable.
-- **Regla práctica del parcial:** si el enunciado menciona actualizaciones frecuentes o datos que llegan en tiempo de ejecución → AVL sobre BST.
+- **Regla práctica del parcial:** si el enunciado menciona actualizaciones frecuentes o datos que llegan en tiempo de ejecución → AVL sobre ABB.
 
 #### Auxiliares: altura, actualizarAltura, factorBalance
 
@@ -714,7 +714,7 @@ fin método
 
 #### insertar(etiqueta, dato) — AVL
 
-**Lenguaje natural:** Igual que en el BST, pero al regresar de cada llamada recursiva se invoca `balancear()`, corrigiendo cualquier desbalance introducido en el camino de vuelta hacia la raíz.
+**Lenguaje natural:** Igual que en el ABB, pero al regresar de cada llamada recursiva se invoca `balancear()`, corrigiendo cualquier desbalance introducido en el camino de vuelta hacia la raíz.
 
 **Precondición:** `etiqueta ≠ nulo`.  
 **Postcondición:** el elemento queda insertado y el árbol mantiene la propiedad AVL en todos sus nodos.
