@@ -316,3 +316,78 @@ fin método
 | `inOrden / preOrden / postOrden` | O(n) | O(n) |
 
 > El peor caso O(n) ocurre cuando el árbol está **degenerado** (insertado en orden creciente o decreciente), lo que lo convierte esencialmente en una lista enlazada. El AVL elimina este problema.
+
+---
+
+## Interfaces Java UCU (UT02-03)
+
+El curso usa esta jerarquía de interfaces y clases:
+
+```java
+public interface TDAArbolBinario<T> {
+    boolean isVacio();
+    boolean insertar(Comparable<T> dato);
+    T buscar(Comparable<T> criterio);
+    T eliminar(Comparable<T> criterio);
+    void preOrder(Consumer<T> consumer);
+    void inOrder(Consumer<T> consumer);
+    void postOrder(Consumer<T> consumer);
+}
+
+public class ABBImpl<T> implements TDAArbolBinario<T> {
+    private TDAElemento<T> raiz;
+    // ...
+}
+
+public interface TDAElemento<T> {
+    void insertar(Comparable<T> dato);
+    TDAElemento<T> buscar(Comparable<T> criterio);
+    TDAElemento<T> eliminar(Comparable<T> criterio);
+    boolean esHoja();
+    void inOrden(Consumer<T> consumer);
+    void preOrden(Consumer<T> consumer);
+    void posOrden(Consumer<T> consumer);
+    TDAElemento<T> getHijoIzq();
+    TDAElemento<T> getHijoDer();
+    void setHijoIzq(TDAElemento<T> nodo);
+    void setHijoDer(TDAElemento<T> nodo);
+}
+
+public class ElementoABBImpl<T> implements TDAElemento<T> {
+    private T dato;
+    private TDAElemento<T> hijoIzq;
+    private TDAElemento<T> hijoDer;
+}
+```
+
+> Diferencia clave con el pseudocódigo: las interfaces Java usan `Comparable<T>` y `compareTo()` en vez de comparación directa. En pseudocódigo `etiqueta < this.etiqueta` equivale a `etiqueta.compareTo(this.etiqueta) < 0`.
+
+---
+
+## Recorrido inOrden en Java — patrón Consumer
+
+```java
+// Nivel árbol
+public String imprimirInOrden() {
+    StringBuilder sb = new StringBuilder();
+    if (this.raiz == null) {
+        sb.append("Árbol vacío");
+    } else {
+        this.raiz.inOrden(nodo -> sb.append(nodo.getDato()));
+    }
+    return sb.toString();
+}
+
+// Nivel nodo
+public void inOrden(Consumer<TDAElemento<T>> consumer) {
+    if (this.hijoIzq != null) this.hijoIzq.inOrden(consumer);
+    consumer.accept(this);
+    if (this.hijoDer != null) this.hijoDer.inOrden(consumer);
+}
+```
+
+El `Consumer<T>` permite inyectar cualquier acción (imprimir, agregar a lista, acumular) sin cambiar el recorrido.
+
+---
+
+> Ver también `eliminacion-abb.md` para el walkthrough visual de los 3 casos de eliminación.

@@ -106,6 +106,13 @@ Todos los parciales siguen esta estructura:
 
 **2. Métodos recursivos en ABB** — aprende el patrón: el método del árbol llama al método del nodo, y el método del nodo se llama a sí mismo en los hijos. Ver `soluciones/lti-media.md` y `soluciones/separar-hojas-internos.md`.
 
+   - **Subfoco — eliminación (3 casos):** el algoritmo de eliminación es el más complejo del BST y candidato directo a parcial. Domina los 3 casos y el procedimiento `QUITARELNODO`. Ver `pseudocodigos/eliminacion-abb.md`.
+     1. Nodo hoja → desvincularlo directamente
+     2. Un hijo → el hijo sube
+     3. Dos hijos → reemplazar por el **predecesor inorden** (máximo del subárbol izquierdo)
+
+   - **Subfoco — Java:** en los parciales con código Java se usa `compareTo` para comparar y `Consumer<T>` para los recorridos. Ver `pseudocodigos/arbol-bst.md` sección "Interfaces Java UCU".
+
 **3. Proceso 3 pasos UCU** — para pseudocódigo: Lenguaje Natural → Precondiciones/Postcondiciones → Pseudocódigo → Análisis de Orden. **No saltarse ninguno**.
 
 **4. JUnit** — saber escribir `@Test`, `assertEquals`, `assertNull`, `assertThrows`. El parcial siempre tiene tests (25% de la nota).
