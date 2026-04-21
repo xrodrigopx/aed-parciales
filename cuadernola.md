@@ -96,6 +96,109 @@ En los parciales, si el enunciado dice cosas como "el catálogo se actualiza con
 
 ---
 
+### Cuando hay dos operaciones críticas incompatibles
+
+A veces el enunciado tiene **dos operaciones críticas que favorecen claves distintas**. Una sola estructura no puede optimizar ambas. La solución es mantener **dos estructuras en paralelo**, cada una indexada por la clave que necesita.
+
+**El patrón:**
+- Identificás las dos operaciones críticas y la clave que cada una requiere.
+- Creás una estructura por clave.
+- Cada inserción/eliminación actualiza **ambas estructuras**.
+- Costo: O(log n) × 2 en inserción, el doble de memoria. Beneficio: ambas operaciones críticas quedan en O(log n).
+
+> Regla de justificación: "Se acepta el costo de mantener dos estructuras porque las operaciones críticas [A] y [B] requieren claves distintas, y degradar cualquiera de ellas a O(n) es inaceptable dado el volumen y frecuencia de uso."
+
+---
+
+#### Caso modelo — Buscador de películas en streaming
+
+**Enunciado:** Catálogo de 15.000 películas. Se actualiza varias veces al día. Los usuarios hacen búsquedas miles de veces por día. Operaciones requeridas:
+1. Buscar por nombre exacto
+2. Filtrar por rango de años (ej: 2000–2010)
+3. Listar todas ordenadas por año ascendente
+4. Agregar películas frecuentemente
+5. Eliminar películas (raramente)
+
+**Análisis de operaciones críticas:**
+
+| Operación | Frecuencia | Clave que necesita | Estructura ideal |
+|-----------|-----------|-------------------|-----------------|
+| Buscar por nombre | Miles/día | nombre | AVL clave=nombre |
+| Filtrar por rango de años + listar ordenado | Alta | año | AVL clave=año |
+| Insertar | Varias veces/día | — | actualiza ambos AVL |
+
+**¿Por qué no un HashMap por año para el filtrado?**
+Un HashMap resuelve búsqueda exacta en O(1) pero **no sirve para rangos ni para orden**: para filtrar 2000–2010 necesitaría recorrer todos los años posibles uno a uno. Un AVL por año resuelve el rango en O(log n + k) y el listado ordenado con inorden en O(n), sin costo extra.
+
+**Solución: dos AVL**
+
+```
+AVL_nombre   → clave = nombre de la película    (búsqueda exacta O(log n))
+AVL_año      → clave = año de estreno           (rango O(log n + k), listado inorden O(n))
+```
+
+**Al insertar una película:**
+```
+catalogo.agregar(pelicula):
+  AVL_nombre.insertar(pelicula.nombre, pelicula)
+  AVL_año.insertar(pelicula.año, pelicula)
+```
+
+**Al eliminar:**
+```
+catalogo.eliminar(nombre, año):
+  AVL_nombre.eliminar(nombre)
+  AVL_año.eliminar(año)
+```
+
+**Trade-off explícito para el parcial:**
+> "Se mantienen dos AVL: uno indexado por nombre para búsqueda exacta en O(log n), otro indexado por año para filtrado por rango e inorden en O(n). La inserción cuesta O(log n) en cada estructura (doble de lo que costaría con una sola), y la memoria se duplica. Esto se justifica porque la frecuencia de búsqueda (miles/día) supera ampliamente la de inserción (varias/día), y degradar la búsqueda a O(n) sobre 15.000 registros sería inaceptable."
+
+---
+
+#### Otros casos de dos operaciones incompatibles
+
+**Caso: sistema de soporte técnico**
+
+Tickets que se atienden en orden de llegada, pero cualquier agente puede buscar un ticket por ID en cualquier momento.
+
+- Operación crítica 1: procesar en orden FIFO → **Cola**
+- Operación crítica 2: buscar por ID → **AVL clave=id**
+- Al crear un ticket: encolar en Cola + insertar en AVL.
+- Trade-off: inserción doble; a cambio, atención FIFO O(1) y búsqueda O(log n).
+
+---
+
+**Caso: historial de navegación con búsqueda**
+
+Navegador que permite "atrás/adelante" (LIFO) y también buscar cualquier URL visitada.
+
+- Operación crítica 1: deshacer/rehacer → **Pila**
+- Operación crítica 2: buscar URL → **AVL clave=url** o **Conjunto** si solo importa pertenencia
+- Al visitar una página: apilar en Pila + insertar en AVL.
+- Trade-off: inserción doble; deshacer O(1) y búsqueda O(log n).
+
+---
+
+**Caso: catálogo con dos criterios de búsqueda independientes**
+
+Productos que se buscan tanto por código interno como por nombre comercial.
+
+- Operación crítica 1: buscar por código → **AVL clave=código**
+- Operación crítica 2: buscar por nombre → **AVL clave=nombre**
+- Al insertar un producto: insertar en ambos AVL.
+- Nota: si los nombres tienen duplicados (ej: varios productos "Teclado"), el AVL por nombre necesita política para duplicados o se reemplaza por una Lista asociada a esa clave.
+
+---
+
+**Señales en el enunciado de que necesitás dos estructuras:**
+- "Se puede buscar por X **o** por Y" con X e Y siendo claves distintas
+- "Filtrar por rango de [clave A] **y** buscar exacto por [clave B]"
+- "Los usuarios buscan por nombre; el sistema también los procesa en orden de llegada"
+- Cualquier combinación de árbol + Cola/Pila (clave de búsqueda + orden temporal)
+
+---
+
 ### Cómo redactar la justificación en el parcial
 
 El examinador espera esta estructura:
