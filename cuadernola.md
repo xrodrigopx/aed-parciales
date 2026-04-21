@@ -10,11 +10,33 @@ La justificación del TDA vale puntos en el parcial. No alcanza con decir "uso A
 
 ---
 
+### Mentalidad del ingeniero — antes de arrancar
+
+**La pregunta que importa es una sola: ¿qué operación se va a ejecutar millones de veces?**
+
+Todo lo demás es secundario. El problema no elige la estructura — la *operación dominante* elige la estructura. Si esa operación es O(n) en vez de O(log n), a escala duele.
+
+**Elegí la estructura más simple que no se rompe.**
+
+Si una Lista alcanza, usá Lista. No uses AVL "por las dudas". La complejidad innecesaria tiene costo real: más código, más bugs, más tiempo de onboarding. La pregunta no es "¿qué estructura aguanta más?" sino "¿qué estructura es suficiente para este problema?"
+
+**Pensá en el tamaño real de los datos.**
+
+Un ABB que degenera a O(n) con 50 elementos es irrelevante. Con 10 millones de registros ordenados secuencialmente es un desastre. El orden asintótico importa a escala — a escala chica, casi cualquier estructura funciona.
+
+**Consultá documentación, no la memoria.**
+
+Ningún ingeniero tiene en la cabeza los casos borde de todas las estructuras. Lo que diferencia al junior del senior no es que el senior recuerda más — es que el senior sabe exactamente qué buscar.
+
+**En dudas reales, prototipá y medí.**
+
+¿HashMap o TreeMap? ¿ArrayList o LinkedList? En problemas reales se escribe un benchmark con datos reales. La intuición teórica a veces se equivoca cuando entran en juego el caché del CPU, la localidad de memoria, o el tamaño real del dataset. En el parcial no vas a hacer benchmarks, pero sí tenés que poder justificar con complejidad teórica por qué una estructura gana a otra para el caso específico del problema.
+
+---
+
 ### Fase 1 — Las preguntas que hay que hacerse
 
 **1. ¿Cuál es la operación más crítica del problema?**
-
-Es la pregunta más importante. El problema siempre tiene una operación que se va a repetir muchas veces o que tiene que ser rápida. Identificarla dice qué TDA optimizar.
 
 - "buscar si un elemento existe" → priorizar búsqueda eficiente
 - "procesar elementos en el orden en que llegaron" → priorizar FIFO
@@ -88,19 +110,7 @@ El examinador espera esta estructura:
 
 ---
 
-### Regla de oro
-
-> **¿El problema me pide encontrar algo específico entre muchos elementos?**
-> - Sí → árbol (ABB o AVL según frecuencia de inserción)
-> - No, solo procesarlos en orden de llegada → Cola/Pila
-> - No, solo guardarlos sin duplicados → Conjunto
-> - No, con acceso posicional → Lista
-
----
-
 ## Pseudocódigos de referencia
-
-Operaciones clave de cada TDA, con lenguaje natural, pre/postcondiciones y análisis de orden.
 
 ---
 
@@ -108,13 +118,12 @@ Operaciones clave de cada TDA, con lenguaje natural, pre/postcondiciones y anál
 
 **Casos de uso típicos:**
 - Acumular resultados de un recorrido (ej: inOrden llena una lista con los datos del árbol).
-- Representar la lista blanca o negra en el patrón `comboViable` / `preparadoViable`.
-- Almacenar el camino desde la raíz hasta un nodo (ej: `encontrarCamino` para calcular parentesco).
-- Cualquier colección donde el orden de inserción importa y no necesitás búsqueda eficiente.
+- Lista blanca/negra en el patrón `comboViable` / `preparadoViable`.
+- Camino desde la raíz hasta un nodo (ej: `encontrarCamino` para parentesco).
 
 #### insertar(etiqueta, dato) — al final
 
-**Lenguaje natural:** Crea un nodo con la etiqueta y dato dados. Si la lista está vacía, lo coloca como primero. Si no, recorre hasta el último nodo y lo enlaza al final.
+**Lenguaje natural:** Recorre hasta el último nodo y lo enlaza al final; si está vacía, coloca el nodo como primero.
 
 **Precondición:** ninguna.  
 **Postcondición:** el nodo queda como último elemento; el tamaño aumenta en 1.
@@ -140,7 +149,7 @@ fin método
 
 #### buscar(clave)
 
-**Lenguaje natural:** Recorre la lista comparando la etiqueta de cada nodo con la clave. Retorna el nodo si lo encuentra, nulo si no existe.
+**Lenguaje natural:** Recorre comparando etiquetas; retorna el primer nodo que coincide o nulo.
 
 **Precondición:** ninguna.  
 **Postcondición:** retorna el primer nodo con `etiqueta = clave`, o `nulo`.
@@ -164,7 +173,7 @@ fin método
 
 #### eliminar(clave)
 
-**Lenguaje natural:** Busca el nodo con la clave dada y lo desvincula. Si es el primero, actualiza `primero`; si no, conecta el antecesor directamente al sucesor.
+**Lenguaje natural:** Desvincula el nodo con esa clave; si es el primero actualiza `primero`, si no conecta el antecesor al sucesor.
 
 **Precondición:** ninguna.  
 **Postcondición:** si existía un nodo con `etiqueta = clave`, es removido y retorna `verdadero`. Si no, retorna `falso`.
@@ -197,14 +206,13 @@ fin método
 ### Pila
 
 **Casos de uso típicos:**
-- Simular la recursión de forma iterativa (cada llamada recursiva equivale a un `apilar`).
+- Simular recursión de forma iterativa (cada llamada equivale a un `apilar`).
 - Verificar balanceo de paréntesis / expresiones anidadas.
 - Historial de operaciones: "deshacer" → desapilar el último estado.
-- Evaluar o convertir expresiones aritméticas (notación infija ↔ postfija).
 
 #### apilar(dato)
 
-**Lenguaje natural:** Crea un nuevo nodo con el dato dado y lo coloca en el tope de la pila, enlazándolo con el tope anterior.
+**Lenguaje natural:** Coloca el nuevo nodo al tope y lo enlaza con el tope anterior.
 
 **Precondición:** ninguna.  
 **Postcondición:** el nuevo nodo es el tope; el tamaño aumenta en 1.
@@ -223,7 +231,7 @@ fin método
 
 #### desapilar()
 
-**Lenguaje natural:** Guarda el dato del tope, avanza `tope` al siguiente nodo y retorna el dato guardado.
+**Lenguaje natural:** Retorna el dato del tope y avanza `tope` al siguiente nodo.
 
 **Precondición:** `¬esVacia()`.  
 **Postcondición:** el nodo del tope es removido y su dato es retornado; el tamaño disminuye en 1.
@@ -246,14 +254,12 @@ fin método
 ### Cola
 
 **Casos de uso típicos:**
-- Procesar elementos en el orden en que llegaron: sistemas de turnos, colas de atención, colas de impresión.
-- Recorrido por niveles (BFS) de un árbol: se encola la raíz, se desencola y se encolan sus hijos, y así sucesivamente.
-- Simular flujos donde el primero en entrar es el primero en salir (FIFO estricto).
-- Planificación de tareas donde el orden de llegada define la prioridad.
+- Procesar en orden de llegada: turnos, colas de atención, colas de impresión.
+- Recorrido por niveles (BFS): se encola la raíz, se desencola y se encolan sus hijos.
 
 #### encolar(dato)
 
-**Lenguaje natural:** Crea un nuevo nodo y lo enlaza al final mediante el puntero `posterior`. Si la cola estaba vacía, `frente` también apunta al nuevo nodo.
+**Lenguaje natural:** Enlaza el nuevo nodo al final; si la cola estaba vacía inicializa también `frente`.
 
 **Precondición:** ninguna.  
 **Postcondición:** el nuevo nodo queda al final; `posterior` apunta a él.
@@ -277,7 +283,7 @@ fin método
 
 #### desencolar()
 
-**Lenguaje natural:** Guarda el dato del frente, avanza `frente` al siguiente nodo y, si la cola quedó vacía, también actualiza `posterior` a nulo.
+**Lenguaje natural:** Retorna el dato del frente, avanza `frente`; si la cola quedó vacía actualiza `posterior ← nulo`.
 
 **Precondición:** `¬esVacia()`.  
 **Postcondición:** el nodo del frente es removido; si la cola quedó vacía, `posterior ← nulo`.
@@ -303,14 +309,13 @@ fin método
 ### Conjunto
 
 **Casos de uso típicos:**
-- Representar la lista blanca de elementos permitidos cuando **no puede haber duplicados** y solo importa la pertenencia.
-- Calcular unión, intersección o complemento de grupos de elementos.
-- Marcar nodos ya visitados en un recorrido (equivalente a un `visited set`).
-- Cualquier colección donde la pregunta central es "¿este elemento ya existe?".
+- Lista blanca cuando **no puede haber duplicados** y solo importa la pertenencia.
+- Calcular unión, intersección o complemento de grupos.
+- Marcar nodos ya visitados en un recorrido (`visited set`).
 
 #### insertar(dato)
 
-**Lenguaje natural:** Verifica primero con `buscar` que el dato no exista. Si no existe, crea un nodo y lo inserta al frente en O(1). El invariante del conjunto es que no hay duplicados.
+**Lenguaje natural:** Verifica con `buscar` que no exista; si no, inserta al frente. El invariante es que no hay duplicados.
 
 **Precondición:** ninguna.  
 **Postcondición:** si `dato` no estaba en el conjunto, se agrega y retorna `verdadero`; si ya existía, retorna `falso`.
@@ -333,7 +338,7 @@ fin método
 
 #### buscar(dato)
 
-**Lenguaje natural:** Recorre el conjunto comparando cada elemento con el dato buscado. Retorna el nodo si existe, nulo si no.
+**Lenguaje natural:** Recorre comparando cada elemento; retorna el nodo o nulo.
 
 **Precondición:** ninguna.  
 **Postcondición:** retorna el nodo que contiene `dato`, o `nulo`.
@@ -366,7 +371,7 @@ fin método
 
 #### insertar(etiqueta, dato)
 
-**Lenguaje natural:** Crea un nuevo elemento. Si el árbol está vacío, lo coloca como raíz. Si no, delega recursivamente al nodo raíz: menores van a la izquierda, mayores a la derecha, duplicados se rechazan.
+**Lenguaje natural:** Si está vacío coloca como raíz; si no, delega recursivamente: menores a izquierda, mayores a derecha, duplicados se rechazan.
 
 **Precondición:** `etiqueta ≠ nulo`.  
 **Postcondición:** el elemento queda insertado respetando la propiedad ABB, o retorna `falso` si la etiqueta ya existía.
@@ -409,7 +414,7 @@ fin método
 
 #### buscar(etiqueta)
 
-**Lenguaje natural:** Recorre el árbol comparando la etiqueta buscada con la del nodo actual; baja a izquierda si es menor, a derecha si es mayor, hasta encontrarla o llegar a nulo.
+**Lenguaje natural:** Baja a izquierda si es menor, a derecha si es mayor, hasta encontrar la etiqueta o llegar a nulo.
 
 **Precondición:** ninguna.  
 **Postcondición:** retorna el dato del elemento con esa etiqueta, o `nulo` si no existe.
@@ -452,7 +457,7 @@ fin método
 
 #### eliminar(etiqueta)
 
-**Lenguaje natural:** Localiza el nodo y lo elimina según tres casos: (1) sin hijos → se desvincula directamente; (2) un hijo → el hijo lo reemplaza; (3) dos hijos → se reemplaza por el predecesor inorden (máximo del subárbol izquierdo) y se elimina ese predecesor.
+**Lenguaje natural:** Tres casos: sin hijos → desvincula; un hijo → el hijo reemplaza; dos hijos → reemplaza por el predecesor inorden (máximo del subárbol izquierdo).
 
 **Precondición:** ninguna.  
 **Postcondición:** si existía un nodo con esa etiqueta, es eliminado manteniendo la propiedad ABB.
@@ -518,7 +523,7 @@ Los tres recorridos visitan todos los nodos exactamente una vez — todos son O(
 
 #### inOrden()
 
-**Lenguaje natural:** Recorre izquierda → raíz → derecha. En un ABB produce los valores en orden ascendente de etiqueta. Es el recorrido más usado en los parciales para obtener resultados ordenados.
+**Lenguaje natural:** izq → raíz → der; produce los valores en orden ascendente.
 
 **Precondición:** ninguna.  
 **Postcondición:** retorna una lista con los datos en orden ascendente de etiqueta.
@@ -545,7 +550,7 @@ fin método
 
 #### preOrden()
 
-**Lenguaje natural:** Visita el nodo actual primero, luego recorre el subárbol izquierdo y luego el derecho. Útil cuando necesitás procesar o guardar el nodo antes de conocer sus hijos.
+**Lenguaje natural:** raíz → izq → der; procesa el nodo antes de sus hijos.
 
 **Precondición:** ninguna.  
 **Postcondición:** retorna una lista con los datos en orden raíz → izquierdo → derecho.
@@ -572,7 +577,7 @@ fin método
 
 #### postOrden()
 
-**Lenguaje natural:** Recorre primero el subárbol izquierdo, luego el derecho, y recién entonces visita el nodo actual. Útil cuando el resultado del nodo depende del resultado de sus hijos (altura, tamaño, suma, LTIM).
+**Lenguaje natural:** izq → der → raíz; el resultado del nodo depende de sus hijos (altura, tamaño, suma).
 
 **Precondición:** ninguna.  
 **Postcondición:** retorna una lista con los datos en orden izquierdo → derecho → raíz.
@@ -594,8 +599,6 @@ fin método
 ```
 
 **Orden:** O(n)
-
----
 
 ---
 
@@ -623,14 +626,13 @@ Para dos nodos **n** y **m**: ¿cuándo puede ser cierto simultáneamente que `i
 ### AVL — Árbol Binario de Búsqueda Autobalanceado
 
 **Casos de uso típicos:**
-- Catálogos que **crecen continuamente** con inserciones frecuentes (ej: nuevas películas cada semana, nuevos usuarios, nuevas temperaturas).
-- Cualquier escenario donde no se controla el orden de inserción y se necesita garantizar O(log n) en búsquedas.
-- Sistemas en tiempo real donde una degradación a O(n) es inaceptable.
-- **Regla práctica del parcial:** si el enunciado menciona actualizaciones frecuentes o datos que llegan en tiempo de ejecución → AVL sobre ABB.
+- Catálogos que **crecen continuamente** con inserciones frecuentes (nuevas películas, usuarios, registros).
+- Orden de inserción no controlado (datos de archivo externo) y se necesita O(log n) garantizado.
+- **Regla del parcial:** si el enunciado dice "actualizaciones frecuentes" o "datos en tiempo de ejecución" → AVL.
 
 #### Auxiliares: altura, actualizarAltura, factorBalance
 
-**Lenguaje natural:** `altura` retorna la altura guardada en el nodo (o −1 si nulo). `actualizarAltura` recalcula la altura a partir de los hijos. `factorBalance` retorna la diferencia `h(der) − h(izq)` — si es −2 o +2, hay desbalance.
+**Lenguaje natural:** `altura` retorna la altura del nodo (−1 si nulo); `actualizarAltura` la recalcula desde los hijos; `factorBalance` retorna `h(der) − h(izq)` — si es ±2, hay desbalance.
 
 **Precondición:** ninguna.  
 **Postcondición:** valores calculados en O(1) a partir de la altura almacenada en cada nodo.
@@ -703,7 +705,7 @@ fin método
 
 #### balancear(nodo)
 
-**Lenguaje natural:** Actualiza la altura del nodo, calcula su factor de balance y aplica la rotación correspondiente si está desbalanceado. Se invoca al regresar de cada inserción recursiva.
+**Lenguaje natural:** Actualiza la altura, calcula el factor de balance y aplica la rotación correspondiente; se llama al regresar de cada inserción recursiva.
 
 **Precondición:** ninguna.  
 **Postcondición:** retorna la raíz del subárbol ya balanceado con altura actualizada.
@@ -737,7 +739,7 @@ fin método
 
 #### insertar(etiqueta, dato) — AVL
 
-**Lenguaje natural:** Igual que en el ABB, pero al regresar de cada llamada recursiva se invoca `balancear()`, corrigiendo cualquier desbalance introducido en el camino de vuelta hacia la raíz.
+**Lenguaje natural:** Igual que ABB, pero llama a `balancear()` al regresar de cada llamada recursiva.
 
 **Precondición:** `etiqueta ≠ nulo`.  
 **Postcondición:** el elemento queda insertado y el árbol mantiene la propiedad AVL en todos sus nodos.
