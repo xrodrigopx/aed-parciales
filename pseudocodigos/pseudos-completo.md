@@ -1041,6 +1041,42 @@ fin método
 
 ---
 
+### obtenerNivel(criterio)
+
+**Lenguaje natural:** Retorna el nivel en que se encuentra el nodo con la etiqueta buscada. La raíz está en nivel 0. Si no existe, retorna −1. Sigue el mismo camino que `buscar`.
+
+**Precondición:** ninguna.  
+**Postcondición:** retorna el nivel del nodo, o −1 si no existe.
+
+```
+TArbolBB.obtenerNivel(criterio: Comparable): entero
+  si esVacio() entonces retornar -1
+  retornar raiz.obtenerNivel(criterio, 0)
+fin método
+
+TElementoAB.obtenerNivel(criterio: Comparable, nivelActual: entero): entero
+  si criterio = this.etiqueta entonces
+    retornar nivelActual
+  sino si criterio < this.etiqueta entonces
+    si hijoIzq ≠ nulo entonces
+      retornar hijoIzq.obtenerNivel(criterio, nivelActual + 1)
+    sino
+      retornar -1
+    fin si
+  sino
+    si hijoDer ≠ nulo entonces
+      retornar hijoDer.obtenerNivel(criterio, nivelActual + 1)
+    sino
+      retornar -1
+    fin si
+  fin si
+fin método
+```
+
+**Orden:** O(h) — O(log n) promedio, O(n) peor caso.
+
+---
+
 ### inOrden()
 
 **Lenguaje natural:** Recorre izquierda→raíz→derecha. En un BST produce los valores en orden ascendente.

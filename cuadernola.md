@@ -597,6 +597,29 @@ fin método
 
 ---
 
+---
+
+### Tabla de posiciones en recorridos (tipo parcial)
+
+Para dos nodos **n** y **m**: ¿cuándo puede ser cierto simultáneamente que `i(n) < i(m)` (inorden), `s(n) < s(m)` (postorden) o `p(n) < p(m)` (preorden)?
+
+| Relación (n respecto a m) | `i(n) < i(m)` | `s(n) < s(m)` | `p(n) < p(m)` |
+|---------------------------|:---:|:---:|:---:|
+| n es **descendiente** de m | ✓ posible¹ | ✓ siempre | ✗ nunca |
+| n está **a la izquierda** de m | ✓ siempre | ✓ siempre | ✓ siempre |
+| n está **a la derecha** de m | ✗ nunca | ✗ nunca | ✗ nunca |
+| n es **ancestro** de m | ✓ posible² | ✗ nunca | ✓ siempre |
+
+> ¹ Solo si n está en el subárbol **izquierdo** de m.  
+> ² Solo si m está en el subárbol **derecho** de n.
+
+**Para memorizar:**
+- Preorden: el ancestro va **antes** → `p(ancestro) < p(desc.)` siempre.
+- Postorden: el ancestro va **después** → `s(ancestro) > s(desc.)` siempre.
+- Inorden: depende de izquierda/derecha. "A la izquierda" → menor en los 3 recorridos. "A la derecha" → mayor en los 3.
+
+---
+
 ### AVL — Árbol Binario de Búsqueda Autobalanceado
 
 **Casos de uso típicos:**

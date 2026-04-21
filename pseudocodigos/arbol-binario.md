@@ -242,6 +242,8 @@ Algoritmo TNodoAB.evalExpr
 
 ### 2. Reconstruir árbol desde recorridos
 
+#### Caso A — Preorden + Inorden
+
 - Preorden: `A D F G H K L P Q R W Z`
 - Inorden:  `G F H K D L A W R Q P Z`
 
@@ -293,6 +295,51 @@ A
 
 **Verificación:** preorden de este árbol → A D F G H K L P Q R W Z ✓  
 Inorden → G F H K D L A W R Q P Z ✓
+
+---
+
+#### Caso B — Inorden + Postorden
+
+- Inorden:   `R, A, T, B, J, S, M, C, W, Z, X, F`
+- Postorden: `R, A, B, J, T, C, Z, W, F, X, M, S`
+
+**Método:** el **último** elemento del postorden es siempre la raíz. En el inorden, todo lo que está a su izquierda es el subárbol izquierdo y lo que está a su derecha es el subárbol derecho. Se aplica recursivamente.
+
+| Paso | Raíz | Inorden izquierdo | Inorden derecho |
+|------|------|-------------------|-----------------|
+| 1 | **S** (último postorden) | R,A,T,B,J | M,C,W,Z,X,F |
+| 2 izq | **T** (último postorden de {R,A,B,J,T}) | R,A | B,J |
+| 3 izq-izq | **A** | R | — |
+| 3 izq-der | **J** | B | — |
+| 2 der | **M** (último de {C,Z,W,F,X,M}) | — | C,W,Z,X,F |
+| 3 der-der | **X** (último de {C,Z,W,F,X}) | C,W,Z | F |
+| 4 | **W** (último de {C,Z,W}) | C | Z |
+| 5 | **F** hoja | — | — |
+
+**Árbol resultante:**
+
+```
+              S
+            /   \
+           T     M
+          / \     \
+         A   J     X
+        /   /     / \
+       R   B     W   F
+              / \
+             C   Z
+```
+
+**Verificación:** inorden → R,A,T,B,J,S,M,C,W,Z,X,F ✓  
+Postorden → R,A,B,J,T,C,Z,W,F,X,M,S ✓
+
+**Regla para elegir el método según los recorridos disponibles:**
+
+| Disponible | Raíz | Dividir izq/der |
+|------------|------|-----------------|
+| Preorden + Inorden | **primero** del preorden | buscar raíz en inorden |
+| Postorden + Inorden | **último** del postorden | buscar raíz en inorden |
+| Preorden + Postorden | no único — hay múltiples árboles posibles | — |
 
 ---
 
@@ -386,6 +433,34 @@ fin método
 ```
 
 **Orden:** O(n) — en el peor caso (nivel = hoja) visita todos los nodos. Para niveles altos el corte `actual > objetivo` puede ahorrar visitas, pero el peor caso sigue siendo O(n).
+
+---
+
+---
+
+### 6. Tabla de posiciones simultáneas en recorridos
+
+Para dos nodos **n** y **m** en un árbol binario, ¿cuándo puede ser cierto simultáneamente que `i(n) < i(m)`, `s(n) < s(m)` o `p(n) < p(m)`?
+
+- `i(x)` = posición en **inorden**
+- `s(x)` = posición en **postorden**
+- `p(x)` = posición en **preorden**
+
+| Relación (n respecto a m) | `i(n) < i(m)` | `s(n) < s(m)` | `p(n) < p(m)` |
+|---------------------------|:---:|:---:|:---:|
+| n es **descendiente** de m | ✓ posible¹ | ✓ siempre | ✗ nunca |
+| n está **a la izquierda** de m | ✓ siempre | ✓ siempre | ✓ siempre |
+| n está **a la derecha** de m | ✗ nunca | ✗ nunca | ✗ nunca |
+| n es **ancestro** de m | ✓ posible² | ✗ nunca | ✓ siempre |
+
+> ¹ `i(n) < i(m)` cuando n está en el subárbol **izquierdo** de m; si está en el derecho, `i(n) > i(m)`.  
+> ² `i(n) < i(m)` cuando m está en el subárbol **derecho** de n; si está en el izquierdo, `i(n) > i(m)`.
+
+**Reglas mnemónicas:**
+- **Preorden:** el ancestro siempre va antes que sus descendientes → `p(ancestro) < p(descendiente)` siempre.
+- **Postorden:** el ancestro siempre va después de sus descendientes → `s(ancestro) > s(descendiente)` siempre.
+- **Inorden:** izquierda → raíz → derecha, así que "a la izquierda de m" implica i menor, "a la derecha" implica i mayor. Para ancestro/descendiente depende del lado.
+- "**A la izquierda**" implica que las tres posiciones son menores simultáneamente — el subárbol izquierdo completo se visita antes en los tres recorridos.
 
 ---
 

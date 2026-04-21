@@ -67,9 +67,9 @@ Referencia rápida de TDAs y pseudocódigo de los ejercicios recurrentes en parc
 
 | Archivo | Descripción |
 |---------|-------------|
-| `arbol-binario.md` | AB — definición, terminología, lleno/completo, propiedades matemáticas, recorridos, árbol de expresión |
+| `arbol-binario.md` | AB — definición, terminología, propiedades, recorridos, árbol de expresión, reconstrucción (pre+in y post+in), tabla de posiciones simultáneas |
 | `arbol-avl.md` | AVL — propiedad, inserciones, rotaciones simples y dobles |
-| `arbol-bst.md` | ABB — insertar, buscar, recorridos, eliminar |
+| `arbol-bst.md` | ABB — insertar, buscar, eliminar, tamaño, altura, nivel, recorridos |
 | `cola.md` | Cola — arreglo circular y lista enlazada |
 | `conjunto.md` | Conjunto — lista enlazada sin duplicados |
 | `lista-enlazada.md` | Lista simplemente enlazada con puntero `primero` |
@@ -115,7 +115,9 @@ Código Java provisto por la cátedra en cada parcial:
 
 ## Lo más importante para el parcial
 
-El **Ejercicio 1 de la Parte 2** es casi siempre **insertions en AVL**. Lee `guia-de-estudio.md` para el análisis completo de patrones y el plan de estudio priorizado.
+El **Ejercicio 1 de la Parte 2** es casi siempre **inserciones en AVL**. Lee `guia-de-estudio.md` para el análisis completo de patrones y el plan de estudio priorizado.
+
+**Algoritmos nuevos (PS-UT02):** `obtenerNivel(criterio)` en `arbol-bst.md` y `pseudos-completo.md`. Tabla de posiciones simultáneas de recorridos en `arbol-binario.md` y `cuadernola.md`.
 
 ---
 

@@ -303,6 +303,44 @@ fin método
 
 ---
 
+## obtenerNivel(criterio)
+
+**Lenguaje natural:** Busca el nodo con la etiqueta dada y retorna el nivel en que se encuentra. La raíz está en nivel 0. Si el nodo no existe, retorna −1. En cada llamada recursiva se incrementa el nivel.
+
+**Precondición:** ninguna.  
+**Postcondición:** retorna el nivel del nodo con esa etiqueta, o −1 si no existe.
+
+```
+// Método del árbol
+TArbolBB.obtenerNivel(criterio: Comparable): entero
+  si esVacio() entonces retornar -1
+  retornar raiz.obtenerNivel(criterio, 0)
+fin método
+
+// Método del nodo
+TElementoAB.obtenerNivel(criterio: Comparable, nivelActual: entero): entero
+  si criterio = this.etiqueta entonces
+    retornar nivelActual
+  sino si criterio < this.etiqueta entonces
+    si hijoIzq ≠ nulo entonces
+      retornar hijoIzq.obtenerNivel(criterio, nivelActual + 1)
+    sino
+      retornar -1
+    fin si
+  sino
+    si hijoDer ≠ nulo entonces
+      retornar hijoDer.obtenerNivel(criterio, nivelActual + 1)
+    sino
+      retornar -1
+    fin si
+  fin si
+fin método
+```
+
+**Orden:** O(h) — sigue el mismo camino que `buscar`, O(log n) promedio / O(n) peor caso.
+
+---
+
 ## Resumen de Órdenes
 
 | Operación | Orden promedio | Orden peor caso |
@@ -313,6 +351,7 @@ fin método
 | `eliminar` | O(log n) | O(n) |
 | `obtenerTamaño()` | O(n) | O(n) |
 | `obtenerAltura()` | O(n) | O(n) |
+| `obtenerNivel()` | O(log n) | O(n) |
 | `inOrden / preOrden / postOrden` | O(n) | O(n) |
 
 > El peor caso O(n) ocurre cuando el árbol está **degenerado** (insertado en orden creciente o decreciente), lo que lo convierte esencialmente en una lista enlazada. El AVL elimina este problema.
