@@ -705,6 +705,109 @@ fin método
 
 ---
 
+#### calcularAltura()
+
+La **altura** es la longitud del camino más largo desde la raíz hasta una hoja. Árbol vacío → −1. Hoja → 0. En general: `max(alturaIzq, alturaDer) + 1`.
+
+**Recorrido:** postorden — necesitás saber la altura de los hijos antes de calcular la del padre.
+
+**Precondición:** ninguna.  
+**Postcondición:** retorna la altura del árbol. Si está vacío, retorna −1.
+
+```
+TArbolBB.calcularAltura(): entero
+  si esVacio() entonces
+    retornar -1
+  fin si
+  retornar raiz.calcularAltura()
+fin método
+
+TElementoAB.calcularAltura(): entero
+  alturaIzq ← -1
+  alturaDer ← -1
+  si hijoIzq ≠ nulo entonces
+    alturaIzq ← hijoIzq.calcularAltura()
+  fin si
+  si hijoDer ≠ nulo entonces
+    alturaDer ← hijoDer.calcularAltura()
+  fin si
+  retornar max(alturaIzq, alturaDer) + 1
+fin método
+```
+
+**Traza:**
+
+```
+        10
+       /   \
+      5    20
+     / \
+    2   7
+```
+
+| Llamada | alturaIzq | alturaDer | retorna |
+|---------|-----------|-----------|---------|
+| nodo 2  | -1        | -1        | 0       |
+| nodo 7  | -1        | -1        | 0       |
+| nodo 5  | 0 (de 2)  | 0 (de 7)  | 1       |
+| nodo 20 | -1        | -1        | 0       |
+| nodo 10 | 1 (de 5)  | 0 (de 20) | **2**   |
+
+**Orden:** O(n)
+
+---
+
+#### calcularTamanio()
+
+El **tamaño** es la cantidad total de nodos. Árbol vacío → 0. En general: `1 + tamanioIzq + tamanioDer`.
+
+**Recorrido:** postorden — contás los hijos antes de sumar el nodo actual.
+
+**Precondición:** ninguna.  
+**Postcondición:** retorna la cantidad de nodos. Si está vacío, retorna 0.
+
+```
+TArbolBB.calcularTamanio(): entero
+  si esVacio() entonces
+    retornar 0
+  fin si
+  retornar raiz.calcularTamanio()
+fin método
+
+TElementoAB.calcularTamanio(): entero
+  tamanio ← 1
+  si hijoIzq ≠ nulo entonces
+    tamanio ← tamanio + hijoIzq.calcularTamanio()
+  fin si
+  si hijoDer ≠ nulo entonces
+    tamanio ← tamanio + hijoDer.calcularTamanio()
+  fin si
+  retornar tamanio
+fin método
+```
+
+**Traza:**
+
+```
+        10
+       /   \
+      5    20
+     / \
+    2   7
+```
+
+| Llamada | tamanio inicial | + hijoIzq | + hijoDer | retorna |
+|---------|-----------------|-----------|-----------|---------|
+| nodo 2  | 1               | —         | —         | 1       |
+| nodo 7  | 1               | —         | —         | 1       |
+| nodo 5  | 1               | + 1 (2)   | + 1 (7)   | 3       |
+| nodo 20 | 1               | —         | —         | 1       |
+| nodo 10 | 1               | + 3 (5)   | + 1 (20)  | **5**   |
+
+**Orden:** O(n)
+
+---
+
 ### Tabla de posiciones en recorridos (tipo parcial)
 
 Para dos nodos **n** y **m**: ¿cuándo puede ser cierto simultáneamente que `i(n) < i(m)` (inorden), `s(n) < s(m)` (postorden) o `p(n) < p(m)` (preorden)?
