@@ -217,12 +217,144 @@ El examinador espera esta estructura:
 
 ---
 
-### Lista Enlazada
+### Lista (basada en arreglo)
+
+**Casos de uso típicos:**
+- Acceso directo por índice en O(1): cuando se sabe la posición del elemento.
+- Colecciones de tamaño acotado donde las lecturas superan a las inserciones.
+- Recorrido posicional cuando el orden numérico de los elementos importa.
+
+**Estructura interna:**
+
+```
+Lista<T>:
+  datos:   T[]     ← arreglo de capacidad máxima
+  tamanio: entero  ← cantidad de elementos actuales (0 si vacía)
+```
+
+#### obtener(indice)
+
+**Lenguaje natural:** Retorna el dato en la posición indicada sin modificar la lista.
+
+**Precondición:** `0 ≤ indice < tamanio`.  
+**Postcondición:** retorna `datos[indice]` sin modificar la lista.
+
+```
+Lista.obtener(indice: entero): T
+  si indice < 0 o indice ≥ tamanio entonces
+    lanzar error "Índice fuera de rango"
+  fin si
+  retornar datos[indice]
+fin método
+```
+
+**Orden:** O(1)
+
+---
+
+#### insertar(dato) — al final
+
+**Lenguaje natural:** Agrega el dato al final del arreglo e incrementa el tamaño.
+
+**Precondición:** `tamanio < capacidadMaxima`.  
+**Postcondición:** el nuevo dato queda en `datos[tamanio - 1]`; el tamaño aumenta en 1.
+
+```
+Lista.insertar(dato: T): void
+  si tamanio = capacidadMaxima entonces
+    lanzar error "Lista llena"
+  fin si
+  datos[tamanio] ← dato
+  tamanio ← tamanio + 1
+fin método
+```
+
+**Orden:** O(1)
+
+---
+
+#### insertar(indice, dato) — en posición
+
+**Lenguaje natural:** Desplaza los elementos desde `indice` en adelante una posición a la derecha para abrir hueco, luego coloca el dato.
+
+**Precondición:** `0 ≤ indice ≤ tamanio` y `tamanio < capacidadMaxima`.  
+**Postcondición:** `datos[indice]` contiene el nuevo dato; los elementos que estaban desde `indice` en adelante se desplazan una posición a la derecha.
+
+```
+Lista.insertar(indice: entero, dato: T): void
+  si indice < 0 o indice > tamanio o tamanio = capacidadMaxima entonces
+    lanzar error "Inserción inválida"
+  fin si
+  i ← tamanio - 1
+  mientras i ≥ indice hacer
+    datos[i + 1] ← datos[i]
+    i ← i - 1
+  fin mientras
+  datos[indice] ← dato
+  tamanio ← tamanio + 1
+fin método
+```
+
+**Orden:** O(n) — desplazamiento de hasta n elementos.
+
+---
+
+#### buscar(dato)
+
+**Lenguaje natural:** Recorre el arreglo comparando elementos; retorna el índice del primero que coincide o −1.
+
+**Precondición:** ninguna.  
+**Postcondición:** retorna el índice del primer elemento igual a `dato`, o `−1` si no existe.
+
+```
+Lista.buscar(dato: T): entero
+  i ← 0
+  mientras i < tamanio hacer
+    si datos[i] = dato entonces
+      retornar i
+    fin si
+    i ← i + 1
+  fin mientras
+  retornar -1
+fin método
+```
+
+**Orden:** O(n)
+
+---
+
+#### eliminar(indice)
+
+**Lenguaje natural:** Desplaza los elementos desde `indice + 1` en adelante una posición a la izquierda para cubrir el hueco, luego decrementa el tamaño.
+
+**Precondición:** `0 ≤ indice < tamanio`.  
+**Postcondición:** el elemento en `indice` es eliminado; los elementos posteriores se desplazan una posición a la izquierda; el tamaño disminuye en 1.
+
+```
+Lista.eliminar(indice: entero): void
+  si indice < 0 o indice ≥ tamanio entonces
+    lanzar error "Índice fuera de rango"
+  fin si
+  i ← indice
+  mientras i < tamanio - 1 hacer
+    datos[i] ← datos[i + 1]
+    i ← i + 1
+  fin mientras
+  tamanio ← tamanio - 1
+fin método
+```
+
+**Orden:** O(n) — desplazamiento de hasta n−1 elementos.
+
+---
+
+### Lista Enlazada Simple
 
 **Casos de uso típicos:**
 - Acumular resultados de un recorrido (ej: inOrden llena una lista con los datos del árbol).
 - Lista blanca/negra en el patrón `comboViable` / `preparadoViable`.
 - Camino desde la raíz hasta un nodo (ej: `encontrarCamino` para parentesco).
+- Inserción al frente en O(1) cuando el orden no importa y el tamaño varía dinámicamente.
 
 #### insertar(etiqueta, dato) — al final
 
@@ -303,6 +435,132 @@ fin método
 ```
 
 **Orden:** O(n)
+
+---
+
+### Lista Doblemente Enlazada
+
+**Casos de uso típicos:**
+- Recorrido en ambas direcciones: historial de navegación (atrás/adelante), editor de texto con cursor.
+- Eliminación eficiente cuando se tiene referencia directa al nodo: no se necesita rastrear el antecesor por separado.
+- Implementación de deque (cola doble): insertar y eliminar en ambos extremos en O(1).
+
+**Estructura interna:**
+
+```
+NodoDoble<T>:
+  etiqueta:  Comparable
+  dato:      T
+  anterior:  NodoDoble<T>
+  siguiente: NodoDoble<T>
+
+ListaDoble<T>:
+  primero: NodoDoble<T>  ← nulo si la lista está vacía
+  ultimo:  NodoDoble<T>  ← nulo si la lista está vacía
+```
+
+#### insertar(etiqueta, dato) — al final
+
+**Lenguaje natural:** Crea el nodo, lo enlaza como sucesor del último y actualiza `ultimo`; si la lista estaba vacía inicializa también `primero`. El nuevo nodo apunta de vuelta al ex-último con su puntero `anterior`.
+
+**Precondición:** ninguna.  
+**Postcondición:** el nodo queda como último elemento; `ultimo` apunta a él; el puntero `anterior` del nuevo nodo apunta al ex-último.
+
+```
+ListaDoble.insertar(etiqueta: Comparable, dato: T): void
+  nodo ← nuevo NodoDoble(etiqueta, dato)
+  si esVacia() entonces
+    primero ← nodo
+    ultimo  ← nodo
+  sino
+    nodo.setAnterior(ultimo)
+    ultimo.setSiguiente(nodo)
+    ultimo ← nodo
+  fin si
+fin método
+```
+
+**Orden:** O(1) — gracias al puntero `ultimo`.
+
+---
+
+#### insertarAlFrente(etiqueta, dato)
+
+**Lenguaje natural:** Crea el nodo, lo coloca antes del `primero` actual y actualiza `primero`; el ex-primero enlaza de vuelta con su puntero `anterior`.
+
+**Precondición:** ninguna.  
+**Postcondición:** el nodo queda como primer elemento; `primero` apunta a él; el ex-primero tiene su `anterior` apuntando al nuevo nodo.
+
+```
+ListaDoble.insertarAlFrente(etiqueta: Comparable, dato: T): void
+  nodo ← nuevo NodoDoble(etiqueta, dato)
+  si esVacia() entonces
+    primero ← nodo
+    ultimo  ← nodo
+  sino
+    nodo.setSiguiente(primero)
+    primero.setAnterior(nodo)
+    primero ← nodo
+  fin si
+fin método
+```
+
+**Orden:** O(1)
+
+---
+
+#### buscar(clave)
+
+**Lenguaje natural:** Recorre desde `primero` comparando etiquetas; retorna el nodo que coincide o nulo. También puede recorrerse desde `ultimo` hacia atrás usando `anterior`.
+
+**Precondición:** ninguna.  
+**Postcondición:** retorna el primer nodo con `etiqueta = clave`, o `nulo`.
+
+```
+ListaDoble.buscar(clave: Comparable): NodoDoble<T>
+  aux ← primero
+  mientras aux ≠ nulo hacer
+    si aux.getEtiqueta() = clave entonces
+      retornar aux
+    fin si
+    aux ← aux.getSiguiente()
+  fin mientras
+  retornar nulo
+fin método
+```
+
+**Orden:** O(n)
+
+---
+
+#### eliminar(clave)
+
+**Lenguaje natural:** Localiza el nodo con la clave; lo desvincula enlazando su antecesor con su sucesor directamente a través del puntero `anterior`, sin necesitar una variable extra para el antecesor. Actualiza `primero` o `ultimo` si el nodo era un extremo.
+
+**Precondición:** ninguna.  
+**Postcondición:** si existía un nodo con `etiqueta = clave`, es removido y retorna `verdadero`; `primero` y `ultimo` se actualizan si el nodo era un extremo.
+
+```
+ListaDoble.eliminar(clave: Comparable): booleano
+  nodo ← buscar(clave)
+  si nodo = nulo entonces
+    retornar falso
+  fin si
+  si nodo.getAnterior() ≠ nulo entonces
+    nodo.getAnterior().setSiguiente(nodo.getSiguiente())
+  sino
+    primero ← nodo.getSiguiente()
+  fin si
+  si nodo.getSiguiente() ≠ nulo entonces
+    nodo.getSiguiente().setAnterior(nodo.getAnterior())
+  sino
+    ultimo ← nodo.getAnterior()
+  fin si
+  retornar verdadero
+fin método
+```
+
+**Orden:** O(n) — dominado por `buscar`.
 
 ---
 
