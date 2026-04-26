@@ -22,6 +22,7 @@ Material de estudio consolidado para el primer parcial de Algoritmos y Estructur
 - [Lista Doblemente Enlazada](#lista-doblemente-enlazada) — `insertar`, `insertarAlFrente`, `buscar`, `eliminar`
 - [Pila](#pila) — `apilar`, `desapilar`
 - [Cola](#cola) — `encolar`, `desencolar`
+- [Cola de Prioridad](#cola-de-prioridad-variante-de-cola) — `encolar(dato, prioridad)`, `desencolar`
 - [Conjunto](#conjunto) — `insertar`, `buscar`
 - [ABB — Árbol Binario de Búsqueda](#abb--árbol-binario-de-búsqueda) — `insertar`, `buscar`, `eliminar`, recorridos, `calcularAltura`, `calcularTamanio`
   - [Recorridos del árbol](#recorridos-del-árbol) — inOrden, preOrden, postOrden, Recorrido en Anchura
@@ -725,6 +726,74 @@ fin método
 ```
 
 **Orden:** O(1)
+
+---
+
+### Cola de Prioridad (variante de Cola)
+
+**Cuándo usar esta variante en lugar de Cola simple:** cuando los elementos no son equivalentes entre sí y algunos deben atenderse antes independientemente del orden de llegada. Ejemplos: sistema operativo que prioriza procesos críticos, sala de emergencias, impresión urgente.
+
+**Diferencia con Cola:** `encolar` inserta en la posición correcta según prioridad en vez de siempre al final. El invariante es que la lista siempre está ordenada: el frente tiene siempre el elemento de mayor prioridad. `desencolar` no cambia.
+
+**Convención:** número menor = mayor prioridad (prioridad 1 se atiende antes que prioridad 2).
+
+**Estructura interna:**
+
+```
+Nodo<T>:
+  dato:      T
+  prioridad: entero
+  siguiente: Nodo<T>
+
+ColaPrioridad<T>:
+  frente: Nodo<T>  ← siempre el de mayor prioridad; nulo si vacía
+```
+
+#### encolar(dato, prioridad)
+
+**Lenguaje natural:** Recorre desde el frente hasta encontrar el primer nodo con prioridad menor al nuevo; inserta antes de él. Si la cola está vacía o el nuevo tiene mayor prioridad que el frente, inserta al principio.
+
+**Precondición:** ninguna.  
+**Postcondición:** el nodo queda en la posición que mantiene el orden por prioridad ascendente.
+
+```
+ColaPrioridad.encolar(dato: T, prioridad: entero): void
+  nodo ← nuevo Nodo(dato, prioridad)
+  si esVacia() o prioridad < frente.prioridad entonces
+    nodo.setSiguiente(frente)
+    frente ← nodo
+  sino
+    aux ← frente
+    mientras aux.getSiguiente() ≠ nulo y
+             aux.getSiguiente().prioridad ≤ prioridad hacer
+      aux ← aux.getSiguiente()
+    fin mientras
+    nodo.setSiguiente(aux.getSiguiente())
+    aux.setSiguiente(nodo)
+  fin si
+fin método
+```
+
+**Orden:** O(n) — hay que encontrar la posición correcta.
+
+---
+
+#### desencolar()
+
+Idéntico al de Cola simple: retorna el dato del frente y avanza `frente`. El frente es siempre el de mayor prioridad por el invariante que mantiene `encolar`.
+
+**Orden:** O(1)
+
+---
+
+**Trade-off respecto a Cola simple:**
+
+| Operación | Cola simple | Cola de Prioridad |
+|-----------|------------|-------------------|
+| `encolar` | O(1) | O(n) |
+| `desencolar` | O(1) | O(1) |
+
+Se paga O(n) al insertar para garantizar O(1) al sacar. Si las inserciones fueran muy frecuentes con n grande, la alternativa eficiente es un Heap (O(log n) en ambas operaciones), pero es una estructura más compleja fuera del alcance del primer parcial.
 
 ---
 
