@@ -356,6 +356,18 @@ fin método
 - Camino desde la raíz hasta un nodo (ej: `encontrarCamino` para parentesco).
 - Inserción al frente en O(1) cuando el orden no importa y el tamaño varía dinámicamente.
 
+**Estructura interna:**
+
+```
+Nodo<T>:
+  etiqueta:  Comparable
+  dato:      T
+  siguiente: Nodo<T>
+
+Lista<T>:
+  primero: Nodo<T>  ← nulo si la lista está vacía
+```
+
 #### insertar(etiqueta, dato) — al final
 
 **Lenguaje natural:** Recorre hasta el último nodo y lo enlaza al final; si está vacía, coloca el nodo como primero.
@@ -571,6 +583,17 @@ fin método
 - Verificar balanceo de paréntesis / expresiones anidadas.
 - Historial de operaciones: "deshacer" → desapilar el último estado.
 
+**Estructura interna:**
+
+```
+Nodo<T>:
+  dato:      T
+  siguiente: Nodo<T>
+
+Pila<T>:
+  tope: Nodo<T>  ← nulo si la pila está vacía
+```
+
 #### apilar(dato)
 
 **Lenguaje natural:** Coloca el nuevo nodo al tope y lo enlaza con el tope anterior.
@@ -617,6 +640,18 @@ fin método
 **Casos de uso típicos:**
 - Procesar en orden de llegada: turnos, colas de atención, colas de impresión.
 - Recorrido por niveles (BFS): se encola la raíz, se desencola y se encolan sus hijos.
+
+**Estructura interna:**
+
+```
+Nodo<T>:
+  dato:      T
+  siguiente: Nodo<T>
+
+Cola<T>:
+  frente:    Nodo<T>  ← nulo si la cola está vacía
+  posterior: Nodo<T>  ← nulo si la cola está vacía
+```
 
 #### encolar(dato)
 
@@ -674,6 +709,17 @@ fin método
 - Calcular unión, intersección o complemento de grupos.
 - Marcar nodos ya visitados en un recorrido (`visited set`).
 
+**Estructura interna:**
+
+```
+Nodo<T>:
+  dato:      T
+  siguiente: Nodo<T>
+
+Conjunto<T>:
+  primero: Nodo<T>  ← nulo si el conjunto está vacío
+```
+
 #### insertar(dato)
 
 **Lenguaje natural:** Verifica con `buscar` que no exista; si no, inserta al frente. El invariante es que no hay duplicados.
@@ -729,6 +775,19 @@ fin método
 - Filtrar por rango de valores: recorrer solo la rama relevante según la clave.
 - Base para cualquier algoritmo recursivo árbol/nodo pedido en el Ejercicio 2 del parcial.
 - **Limitación:** si el orden de inserción es secuencial (ej: 1, 2, 3, 4…) el árbol se degenera a una lista y todas las operaciones pasan a O(n). En ese caso usar AVL.
+
+**Estructura interna:**
+
+```
+TElementoAB<T>:
+  etiqueta: Comparable
+  dato:     T
+  hijoIzq:  TElementoAB<T>  ← nulo si no tiene hijo izquierdo
+  hijoDer:  TElementoAB<T>  ← nulo si no tiene hijo derecho
+
+TArbolBB<T>:
+  raiz: TElementoAB<T>  ← nulo si el árbol está vacío
+```
 
 #### insertar(etiqueta, dato)
 
@@ -1093,6 +1152,20 @@ Para dos nodos **n** y **m**: ¿cuándo puede ser cierto simultáneamente que `i
 - Catálogos que **crecen continuamente** con inserciones frecuentes (nuevas películas, usuarios, registros).
 - Orden de inserción no controlado (datos de archivo externo) y se necesita O(log n) garantizado.
 - **Regla del parcial:** si el enunciado dice "actualizaciones frecuentes" o "datos en tiempo de ejecución" → AVL.
+
+**Estructura interna:**
+
+```
+TElementoAVL<T>:
+  etiqueta: Comparable
+  dato:     T
+  hijoIzq:  TElementoAVL<T>  ← nulo si no tiene hijo izquierdo
+  hijoDer:  TElementoAVL<T>  ← nulo si no tiene hijo derecho
+  altura:   entero            ← 0 en una hoja; −1 se usa para nulos
+
+TArbolAVL<T>:
+  raiz: TElementoAVL<T>  ← nulo si el árbol está vacío
+```
 
 #### Auxiliares: altura, actualizarAltura, factorBalance
 
