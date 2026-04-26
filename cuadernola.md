@@ -4,6 +4,32 @@ Material de estudio consolidado para el primer parcial de Algoritmos y Estructur
 
 ---
 
+## Índice
+
+### Elegir la estructura correcta
+- [Mentalidad del ingeniero — antes de arrancar](#mentalidad-del-ingeniero--antes-de-arrancar)
+- [Fase 1 — preguntas clave](#fase-1--las-preguntas-que-hay-que-hacerse)
+- [Fase 2 — tabla de decisión](#fase-2--la-tabla-de-decisión)
+- [La trampa más común: ABB vs AVL](#la-trampa-más-común-abb-vs-avl)
+- [Cuando hay dos operaciones críticas incompatibles](#cuando-hay-dos-operaciones-críticas-incompatibles)
+  - [Caso modelo — Buscador de películas en streaming](#caso-modelo--buscador-de-películas-en-streaming)
+  - [Otros casos](#otros-casos-de-dos-operaciones-incompatibles)
+- [Cómo redactar la justificación en el parcial](#cómo-redactar-la-justificación-en-el-parcial)
+
+### Pseudocódigos de referencia
+- [Lista (basada en arreglo)](#lista-basada-en-arreglo) — `obtener`, `insertar`, `buscar`, `eliminar`
+- [Lista Enlazada Simple](#lista-enlazada-simple) — `insertar`, `buscar`, `eliminar`
+- [Lista Doblemente Enlazada](#lista-doblemente-enlazada) — `insertar`, `insertarAlFrente`, `buscar`, `eliminar`
+- [Pila](#pila) — `apilar`, `desapilar`
+- [Cola](#cola) — `encolar`, `desencolar`
+- [Conjunto](#conjunto) — `insertar`, `buscar`
+- [ABB — Árbol Binario de Búsqueda](#abb--árbol-binario-de-búsqueda) — `insertar`, `buscar`, `eliminar`, recorridos, `calcularAltura`, `calcularTamanio`
+  - [Recorridos del árbol](#recorridos-del-árbol) — inOrden, preOrden, postOrden, Recorrido en Anchura
+  - [Tabla de posiciones en recorridos (tipo parcial)](#tabla-de-posiciones-en-recorridos-tipo-parcial)
+- [AVL — Árbol Binario de Búsqueda Autobalanceado](#avl--árbol-binario-de-búsqueda-autobalanceado) — auxiliares, rotaciones, `balancear`, `insertar`
+
+---
+
 ## Cómo elegir la estructura de datos correcta
 
 La justificación del TDA vale puntos en el parcial. No alcanza con decir "uso ABB porque sí" — hay que razonar. El proceso tiene dos fases: **diagnosticar el problema**, luego **comparar las opciones**.
