@@ -639,7 +639,7 @@ fin método
 
 **Casos de uso típicos:**
 - Procesar en orden de llegada: turnos, colas de atención, colas de impresión.
-- Recorrido por niveles (BFS): se encola la raíz, se desencola y se encolan sus hijos.
+- Recorrido en Anchura de árboles (ver sección de árboles).
 
 **Estructura interna:**
 
@@ -931,13 +931,14 @@ fin método
 
 #### Recorridos del árbol
 
-Los tres recorridos visitan todos los nodos exactamente una vez — todos son O(n). La diferencia es el **momento** en que se visita la raíz respecto a los subárboles.
+Los tres recorridos recursivos visitan todos los nodos exactamente una vez — todos son O(n). La diferencia es el **momento** en que se visita la raíz respecto a los subárboles. El Recorrido en Anchura también es O(n) pero opera nivel por nivel usando una Cola auxiliar.
 
 | Recorrido | Orden | Cuándo usarlo |
 |-----------|-------|---------------|
 | **Inorden** | izq → raíz → der | ABB produce valores en orden ascendente; filtrar y recolectar resultados ordenados |
 | **Preorden** | raíz → izq → der | Copiar o serializar el árbol; procesar el nodo antes de sus hijos |
 | **Postorden** | izq → der → raíz | Calcular tamaño/altura/suma; liberar memoria; necesitás los hijos antes que el padre |
+| **Recorrido en Anchura** | nivel por nivel | Imprimir el árbol por niveles; encontrar el camino más corto; procesar por cercanía a la raíz |
 
 ---
 
@@ -1019,6 +1020,57 @@ fin método
 ```
 
 **Orden:** O(n)
+
+---
+
+#### recorridoEnAnchura()
+
+**Lenguaje natural:** Visita los nodos nivel por nivel, de arriba hacia abajo y de izquierda a derecha. Usa una Cola interna: encola la raíz, y en cada iteración desencola un nodo, lo procesa, y encola sus hijos. La Cola garantiza que los nodos del nivel actual se procesen antes que los del siguiente.
+
+**Por qué Cola y no recursión:** Los recorridos inorden/preorden/postorden usan la pila de llamadas (recursión), que naturalmente va en profundidad. El Recorrido en Anchura necesita procesar niveles completos antes de bajar, lo que requiere una Cola explícita.
+
+**Precondición:** ninguna.  
+**Postcondición:** retorna una lista con los datos en orden de nivel (nivel 0, nivel 1, nivel 2…).
+
+```
+TArbolBB.recorridoEnAnchura(): Lista<T>
+  lista ← nueva Lista vacía
+  si esVacio() entonces
+    retornar lista
+  fin si
+  cola ← nueva Cola vacía
+  cola.encolar(raiz)
+  mientras ¬cola.esVacia() hacer
+    nodo ← cola.desencolar()
+    lista.insertar(nodo.getDato())
+    si nodo.hijoIzq ≠ nulo entonces cola.encolar(nodo.hijoIzq)
+    si nodo.hijoDer ≠ nulo entonces cola.encolar(nodo.hijoDer)
+  fin mientras
+  retornar lista
+fin método
+```
+
+**Traza:**
+
+```
+        10
+       /   \
+      5    20
+     / \
+    2   7
+```
+
+| Paso | Cola al inicio | Desencola | Encola |
+|------|---------------|-----------|--------|
+| 1 | [10] | 10 | 5, 20 |
+| 2 | [5, 20] | 5 | 2, 7 |
+| 3 | [20, 2, 7] | 20 | — |
+| 4 | [2, 7] | 2 | — |
+| 5 | [7] | 7 | — |
+
+**Resultado:** 10 → 5 → 20 → 2 → 7
+
+**Orden:** O(n) — cada nodo se encola y desencola exactamente una vez.
 
 ---
 
