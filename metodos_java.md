@@ -1009,6 +1009,36 @@ public class TElementoAVL<T> extends TElementoAB<T> {
         // si la etiqueta ya existe, no inserta (duplicado ignorado)
         return balancear();
     }
+
+    // --- eliminar con balanceo O(log n) ---
+    // En Java los métodos private son accesibles en todas las instancias de la misma clase,
+    // por eso pred.balancear() compila aunque balancear() sea private.
+
+    @SuppressWarnings("unchecked")
+    public TElementoAVL<T> eliminarAVL(Comparable clave) {
+        if (clave.compareTo(getEtiqueta()) < 0) {
+            if (getHijoIzq() != null)
+                setHijoIzq(((TElementoAVL<T>) getHijoIzq()).eliminarAVL(clave));
+        } else if (clave.compareTo(getEtiqueta()) > 0) {
+            if (getHijoDer() != null)
+                setHijoDer(((TElementoAVL<T>) getHijoDer()).eliminarAVL(clave));
+        } else {
+            // Encontrado — 3 casos idénticos al BST, pero el caso 2-hijos rebalancea
+            if (getHijoIzq() == null) return (TElementoAVL<T>) getHijoDer(); // caso 0 o 1 hijo (der)
+            if (getHijoDer() == null) return (TElementoAVL<T>) getHijoIzq(); // caso 1 hijo (izq)
+            // Caso 2 hijos: predecesor inorden = máximo del subárbol izquierdo
+            TElementoAVL<T> pred = (TElementoAVL<T>) getHijoIzq();
+            while (pred.getHijoDer() != null) pred = (TElementoAVL<T>) pred.getHijoDer();
+            // Eliminar el predecesor del subárbol izquierdo (con rebalanceo recursivo)
+            TElementoAVL<T> nuevoIzq = ((TElementoAVL<T>) getHijoIzq()).eliminarAVL(pred.getEtiqueta());
+            // Promover predecesor al lugar de this
+            pred.setHijoIzq(nuevoIzq);
+            pred.setHijoDer((TElementoAVL<T>) getHijoDer());
+            setHijoIzq(null); setHijoDer(null); // limpiar punteros para GC
+            return pred.balancear();
+        }
+        return balancear();
+    }
 }
 ```
 
@@ -1016,7 +1046,7 @@ public class TElementoAVL<T> extends TElementoAB<T> {
 
 ## TArbolAVL\<T\>
 
-AVL completo. Extiende `TArbolBB<T>` y sobreescribe solo `insertar` para usar `insertarAVL`. Hereda `buscar`, `eliminar`, `getRaiz`, `esVacio`, `obtenerAltura`, `obtenerNivel` sin cambios.
+AVL completo. Extiende `TArbolBB<T>` y sobreescribe `insertar` y `eliminar` para mantener el balance. Hereda `buscar`, `getRaiz`, `esVacio`, `obtenerAltura`, `obtenerNivel` sin cambios.
 
 ```java
 public class TArbolAVL<T> extends TArbolBB<T> {
@@ -1033,6 +1063,11 @@ public class TArbolAVL<T> extends TArbolBB<T> {
         int tamAntes = raiz.obtenerTamaño();
         raiz = ((TElementoAVL<T>) raiz).insertarAVL(elemento);
         return raiz.obtenerTamaño() > tamAntes;   // false si fue duplicado
+    }
+
+    @Override
+    public void eliminar(Comparable etiqueta) {
+        if (!esVacio()) raiz = ((TElementoAVL<T>) raiz).eliminarAVL(etiqueta);
     }
 }
 ```

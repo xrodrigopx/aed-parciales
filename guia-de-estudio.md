@@ -77,6 +77,8 @@ Todos los parciales siguen esta estructura:
 - Usar siempre los métodos propios del TDA (los implementados en el curso); no usar métodos de las colecciones de Java (`ArrayList`, `LinkedList`, etc.) ni `java.util.Stack`.
 - Entregar proyecto Maven completo en `.zip`.
 
+**Referencia de implementaciones Java:** [`metodos_java.md`](metodos_java.md) — código completo de todas las clases TDA del curso (`Lista`, `Cola`, `Pila`, `ListaArray`, `ListaEnlazada`, `TArbolBB`, `TElementoAB`, `TArbolAVL`, `TElementoAVL`, `ManejadorArchivosGenerico`).
+
 ---
 
 ## Temas que SIEMPRE aparecen

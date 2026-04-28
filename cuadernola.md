@@ -27,7 +27,7 @@ Material de estudio consolidado para el primer parcial de Algoritmos y Estructur
 - [ABB — Árbol Binario de Búsqueda](#abb--árbol-binario-de-búsqueda) — `insertar`, `buscar`, `eliminar`, recorridos, `calcularAltura`, `calcularTamanio`
   - [Recorridos del árbol](#recorridos-del-árbol) — inOrden, preOrden, postOrden, Recorrido en Anchura
   - [Tabla de posiciones en recorridos (tipo parcial)](#tabla-de-posiciones-en-recorridos-tipo-parcial)
-- [AVL — Árbol Binario de Búsqueda Autobalanceado](#avl--árbol-binario-de-búsqueda-autobalanceado) — auxiliares, rotaciones, `balancear`, `insertar`
+- [AVL — Árbol Binario de Búsqueda Autobalanceado](#avl--árbol-binario-de-búsqueda-autobalanceado) — auxiliares, rotaciones, `balancear`, `insertar`, `eliminar`
 
 ---
 
@@ -1453,6 +1453,50 @@ TElementoAVL.insertarAVL(elemento: TElementoAVL): TElementoAVL
     sino
       hijoDer ← hijoDer.insertarAVL(elemento)
     fin si
+  fin si
+  retornar balancear(this)
+fin método
+```
+
+**Orden:** O(log n) garantizado.
+
+---
+
+#### eliminar(etiqueta) — AVL
+
+**Lenguaje natural:** Navega igual que en el ABB y aplica los mismos 3 casos. La diferencia es que `balancear()` se llama al regresar de cada llamada recursiva. En el caso de 2 hijos: el predecesor inorden (máximo del subárbol izquierdo) se elimina del subárbol izquierdo con rebalanceo recursivo, y sube a ocupar el lugar del nodo eliminado.
+
+**Precondición:** ninguna.  
+**Postcondición:** si existía un nodo con esa etiqueta, es eliminado y el árbol mantiene la propiedad AVL.
+
+```
+TArbolAVL.eliminar(etiqueta: Comparable): void
+  si ¬esVacio() entonces
+    raiz ← raiz.eliminarAVL(etiqueta)
+  fin si
+fin método
+
+TElementoAVL.eliminarAVL(etiqueta: Comparable): TElementoAVL
+  si etiqueta < this.etiqueta entonces
+    si hijoIzq ≠ nulo entonces
+      hijoIzq ← hijoIzq.eliminarAVL(etiqueta)
+    fin si
+  sino si etiqueta > this.etiqueta entonces
+    si hijoDer ≠ nulo entonces
+      hijoDer ← hijoDer.eliminarAVL(etiqueta)
+    fin si
+  sino
+    si hijoIzq = nulo entonces retornar hijoDer   // caso 0 o 1 hijo (derecho)
+    si hijoDer = nulo entonces retornar hijoIzq   // caso 1 hijo (izquierdo)
+    // Caso 2 hijos: predecesor = máximo del subárbol izquierdo
+    pred ← hijoIzq
+    mientras pred.hijoDer ≠ nulo hacer
+      pred ← pred.hijoDer
+    fin mientras
+    nuevoIzq ← hijoIzq.eliminarAVL(pred.etiqueta)
+    pred.hijoIzq ← nuevoIzq
+    pred.hijoDer ← hijoDer
+    retornar balancear(pred)
   fin si
   retornar balancear(this)
 fin método

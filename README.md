@@ -84,7 +84,7 @@ Referencia rápida de TDAs y pseudocódigo de los ejercicios recurrentes en parc
 | Archivo | Descripción |
 |---------|-------------|
 | `arbol-binario.md` | AB — definición, terminología, propiedades, recorridos, árbol de expresión, reconstrucción (pre+in y post+in), tabla de posiciones simultáneas |
-| `arbol-avl.md` | AVL — propiedad, inserciones, rotaciones simples y dobles |
+| `arbol-avl.md` | AVL — propiedad, rotaciones simples y dobles, `insertar`, `eliminar` |
 | `arbol-bst.md` | ABB — insertar, buscar, eliminar, tamaño, altura, nivel, recorridos |
 | `cola.md` | Cola — arreglo circular y lista enlazada |
 | `conjunto.md` | Conjunto — lista enlazada sin duplicados |
@@ -131,9 +131,9 @@ Código Java provisto por la cátedra en cada parcial:
 
 ## Referencia de Métodos Java
 
-**[`metodos_java.md`](metodos_java.md)** — catálogo completo de métodos disponibles en cada TDA del curso, separado por estructura.
+**[`metodos_java.md`](metodos_java.md)** — implementaciones Java completas de todas las clases TDA del curso.
 
-Incluye: `Lista<T>`, `Nodo<T>`, `TArbolBB<T>`, `TElementoAB<T>`, `Cola<T>`, `Pila<T>`, `Conjunto<T>`, `ManejadorArchivosGenerico`, patrones de uso frecuentes (recorrido inorden manual, selection sort sobre Lista, uso de Cola y Pila en Java).
+Incluye: `Nodo<T>`, `Lista<T>`, `ListaEnlazada<T>`, `ListaArray<T>` (sin duplicados), `Cola<T>`, `Pila<T>`, `TElementoAB<T>`, `TArbolBB<T>`, `TElementoAVL<T>`, `TArbolAVL<T>`, `ManejadorArchivosGenerico`.
 
 ---
 

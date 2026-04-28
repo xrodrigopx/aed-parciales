@@ -210,6 +210,57 @@ fin método
 
 ---
 
+## eliminar(etiqueta) — con balanceo AVL
+
+**Lenguaje natural:** Navega igual que en el ABB y aplica los mismos 3 casos de eliminación. La diferencia es que, al regresar de cada llamada recursiva, se llama a `balancear()` para restaurar la propiedad AVL. En el caso de 2 hijos: se encuentra el predecesor inorden (máximo del subárbol izquierdo), se lo elimina del subárbol izquierdo con rebalanceo recursivo, y el predecesor sube a ocupar el lugar del nodo eliminado; finalmente se llama `balancear` sobre él antes de retornar.
+
+**Precondición:** ninguna.  
+**Postcondición:** si existía un nodo con esa etiqueta, es eliminado y el árbol mantiene la propiedad AVL.
+
+```
+// Método del árbol
+TArbolAVL.eliminar(etiqueta: Comparable): void
+  si ¬esVacio() entonces
+    raiz ← raiz.eliminarAVL(etiqueta)
+  fin si
+fin método
+
+// Método del nodo (recursivo + balanceo en el camino de regreso)
+TElementoAVL.eliminarAVL(etiqueta: Comparable): TElementoAVL
+  si etiqueta < this.etiqueta entonces
+    si hijoIzq ≠ nulo entonces
+      hijoIzq ← hijoIzq.eliminarAVL(etiqueta)
+    fin si
+  sino si etiqueta > this.etiqueta entonces
+    si hijoDer ≠ nulo entonces
+      hijoDer ← hijoDer.eliminarAVL(etiqueta)
+    fin si
+  sino
+    // Encontrado — 3 casos
+    si hijoIzq = nulo entonces retornar hijoDer   // caso 0 o 1 hijo (derecho)
+    si hijoDer = nulo entonces retornar hijoIzq   // caso 1 hijo (izquierdo)
+    // Caso 2 hijos: predecesor inorden = máximo del subárbol izquierdo
+    pred ← hijoIzq
+    mientras pred.hijoDer ≠ nulo hacer
+      pred ← pred.hijoDer
+    fin mientras
+    // Eliminar el predecesor del subárbol izquierdo (con rebalanceo)
+    nuevoIzq ← hijoIzq.eliminarAVL(pred.etiqueta)
+    // Promover predecesor al lugar de this
+    pred.hijoIzq ← nuevoIzq
+    pred.hijoDer ← hijoDer
+    retornar balancear(pred)
+  fin si
+  retornar balancear(this)
+fin método
+```
+
+> **Diferencia clave con ABB:** cada retorno de recursión pasa por `balancear()`, que actualiza la altura almacenada y aplica rotación si `|BF| = 2`. En el caso de 2 hijos, el predecesor también se balancea antes de retornar. El ABB no hace ninguna de estas dos cosas.
+
+**Orden:** O(log n) garantizado — la altura del AVL es siempre O(log n), y las rotaciones son O(1).
+
+---
+
 ## Auxiliares
 
 ```
