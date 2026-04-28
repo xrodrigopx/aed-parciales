@@ -1,6 +1,7 @@
 # Compilados de Java
 *.class
 *.jar
+pom.xml
 *.war
 *.ear
 /bin/
