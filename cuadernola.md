@@ -1349,6 +1349,8 @@ fin método
 | **LR** | −2 | +1 | Rotación **izquierda** en el hijo izquierdo, luego **derecha** en el nodo |
 | **RL** | +2 | −1 | Rotación **derecha** en el hijo derecho, luego **izquierda** en el nodo |
 
+> **Los nombres LL/RR/LR/RL describen el problema, no la solución.** LL significa "el peso cuelga por Izq→Izq", y se resuelve con una rotación derecha (no izquierda-izquierda). Esto importa al leer código que nombra los métodos por problema: en ese estilo `rotacionLL` = rotación derecha y `rotacionRR` = rotación izquierda. Consecuencia: `rotacionLR` llama a `rotacionRR` primero y `rotacionLL` después — parece RL, pero las rotaciones físicas siguen siendo izquierda→derecha, que es la solución correcta al problema LR.
+
 ```
 // LL — rotación simple derecha
 rotacionDerecha(k2): TElementoAVL

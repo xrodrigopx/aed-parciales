@@ -164,39 +164,54 @@ public class CatalogoPeliculas {
         }
     }
     
-    public List<Pelicula> recomendarPorScore(double scoreMin) {
-        List<Pelicula> recomendadas = new ArrayList<>();
+    public Lista<Pelicula> recomendarPorScore(double scoreMin) {
+        Lista<Pelicula> recomendadas = new Lista<>();
         filtrarPorScore(arbol.getRaiz(), scoreMin, recomendadas);
-        recomendadas.sort(Comparator.comparing(Pelicula::getTitulo));
+        // Ordenar alfabéticamente por título — selection sort con punteros Nodo
+        Nodo<Pelicula> i = recomendadas.getPrimero();
+        while (i != null) {
+            Nodo<Pelicula> minNodo = i;
+            Nodo<Pelicula> j = i.getSiguiente();
+            while (j != null) {
+                if (j.getDato().getTitulo().compareTo(minNodo.getDato().getTitulo()) < 0) minNodo = j;
+                j = j.getSiguiente();
+            }
+            Pelicula tmp = i.getDato(); i.setDato(minNodo.getDato()); minNodo.setDato(tmp);
+            i = i.getSiguiente();
+        }
         return recomendadas;
     }
     
-    private void filtrarPorScore(IElementoAB<Pelicula> nodo, double min, List<Pelicula> lista) {
+    private void filtrarPorScore(IElementoAB<Pelicula> nodo, double min, Lista<Pelicula> lista) {
         if (nodo == null) return;
         filtrarPorScore(nodo.getHijoIzq(), min, lista);
-        if (nodo.getDatos().getScore() > min) lista.add(nodo.getDatos());
+        if (nodo.getDatos().getScore() > min) lista.insertar(nodo.getDatos().getTitulo(), nodo.getDatos());
         filtrarPorScore(nodo.getHijoDer(), min, lista);
     }
     
-    public List<Pelicula> buscarPorGenero(String genero) {
-        List<Pelicula> resultado = new ArrayList<>();
+    public Lista<Pelicula> buscarPorGenero(String genero) {
+        Lista<Pelicula> resultado = new Lista<>();
         filtrarPorGenero(arbol.getRaiz(), genero, resultado);
         return resultado; // ya ordenado por año (inorden)
     }
     
-    private void filtrarPorGenero(IElementoAB<Pelicula> nodo, String genero, List<Pelicula> lista) {
+    private void filtrarPorGenero(IElementoAB<Pelicula> nodo, String genero, Lista<Pelicula> lista) {
         if (nodo == null) return;
         filtrarPorGenero(nodo.getHijoIzq(), genero, lista);
-        if (nodo.getDatos().getGenero().equalsIgnoreCase(genero)) lista.add(nodo.getDatos());
+        if (nodo.getDatos().getGenero().equalsIgnoreCase(genero))
+            lista.insertar(nodo.getDatos().getTitulo(), nodo.getDatos());
         filtrarPorGenero(nodo.getHijoDer(), genero, lista);
     }
     
-    public void escribirRecomendadas(List<Pelicula> peliculas, String archivo) {
+    public void escribirRecomendadas(Lista<Pelicula> peliculas, String archivo) {
         StringBuilder sb = new StringBuilder();
-        for (Pelicula p : peliculas) {
+        Nodo<Pelicula> aux = peliculas.getPrimero();
+        while (aux != null) {
+            Pelicula p = aux.getDato();
             sb.append(p.getAnio()).append(";").append(p.getTitulo())
               .append(";").append(p.getGenero()).append(";").append(p.getScore())
               .append("\n");
+            aux = aux.getSiguiente();
         }
         ManejadorArchivosGenerico.escribirArchivo(archivo, sb.toString());
     }
@@ -223,20 +238,21 @@ Ordenadas alfabéticamente por título:
 @Test
 void testRecomendarPorScore() {
     catalogo.cargarDesdeArchivo("Pelis.txt");
-    List<Pelicula> recomendadas = catalogo.recomendarPorScore(7.5);
+    Lista<Pelicula> recomendadas = catalogo.recomendarPorScore(7.5);
     // Deben ser 4 películas en orden alfabético
-    assertEquals(4, recomendadas.size());
-    assertEquals("Avatar", recomendadas.get(0).getTitulo());
-    assertEquals("Interestelar", recomendadas.get(3).getTitulo());
+    assertEquals(4, recomendadas.cantElementos());
+    assertEquals("Avatar", recomendadas.getPrimero().getDato().getTitulo());
+    assertEquals("Interestelar",
+        recomendadas.getPrimero().getSiguiente().getSiguiente().getSiguiente().getDato().getTitulo());
 }
 
 @Test
 void testBuscarPorGenero() {
     catalogo.cargarDesdeArchivo("Pelis.txt");
-    List<Pelicula> scifi = catalogo.buscarPorGenero("Sci-Fi");
-    assertEquals(2, scifi.size());
-    assertEquals(2009, scifi.get(0).getAnio()); // Avatar primero (por año)
-    assertEquals(2014, scifi.get(1).getAnio()); // Interestelar segundo
+    Lista<Pelicula> scifi = catalogo.buscarPorGenero("Sci-Fi");
+    assertEquals(2, scifi.cantElementos());
+    assertEquals(2009, scifi.getPrimero().getDato().getAnio()); // Avatar primero (por año)
+    assertEquals(2014, scifi.getPrimero().getSiguiente().getDato().getAnio()); // Interestelar segundo
 }
 ```
 
@@ -249,4 +265,6 @@ Alta — la lógica de filtrado inorden es estándar. El ordenamiento alfabétic
 ## Gaps
 
 - La clave del BST (año + hashCode del título) puede tener colisiones. En la práctica, `año * 1000 + posición_en_lista` o usar AVL con comparación compuesta es más robusto.
+- Se usa `Lista<T>` del curso. La inserción al final es O(n) sin puntero al último nodo → filtrado total O(n²). Si `Lista` mantuviera un puntero `ultimo`, sería O(n).
+- `Lista` no tiene `sort()`. El ordenamiento alfabético se implementa como selection sort O(m²) usando `getPrimero()`, `getSiguiente()`, `getDato()` y `setDato()`.
 - Para el ejercicio alternativo (búsqueda por score eficiente), se necesitaría un BST separado por score, lo que implica mantener dos estructuras sincronizadas.

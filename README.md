@@ -6,6 +6,21 @@ Contiene enunciados de parciales anteriores (2024–2025), soluciones completas 
 
 ---
 
+## Índice
+
+- [Estructura](#estructura)
+- [Cuadernola](#cuadernola)
+- [Estructura del Parcial](#estructura-del-parcial-desde-2026)
+- [Letras disponibles](#letras-disponibles)
+- [Pseudocódigos](#pseudocódigos)
+  - [TDAs](#tdas)
+  - [Ejercicios de parcial](#ejercicios-de-parcial)
+- [Soluciones](#soluciones)
+- [Código Base](#código-base)
+- [Lo más importante para el parcial](#lo-más-importante-para-el-parcial)
+
+---
+
 ## Estructura
 
 ```

@@ -71,9 +71,10 @@ Todos los parciales siguen esta estructura:
 | 2025 S2 | Organismo ectotermo explorando BST de temperaturas |
 
 **Restricciones consistentes en TODOS los parciales:**
-- No crear clases nuevas.
+- Crear las clases nuevas mínimas e indispensables; favorecer siempre la composición sobre la herencia o la proliferación de clases.
 - No alterar las interfaces provistas.
 - No agregar métodos no solicitados.
+- Usar siempre los métodos propios del TDA (los implementados en el curso); no usar métodos de las colecciones de Java (`ArrayList`, `LinkedList`, etc.) ni `java.util.Stack`.
 - Entregar proyecto Maven completo en `.zip`.
 
 ---
@@ -192,6 +193,26 @@ preOrden(v):           postOrden(v):          inOrden(v):
 | **Inorden** | izq → raíz → der | BST produce valores ordenados; imprimir expresión aritmética |
 | **Postorden** | izq → der → raíz | Calcular tamaño/altura, evaluar expresión aritmética |
 
+**Reglas mnemónicas para el parcial:**
+- **Preorden:** los ancestros aparecen ANTES que sus descendientes.
+- **Postorden:** los ancestros aparecen DESPUÉS que sus descendientes.
+- **Inorden:** depende del subárbol. Si n está a la izquierda de m → n antes; a la derecha → n después.
+
+> "n está a la izquierda de m" → n aparece antes en los 3 recorridos simultáneamente.  
+> "n está a la derecha de m" → n aparece después en los 3 recorridos simultáneamente.
+
+**Tabla de posiciones en recorridos** (i = inorden, p = preorden, s = postorden):
+
+| Relación de n respecto a m | `i(n) < i(m)` | `s(n) < s(m)` | `p(n) < p(m)` |
+|---------------------------|:---:|:---:|:---:|
+| n es descendiente de m | posible* | siempre | nunca |
+| n está a la izquierda de m | siempre | siempre | siempre |
+| n está a la derecha de m | nunca | nunca | nunca |
+| n es ancestro de m | posible* | nunca | siempre |
+
+> *Descendiente en izquierda: `i(n) < i(m)`. Descendiente en derecha: `i(n) > i(m)`.  
+> *Ancestro: `i(n) < i(m)` solo si m está en el subárbol derecho de n.
+
 ### Árbol de Expresión Aritmética
 
 - Nodos internos = **operadores** (`+`, `-`, `×`, `/`)
@@ -227,7 +248,26 @@ Algoritmo evalExpr
 3. Calcular la suma de todos los elementos (árbol de enteros).
 4. Contar nodos en el nivel *n*.
 
-> El ejercicio de reconstrucción (preorden + inorden → árbol) es candidato directo a aparecer en el parcial 2026.
+> El ejercicio de reconstrucción (preorden + inorden → árbol) es candidato directo a aparecer en el parcial 2026. Verificado en PS-UT02.
+
+**Algoritmo de reconstrucción desde 2 recorridos:**
+
+Para reconstruir, **uno de los recorridos DEBE ser el inorden**. El otro puede ser preorden o postorden.
+
+- **Preorden + Inorden:** raíz = **primer** elemento del preorden. Dividir inorden: lo que está antes de la raíz = subárbol izq; lo que está después = subárbol der. Recursión.
+- **Postorden + Inorden:** raíz = **último** elemento del postorden. Misma división.
+
+```
+// Reconstruir desde postorden + inorden
+// postOrden: R, A, B, J, T, C, Z, W, F, X, M, S
+// inOrden:   R, A, T, B, J, S, M, C, W, Z, X, F
+
+raiz = S (último en postorden)
+inOrden izq de S: {R,A,T,B,J} → recursión
+inOrden der de S: {M,C,W,Z,X,F} → recursión
+```
+
+> Inorden + postorden → árbol **único**. Inorden + preorden → árbol **único**. Preorden + postorden solos → árbol NO único en general.
 
 Ver referencia completa en `pseudocodigos/arbol-binario.md`.
 

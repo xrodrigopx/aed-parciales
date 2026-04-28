@@ -1144,6 +1144,8 @@ fin método
 
 ## AVL — Árbol Binario de Búsqueda Autobalanceado
 
+> **Decisión de diseño — altura almacenada:** La altura se guarda como campo en cada nodo (`nodo.altura`), NO se calcula recursivamente cada vez. Si se calculara cada vez, `insertarAVL` costaría O(n log n) en vez de O(log n). Con altura almacenada, `alt(nodo)` es O(1) y todas las operaciones mantienen la garantía O(log n). La contrapartida: hay que actualizar `nodo.altura` después de cada rotación, siempre primero en el nodo que baja y luego en el que sube.
+
 ### altura / actualizarAltura / factorBalance (auxiliares)
 
 **Lenguaje natural:** `altura` retorna la altura guardada en el nodo (o −1 si nulo). `actualizarAltura` recalcula la altura del nodo a partir de sus hijos. `factorBalance` retorna la diferencia altura(der) − altura(izq).

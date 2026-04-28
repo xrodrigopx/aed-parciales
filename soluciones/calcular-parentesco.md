@@ -43,11 +43,14 @@ grado = profundidad(persona1) + profundidad(persona2) - 2 × profundidad(LCA)
 
 ## Lenguaje Natural
 
-**encontrarCamino(nodo, objetivo):**
-Dado un nodo y una persona objetivo, buscar recursivamente en el subárbol con raíz en `nodo` hasta encontrar el objetivo. Retornar la lista de nodos que forman el camino desde `nodo` hasta `objetivo` (incluyendo ambos), o null si no se encuentra.
+**encontrarLCA(nodo, p1, p2):**
+Dado un nodo raíz y dos personas objetivo, retornar el nodo del ancestro común más cercano (LCA). Si ninguna de las dos personas está en el subárbol, retornar nulo. Si solo una está, retornar ese nodo (la comprobación de existencia la hace el llamador).
+
+**encontrarProfundidad(nodo, objetivo, nivel):**
+Buscar recursivamente `objetivo` en el subárbol con raíz en `nodo`. Retornar la profundidad del objetivo respecto a `nodo` (0 si `nodo` es el objetivo), o -1 si no se encuentra.
 
 **calcularParentesco(raiz, persona1, persona2):**
-Encontrar el camino desde la raíz hasta cada persona. Determinar el LCA (último nodo compartido en ambos caminos). Calcular el grado usando la fórmula. Determinar el tipo según si LCA coincide con alguna de las personas o no.
+Hallar el LCA de las dos personas. Calcular la profundidad de cada persona desde el LCA. El grado es la suma de ambas profundidades. El tipo es "consanguinidad" si el LCA coincide con una de las personas (profundidad = 0), y "político" en caso contrario.
 
 ---
 
@@ -55,83 +58,70 @@ Encontrar el camino desde la raíz hasta cada persona. Determinar el LCA (últim
 
 ### calcularParentesco(raiz, persona1, persona2)
 - **Precondición:** `raiz` es la raíz del árbol; `persona1` y `persona2` son personas buscadas.
-- **Postcondición:** Retorna `(grado, tipo)`. Si alguna persona no está en el árbol, retornar indicación de error (ej. grado=-1 o excepción).
+- **Postcondición:** Retorna `(grado, tipo)`. Si alguna persona no está en el árbol, retornar indicación de error (ej. grado=-1 o null).
 
-### encontrarCamino(nodo, objetivo)
-- **Precondición:** `nodo` puede ser nulo. `objetivo` es la persona buscada.
-- **Postcondición:** Retorna lista de nodos del camino desde `nodo` hasta `objetivo`, o null si no existe.
+### encontrarLCA(nodo, p1, p2)
+- **Precondición:** `nodo` puede ser nulo.
+- **Postcondición:** Retorna el nodo LCA si ambas personas están en el subárbol; el nodo encontrado si solo una está; nulo si ninguna.
+
+### encontrarProfundidad(nodo, objetivo, nivel)
+- **Precondición:** `nodo` puede ser nulo; `nivel ≥ 0`.
+- **Postcondición:** Retorna profundidad del objetivo desde `nodo`, o -1 si no existe.
 
 ---
 
 ## Pseudocódigo
 
 ```
+// === AUXILIAR: LCA ===
+encontrarLCA(nodo: IElementoAB<Persona>,
+             p1: IElementoAB<Persona>,
+             p2: IElementoAB<Persona>): IElementoAB<Persona>
+  si nodo = nulo entonces
+    retornar nulo
+  fin si
+  si nodo.getDatos() = p1.getDatos() o nodo.getDatos() = p2.getDatos() entonces
+    retornar nodo
+  fin si
+  lcaIzq ← encontrarLCA(nodo.getHijoIzq(), p1, p2)
+  lcaDer ← encontrarLCA(nodo.getHijoDer(), p1, p2)
+  si lcaIzq ≠ nulo y lcaDer ≠ nulo entonces
+    retornar nodo     // p1 y p2 están en subárboles distintos
+  fin si
+  si lcaIzq ≠ nulo entonces retornar lcaIzq sino retornar lcaDer fin si
+fin método
+
+// === AUXILIAR: profundidad desde un nodo ===
+encontrarProfundidad(nodo: IElementoAB<Persona>,
+                     objetivo: IElementoAB<Persona>,
+                     nivel: entero): entero
+  si nodo = nulo entonces retornar -1 fin si
+  si nodo.getDatos() = objetivo.getDatos() entonces retornar nivel fin si
+  izq ← encontrarProfundidad(nodo.getHijoIzq(), objetivo, nivel + 1)
+  si izq ≠ -1 entonces retornar izq fin si
+  retornar encontrarProfundidad(nodo.getHijoDer(), objetivo, nivel + 1)
+fin método
+
 // === MÉTODO PRINCIPAL ===
-calcularParentesco(raiz: IElementoAB<Persona>, 
-                   persona1: IElementoAB<Persona>, 
+calcularParentesco(raiz: IElementoAB<Persona>,
+                   persona1: IElementoAB<Persona>,
                    persona2: IElementoAB<Persona>): (entero, cadena)
-  
-  camino1 ← encontrarCamino(raiz, persona1)
-  camino2 ← encontrarCamino(raiz, persona2)
-  
-  si camino1 = nulo o camino2 = nulo entonces
+  lca ← encontrarLCA(raiz, persona1, persona2)
+  si lca = nulo entonces
+    retornar (-1, "Sin parentesco")
+  fin si
+  prof1 ← encontrarProfundidad(lca, persona1, 0)
+  prof2 ← encontrarProfundidad(lca, persona2, 0)
+  si prof1 = -1 o prof2 = -1 entonces
     retornar (-1, "Sin parentesco")   // una persona no está en el árbol
   fin si
-  
-  // Encontrar último ancestro común (LCA)
-  lcaNivel ← 0
-  para i desde 0 hasta min(longitud(camino1), longitud(camino2)) - 1 hacer
-    si camino1[i].getDatos() = camino2[i].getDatos() entonces
-      lcaNivel ← i
-    sino
-      salir del bucle
-    fin si
-  fin para
-  
-  prof1 ← longitud(camino1) - 1
-  prof2 ← longitud(camino2) - 1
-  grado ← prof1 + prof2 - 2 × lcaNivel
-  
-  // Determinar tipo
-  si lcaNivel = prof1 o lcaNivel = prof2 entonces
-    // LCA coincide con una de las personas → relación directa
+  grado ← prof1 + prof2
+  si prof1 = 0 o prof2 = 0 entonces
     tipo ← "consanguinidad"
   sino
     tipo ← "político"
   fin si
-  
   retornar (grado, tipo)
-fin método
-
-// === AUXILIAR: encontrar camino ===
-encontrarCamino(nodo: IElementoAB<Persona>, 
-                objetivo: IElementoAB<Persona>): Lista de IElementoAB<Persona>
-  
-  si nodo = nulo entonces
-    retornar nulo
-  fin si
-  
-  si nodo.getDatos() = objetivo.getDatos() entonces
-    camino ← nueva Lista
-    camino.agregar(nodo)
-    retornar camino
-  fin si
-  
-  // Buscar en hijo izquierdo
-  caminoIzq ← encontrarCamino(nodo.getHijoIzq(), objetivo)
-  si caminoIzq ≠ nulo entonces
-    caminoIzq.insertarAlFrente(nodo)   // prepend
-    retornar caminoIzq
-  fin si
-  
-  // Buscar en hijo derecho
-  caminoDer ← encontrarCamino(nodo.getHijoDer(), objetivo)
-  si caminoDer ≠ nulo entonces
-    caminoDer.insertarAlFrente(nodo)   // prepend
-    retornar caminoDer
-  fin si
-  
-  retornar nulo   // objetivo no encontrado en este subárbol
 fin método
 ```
 
@@ -148,78 +138,51 @@ fin método
 
 ```java
 public class Genealogia {
-    
+
     public static ResultadoParentesco calcularParentesco(
             IElementoAB<Persona> raiz,
             IElementoAB<Persona> persona1,
             IElementoAB<Persona> persona2) {
-        
-        List<IElementoAB<Persona>> camino1 = encontrarCamino(raiz, persona1);
-        List<IElementoAB<Persona>> camino2 = encontrarCamino(raiz, persona2);
-        
-        if (camino1 == null || camino2 == null) {
-            return null; // persona no encontrada en el árbol
-        }
-        
-        // Encontrar el nivel del LCA
-        int lcaNivel = 0;
-        int minLen = Math.min(camino1.size(), camino2.size());
-        for (int i = 0; i < minLen; i++) {
-            if (camino1.get(i).getDatos().equals(camino2.get(i).getDatos())) {
-                lcaNivel = i;
-            } else {
-                break;
-            }
-        }
-        
-        int prof1 = camino1.size() - 1;
-        int prof2 = camino2.size() - 1;
-        int grado = prof1 + prof2 - 2 * lcaNivel;
-        
-        String tipo;
-        if (lcaNivel == prof1 || lcaNivel == prof2) {
-            tipo = "consanguinidad";
-        } else {
-            tipo = "político";
-        }
-        
-        // Construir camino completo para el archivo de resultados
-        List<Persona> camino = new ArrayList<>();
-        for (int i = prof1; i >= lcaNivel; i--) {
-            camino.add(camino1.get(i).getDatos());
-        }
-        for (int i = lcaNivel + 1; i <= prof2; i++) {
-            camino.add(camino2.get(i).getDatos());
-        }
-        
-        return new ResultadoParentesco(grado, tipo, camino);
+
+        IElementoAB<Persona> lca = encontrarLCA(raiz, persona1, persona2);
+        if (lca == null) return null;
+
+        int prof1 = encontrarProfundidad(lca, persona1, 0);
+        int prof2 = encontrarProfundidad(lca, persona2, 0);
+        if (prof1 == -1 || prof2 == -1) return null; // persona no existe en el árbol
+
+        int grado = prof1 + prof2;
+        String tipo = (prof1 == 0 || prof2 == 0) ? "consanguinidad" : "político";
+        return new ResultadoParentesco(grado, tipo);
     }
-    
-    private static List<IElementoAB<Persona>> encontrarCamino(
+
+    private static IElementoAB<Persona> encontrarLCA(
             IElementoAB<Persona> nodo,
-            IElementoAB<Persona> objetivo) {
-        
+            IElementoAB<Persona> p1,
+            IElementoAB<Persona> p2) {
+
         if (nodo == null) return null;
-        
-        if (nodo.getDatos().equals(objetivo.getDatos())) {
-            List<IElementoAB<Persona>> camino = new ArrayList<>();
-            camino.add(nodo);
-            return camino;
-        }
-        
-        List<IElementoAB<Persona>> caminoIzq = encontrarCamino(nodo.getHijoIzq(), objetivo);
-        if (caminoIzq != null) {
-            caminoIzq.add(0, nodo); // prepend
-            return caminoIzq;
-        }
-        
-        List<IElementoAB<Persona>> caminoDer = encontrarCamino(nodo.getHijoDer(), objetivo);
-        if (caminoDer != null) {
-            caminoDer.add(0, nodo); // prepend
-            return caminoDer;
-        }
-        
-        return null;
+        if (nodo.getDatos().equals(p1.getDatos()) || nodo.getDatos().equals(p2.getDatos()))
+            return nodo;
+
+        IElementoAB<Persona> lcaIzq = encontrarLCA(nodo.getHijoIzq(), p1, p2);
+        IElementoAB<Persona> lcaDer = encontrarLCA(nodo.getHijoDer(), p1, p2);
+
+        if (lcaIzq != null && lcaDer != null) return nodo;
+        return lcaIzq != null ? lcaIzq : lcaDer;
+    }
+
+    private static int encontrarProfundidad(
+            IElementoAB<Persona> nodo,
+            IElementoAB<Persona> objetivo,
+            int nivel) {
+
+        if (nodo == null) return -1;
+        if (nodo.getDatos().equals(objetivo.getDatos())) return nivel;
+
+        int izq = encontrarProfundidad(nodo.getHijoIzq(), objetivo, nivel + 1);
+        if (izq != -1) return izq;
+        return encontrarProfundidad(nodo.getHijoDer(), objetivo, nivel + 1);
     }
 }
 ```
@@ -250,6 +213,7 @@ juan.setHijoIzq(pedro); juan.setHijoDer(marta);
 ```java
 @Test
 void testConsanguinidad_juanPedro() {
+    // Juan (raíz) ↔ Pedro (hijo) → grado 1, LCA = Juan (prof1=0)
     ResultadoParentesco r = Genealogia.calcularParentesco(juan, juan, pedro);
     assertEquals(1, r.getGrado());
     assertEquals("consanguinidad", r.getTipo());
@@ -257,8 +221,19 @@ void testConsanguinidad_juanPedro() {
 
 @Test
 void testPolitico_joseAna() {
+    // José (nivel 2, izq de Pedro) ↔ Ana (nivel 2, der de Pedro)
+    // LCA = Pedro → prof1=1, prof2=1, grado=2, político
     ResultadoParentesco r = Genealogia.calcularParentesco(juan, jose, ana);
     assertEquals(2, r.getGrado());
+    assertEquals("político", r.getTipo());
+}
+
+@Test
+void testPolitico_pedroClaraNivel3() {
+    // Pedro (nivel 1) ↔ Clara (nivel 2, bajo Marta)
+    // LCA = Juan → prof1=1, prof2=2, grado=3, político
+    ResultadoParentesco r = Genealogia.calcularParentesco(juan, pedro, clara);
+    assertEquals(3, r.getGrado());
     assertEquals("político", r.getTipo());
 }
 
@@ -273,9 +248,10 @@ void testPersonaNoEncontrada() {
 
 ## Confianza
 
-Alta para la lógica de grado (fórmula verificada con los 3 ejemplos del enunciado). Alta para el código Java. La clase `ResultadoParentesco` debe incluir campos grado, tipo y camino — no está provista completamente.
+Alta — la lógica de grado verificada con los 3 ejemplos del enunciado. El algoritmo LCA es estándar y no requiere listas ni acceso indexado.
 
 ## Gaps
 
-- La clase `Persona` debe implementar `equals()` para que la comparación en `encontrarCamino` funcione.
-- Si se usa etiqueta numérica en el árbol (no el objeto Persona como clave), la comparación cambia.
+- La clase `Persona` debe implementar `equals()` para que la comparación en `encontrarLCA` y `encontrarProfundidad` funcione.
+- Si se usa etiqueta numérica en el árbol (no el objeto Persona como clave), la comparación puede usar la etiqueta en lugar de `getDatos().equals()`.
+- `ResultadoParentesco` solo necesita campos `grado` y `tipo` — no se reconstruye el camino entre las personas, lo cual simplifica la implementación y elimina la necesidad de cualquier lista.

@@ -98,9 +98,9 @@ arbol ← nuevo TArbolDeProductos
 
 ```java
 // En TArbolDeProductos:
-public List<Producto> separarHojas() {
-    List<Producto> hojas = new LinkedList<>();
-    List<Producto> internos = new LinkedList<>();
+public Lista<Producto> separarHojas() {
+    Lista<Producto> hojas    = new Lista<>();
+    Lista<Producto> internos = new Lista<>();
     if (!esVacio()) {
         ((TElementoAB<Producto>) getRaiz()).separarNodos(hojas, internos);
     }
@@ -110,12 +110,12 @@ public List<Producto> separarHojas() {
 
 ```java
 // En TElementoAB:
-public void separarNodos(List<T> hojas, List<T> internos) {
+public void separarNodos(Lista<T> hojas, Lista<T> internos) {
     if (hijoIzq != null) ((TElementoAB<T>) hijoIzq).separarNodos(hojas, internos);
     if (hijoIzq == null && hijoDer == null) {
-        hojas.add(getDatos());
+        hojas.insertar(getEtiqueta(), getDatos());
     } else {
-        internos.add(getDatos());
+        internos.insertar(getEtiqueta(), getDatos());
     }
     if (hijoDer != null) ((TElementoAB<T>) hijoDer).separarNodos(hojas, internos);
 }
@@ -126,9 +126,13 @@ public void separarNodos(List<T> hojas, List<T> internos) {
 El enunciado exige que el árbol resultante no tenga altura comparable al tamaño. Para evitar árbol degenerado, **NO insertar los productos en orden secuencial**. Estrategia: mezclar aleatoriamente antes de insertar (shuffle), o leer del archivo y usar una inserción intercalada.
 
 ```java
-// Estrategia: inserción aleatoria
-List<String> lineas = Arrays.asList(ManejadorArchivosGenerico.leerArchivo("productos.txt"));
-Collections.shuffle(lineas);
+// Estrategia: mezcla manual (Fisher-Yates) para evitar árbol degenerado
+String[] lineas = ManejadorArchivosGenerico.leerArchivo("productos.txt");
+Random rnd = new Random();
+for (int k = lineas.length - 1; k > 0; k--) {
+    int idx = rnd.nextInt(k + 1);
+    String tmp = lineas[k]; lineas[k] = lineas[idx]; lineas[idx] = tmp;
+}
 for (String linea : lineas) {
     // parsear e insertar
 }
@@ -137,13 +141,25 @@ for (String linea : lineas) {
 ### Programa Principal (salida.txt con productos hojas en orden por nombre)
 
 ```java
-List<Producto> hojas = arbol.separarHojas();
-// Ordenar por nombre
-hojas.sort(Comparator.comparing(Producto::getNombre));
+Lista<Producto> hojas = arbol.separarHojas();
+// Ordenar por nombre — selection sort con métodos del TDA (Lista no tiene sort)
+Nodo<Producto> i = hojas.getPrimero();
+while (i != null) {
+    Nodo<Producto> minNodo = i;
+    Nodo<Producto> j = i.getSiguiente();
+    while (j != null) {
+        if (j.getDato().getNombre().compareTo(minNodo.getDato().getNombre()) < 0) minNodo = j;
+        j = j.getSiguiente();
+    }
+    Producto tmp = i.getDato(); i.setDato(minNodo.getDato()); minNodo.setDato(tmp);
+    i = i.getSiguiente();
+}
 // Escribir
 StringBuilder sb = new StringBuilder();
-for (Producto p : hojas) {
-    sb.append(p.getId()).append(", ").append(p.getNombre()).append("\n");
+Nodo<Producto> aux = hojas.getPrimero();
+while (aux != null) {
+    sb.append(aux.getDato().getId()).append(", ").append(aux.getDato().getNombre()).append("\n");
+    aux = aux.getSiguiente();
 }
 ManejadorArchivosGenerico.escribirArchivo("salida.txt", sb.toString());
 ```
@@ -165,10 +181,10 @@ public void testSepararHojas() {
     //      1
     // Hojas: 1, 7 (inorden: 1, 7)
     // Internos: 3, 5 (inorden: 3, 5)
-    List<Producto> hojas = arbol.separarHojas();
-    assertEquals(2, hojas.size());
-    assertEquals(1, hojas.get(0).getId());
-    assertEquals(7, hojas.get(1).getId());
+    Lista<Producto> hojas = arbol.separarHojas();
+    assertEquals(2, hojas.cantElementos());
+    assertEquals(1, hojas.getPrimero().getDato().getId());
+    assertEquals(7, hojas.getPrimero().getSiguiente().getDato().getId());
 }
 ```
 
@@ -180,4 +196,5 @@ Alta — el algoritmo es una variante directa del recorrido inorden estándar.
 
 ## Gaps
 
-- El tipo de Lista usado en el pseudocódigo puede variar. Si se usa `ILista<T>` del curso, la inserción es al final (O(n) sin puntero ultimo). Si se usa `java.util.LinkedList`, es O(1).
+- Se usa `Lista<T>` del curso. La inserción al final es O(n) sin puntero al último nodo → total O(n²). Si `Lista` mantuviera un puntero `ultimo`, sería O(n) total.
+- `Lista` no tiene `sort()`. El ordenamiento del archivo de salida se implementa como selection sort O(n²) usando `getPrimero()`, `getSiguiente()`, `getDato()` y `setDato()`.
