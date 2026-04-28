@@ -27,7 +27,6 @@ Código Java completo de cada estructura. Para pseudocódigos ver `pseudocodigos
 - [TElementoAVL\<T\>](#telementoavlt)
 - [TArbolAVL\<T\>](#tarbollавlt)
 - [ManejadorArchivosGenerico](#manejadorarchivosgenerico)
-- [Patrones de uso frecuentes](#patrones-de-uso-frecuentes)
 
 ---
 
@@ -1065,73 +1064,6 @@ public class ManejadorArchivosGenerico {
 }
 ```
 
----
-
-## Patrones de uso frecuentes
-
-### Recorrer Lista\<T\>
-
-```java
-Nodo<T> aux = lista.getPrimero();
-while (aux != null) {
-    T dato = aux.getDato();
-    aux = aux.getSiguiente();
-}
-```
-
-### Selection sort sobre Lista\<T\>
-
-```java
-Nodo<T> i = lista.getPrimero();
-while (i != null) {
-    Nodo<T> min = i, j = i.getSiguiente();
-    while (j != null) {
-        if (j.getDato().getCampo().compareTo(min.getDato().getCampo()) < 0) min = j;
-        j = j.getSiguiente();
-    }
-    T tmp = i.getDato(); i.setDato(min.getDato()); min.setDato(tmp);
-    i = i.getSiguiente();
-}
-```
-
-### Recorrido inorden manual sobre árbol
-
-```java
-// En la clase árbol
-public Lista<T> filtrar() {
-    Lista<T> resultado = new Lista<>();
-    if (!esVacio()) filtrarNodo(getRaiz(), resultado);
-    return resultado;
-}
-
-// Método privado recursivo
-private void filtrarNodo(IElementoAB<T> nodo, Lista<T> lista) {
-    if (nodo == null) return;
-    filtrarNodo(nodo.getHijoIzq(), lista);
-    if (condicion(nodo.getDatos()))
-        lista.insertar(nodo.getEtiqueta(), nodo.getDatos());
-    filtrarNodo(nodo.getHijoDer(), lista);
-}
-```
-
-### Acceso al N-ésimo elemento de Lista\<T\>
-
-```java
-// Equivalente a get(3) — cuarto elemento
-T cuarto = lista.getPrimero()
-    .getSiguiente().getSiguiente().getSiguiente().getDato();
-```
-
-### Leer archivo y parsear
-
-```java
-String[] lineas = ManejadorArchivosGenerico.leerArchivo("datos.txt");
-for (String linea : lineas) {
-    if (linea.isBlank()) continue;
-    String[] partes = linea.split(";");
-    // partes[0], partes[1], etc.
-}
-```
 
 ---
 
