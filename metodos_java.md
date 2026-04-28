@@ -1,296 +1,1128 @@
 ---
-title: "Referencia de Métodos Java por Estructura"
+title: "Implementaciones Java de TDAs"
 type: reference
-tags: [java, tda, metodos, lista, cola, pila, conjunto, bst, arbol]
+tags: [java, tda, implementacion, lista, cola, pila, bst, arbol]
 created: 2026-04-28
 updated: 2026-04-28
 ---
 
-# Referencia de Métodos Java por Estructura
+# Implementaciones Java de TDAs
 
-Catálogo completo de métodos disponibles en cada TDA del curso AED UCU.  
-Fuentes: código base 2024-S1, código base festival-otaku, código base farmachop.
+Código Java completo de cada estructura. Para pseudocódigos ver `pseudocodigos/`.
 
-> **Restricción del parcial:** solo usar métodos de esta lista. Prohibido `ArrayList`, `LinkedList`, `java.util.Stack`, ni ninguna clase de `java.util.Collections`.
+> **Restricción del parcial:** solo usar estas clases. Prohibido `ArrayList`, `LinkedList`, `java.util.Stack`, ni ninguna clase de `java.util.Collections`.
 
 ---
 
 ## Índice
 
-- [Lista\<T\> (farmachop)](#listat-farmachop)
-- [Nodo\<T\> (farmachop)](#nodot-farmachop)
-- [Lista Simplemente Enlazada](#lista-simplemente-enlazada)
-- [Lista Doblemente Enlazada](#lista-doblemente-enlazada)
-- [TArbolBB\<T\> / TArbolDeProductos](#tarbollbbt--tarboldeproductos)
-- [TElementoAB\<T\> / IElementoAB\<T\>](#telementoabt--ielementoabt)
-- [Cola\<T\> (festival-otaku)](#colat-festival-otaku)
-- [Pila\<T\> (festival-otaku)](#pilat-festival-otaku)
-- [Lista basada en arreglo con validación de duplicados](#lista-basada-en-arreglo-con-validación-de-duplicados)
+- [Nodo\<T\>](#nodot)
+- [Lista\<T\>](#listat)
+- [ListaEnlazada\<T\>](#listaenlazadat)
+- [ListaArray\<T\>](#listaarrayt)
+- [Cola\<T\>](#colat)
+- [Pila\<T\>](#pilat)
+- [TElementoAB\<T\>](#telementoabt)
+- [TArbolBB\<T\>](#tarbollbbt)
+- [TElementoAVL\<T\>](#telementoavlt)
+- [TArbolAVL\<T\>](#tarbollавlt)
 - [ManejadorArchivosGenerico](#manejadorarchivosgenerico)
 - [Patrones de uso frecuentes](#patrones-de-uso-frecuentes)
 
 ---
 
-## Lista\<T\> (farmachop)
+## Nodo\<T\>
 
-Lista simplemente enlazada con puntero `primero`. Sin puntero al último nodo.
+Nodo de la lista enlazada (farmachop). Clave `Comparable` + dato genérico + puntero al siguiente.
 
-| Firma | Retorno | Descripción | Orden |
-|-------|---------|-------------|-------|
-| `insertar(Nodo<T> nodo)` | `void` | Inserta el nodo al **final** de la lista | O(n) |
-| `insertar(Comparable etiqueta, T dato)` | `void` | Crea un nodo y lo inserta al final | O(n) |
-| `buscar(Comparable clave)` | `Nodo<T>` | Retorna el nodo con esa etiqueta, o `null` | O(n) |
-| `eliminar(Comparable clave)` | `boolean` | Elimina el primer nodo con esa etiqueta; `true` si tuvo éxito | O(n) |
-| `cantElementos()` | `int` | Cantidad de nodos en la lista | O(n) |
-| `esVacia()` | `boolean` | `true` si la lista no tiene elementos | O(1) |
-| `getPrimero()` | `Nodo<T>` | Retorna el primer nodo (o `null` si vacía) | O(1) |
-| `setPrimero(Nodo<T> nodo)` | `void` | Fuerza el primer nodo (usar con cuidado) | O(1) |
-| `imprimir()` | `String` | Imprime etiquetas en consola, retorna `""` | O(n) |
-| `imprimir(String separador)` | `String` | Retorna etiquetas separadas por el separador | O(n) |
+```java
+public class Nodo<T> implements INodo<T> {
 
-> **No existe** `get(int i)`, `add()`, `size()`, `sort()`, ni `insertarAlFrente()`.  
-> Para acceder al N-ésimo elemento: encadenar `.getSiguiente()` N veces.  
-> Para insertar al frente: `Nodo<T> n = new Nodo<>(etiqueta, dato); n.setSiguiente(lista.getPrimero()); lista.setPrimero(n);`
+    private final Comparable etiqueta;
+    private T dato;
+    private Nodo<T> siguiente = null;
 
----
+    public Nodo(Comparable etiqueta, T dato) {
+        this.etiqueta = etiqueta;
+        this.dato = dato;
+    }
 
-## Nodo\<T\> (farmachop)
+    public T getDato()                  { return dato; }
+    public void setDato(T dato)         { this.dato = dato; }
+    public Comparable getEtiqueta()     { return etiqueta; }
+    public Nodo<T> getSiguiente()       { return siguiente; }
+    public void setSiguiente(Nodo<T> n) { this.siguiente = n; }
+    public void imprimir()              { System.out.println(dato.toString()); }
+    public void imprimirEtiqueta()      { System.out.println(etiqueta); }
+    public Nodo<T> clonar()             { return new Nodo<>(etiqueta, dato); }
+    public boolean equals(Nodo otro)    { return dato.equals(otro.getDato()); }
 
-| Firma | Retorno | Descripción | Orden |
-|-------|---------|-------------|-------|
-| `new Nodo<>(Comparable etiqueta, T dato)` | — | Constructor | O(1) |
-| `getDato()` | `T` | Retorna el dato almacenado | O(1) |
-| `setDato(T dato)` | `void` | Reemplaza el dato (usado en selection sort) | O(1) |
-| `getEtiqueta()` | `Comparable` | Retorna la clave del nodo | O(1) |
-| `getSiguiente()` | `Nodo<T>` | Retorna el nodo siguiente, o `null` | O(1) |
-| `setSiguiente(Nodo<T> nodo)` | `void` | Enlaza el siguiente nodo | O(1) |
-| `imprimir()` | `void` | Imprime `dato.toString()` en consola | O(1) |
-| `imprimirEtiqueta()` | `void` | Imprime la etiqueta en consola | O(1) |
-| `clonar()` | `Nodo<T>` | Retorna un nodo nuevo con misma etiqueta y dato | O(1) |
-| `equals(Nodo otro)` | `boolean` | Compara por `dato.equals()` | O(1) |
-| `compareTo(Comparable etiqueta)` | `int` | Compara etiquetas; retorna negativo/0/positivo | O(1) |
+    @Override
+    public int compareTo(Comparable etiqueta) {
+        return this.etiqueta.compareTo(etiqueta);
+    }
+}
+```
 
 ---
 
-## Lista Simplemente Enlazada
+## Lista\<T\>
 
-> No tiene implementación Java propia en el código base — **`Lista<T>` de farmachop es la implementación del parcial**. Esta tabla documenta la API conceptual del TDA; los pseudocódigos están en `pseudocodigos/lista-enlazada.md`.
+Lista simplemente enlazada con puntero `primero` (farmachop). Sin puntero al último — insertar al final es O(n).
 
-| Método | Retorno | Descripción | Orden |
-|--------|---------|-------------|-------|
-| `esVacia()` | `boolean` | `true` si no hay elementos | O(1) |
-| `insertar(etiqueta, dato)` | `void` | Inserta al **final**; recorre toda la lista | O(n) |
-| `insertarAlFrente(etiqueta, dato)` | `void` | Inserta al principio sin recorrer | O(1) |
-| `buscar(clave)` | `Nodo<T>` | Primer nodo con esa etiqueta, o `null` | O(n) |
-| `eliminar(clave)` | `boolean` | Desvincula el nodo con esa clave | O(n) |
-| `cantElementos()` | `int` | Cuenta nodos recorriendo la lista | O(n) |
+```java
+public class Lista<T> implements ILista<T> {
 
-> `insertarAlFrente` **no existe** en farmachop `Lista<T>`. Workaround Java:
-> ```java
-> Nodo<T> n = new Nodo<>(etiqueta, dato);
-> n.setSiguiente(lista.getPrimero());
-> lista.setPrimero(n);
-> ```
+    private Nodo<T> primero;
 
----
+    public Lista() { primero = null; }
 
-## Lista Doblemente Enlazada
+    @Override
+    public void insertar(Nodo<T> unNodo) {
+        if (esVacia()) {
+            primero = unNodo;
+        } else {
+            Nodo<T> aux = primero;
+            while (aux.getSiguiente() != null)
+                aux = aux.getSiguiente();
+            aux.setSiguiente(unNodo);
+        }
+    }
 
-> No tiene implementación Java en el código base del curso. Referencia conceptual; pseudocódigos en `cuadernola.md`. Campo extra por nodo: `anterior`.
+    @Override
+    public void insertar(Comparable etiqueta, T dato) {
+        insertar(new Nodo<>(etiqueta, dato));
+    }
 
-| Método | Retorno | Descripción | Orden |
-|--------|---------|-------------|-------|
-| `esVacia()` | `boolean` | `true` si no hay elementos | O(1) |
-| `insertar(etiqueta, dato)` | `void` | Inserta al **final** via puntero `ultimo` | **O(1)** |
-| `insertarAlFrente(etiqueta, dato)` | `void` | Inserta al principio; actualiza `primero` | O(1) |
-| `buscar(clave)` | `NodoDoble<T>` | Primer nodo con esa etiqueta, o `null` | O(n) |
-| `eliminar(clave)` | `boolean` | Desvincula usando `anterior`; no necesita recorrer el antecesor | O(n) ¹ |
+    @Override
+    public Nodo<T> buscar(Comparable clave) {
+        Nodo<T> aux = primero;
+        while (aux != null) {
+            if (aux.getEtiqueta().equals(clave)) return aux;
+            aux = aux.getSiguiente();
+        }
+        return null;
+    }
 
-> ¹ O(n) por la búsqueda; la desvinculación en sí es O(1) gracias a `anterior`.
+    @Override
+    public boolean eliminar(Comparable clave) {
+        if (esVacia()) return false;
+        if (primero.getEtiqueta().compareTo(clave) == 0) {
+            primero = primero.getSiguiente();
+            return true;
+        }
+        Nodo<T> aux = primero;
+        while (aux.getSiguiente() != null) {
+            if (aux.getSiguiente().getEtiqueta().equals(clave)) {
+                aux.setSiguiente(aux.getSiguiente().getSiguiente());
+                return true;
+            }
+            aux = aux.getSiguiente();
+        }
+        return false;
+    }
 
-### Comparación Simple vs Doble
+    @Override
+    public int cantElementos() {
+        int c = 0;
+        Nodo<T> aux = primero;
+        while (aux != null) { c++; aux = aux.getSiguiente(); }
+        return c;
+    }
 
-| Operación | Lista Simple (`Lista<T>`) | Lista Doble |
-|-----------|--------------------------|-------------|
-| `insertar` al final | O(n) — recorre hasta el último | **O(1)** — puntero `ultimo` |
-| `insertarAlFrente` | O(1) | O(1) |
-| `buscar` | O(n) | O(n) |
-| `eliminar` (por clave) | O(n) | O(n) — búsqueda domina |
-| `eliminar` (dado el nodo) | O(n) — necesita antecesor | **O(1)** — usa `anterior` |
-| Memoria por nodo | 1 puntero | 2 punteros |
+    @Override
+    public boolean esVacia() { return primero == null; }
 
----
+    public Nodo<T> getPrimero()          { return primero; }
 
-## TArbolBB\<T\> / TArbolDeProductos
+    @Override
+    public void setPrimero(Nodo<T> n)    { primero = n; }
 
-`TArbolDeProductos` extiende `TArbolBB<Producto>` sin agregar métodos propios.  
-Campo interno: `protected TElementoAB<T> raiz`.
+    @Override
+    public String imprimir() {
+        Nodo<T> aux = primero;
+        while (aux != null) { aux.imprimirEtiqueta(); aux = aux.getSiguiente(); }
+        return "";
+    }
 
-| Firma | Retorno | Descripción | Orden |
-|-------|---------|-------------|-------|
-| `new TArbolBB<>()` | — | Constructor; crea árbol vacío | O(1) |
-| `insertar(Comparable etiqueta, T dato)` | `boolean` | Inserta; retorna `false` si la etiqueta ya existe | O(h) |
-| `buscar(Comparable etiqueta)` | `T` | Retorna el dato del nodo, o `null` | O(h) |
-| `eliminar(Comparable etiqueta)` | `void` | Elimina el nodo (3 casos BST) | O(h) |
-| `esVacio()` | `boolean` | `true` si la raíz es `null` | O(1) |
-| `vaciar()` | `boolean` | Pone raíz en `null`; `true` si había elementos | O(1) |
-| `getRaiz()` | `TElementoAB<T>` | Retorna la raíz (para recorridos manuales) | O(1) |
-| `inOrden()` | `List<T>` | Recorrido inorden — usa `LinkedList` internamente ¹ | O(n) |
-| `preOrden()` | `List<T>` | Recorrido preorden — usa `LinkedList` internamente ¹ | O(n) |
-| `postOrden()` | `List<T>` | Recorrido postorden — usa `LinkedList` internamente ¹ | O(n) |
-
-> ¹ **No usar en el parcial**: retornan `java.util.List<T>` con `LinkedList` internamente. Implementar el recorrido manualmente con `getRaiz()` (ver Patrones).
-
-> h = altura. En ABB degenerado h = n; en AVL h = O(log n).
-
-### Métodos adicionales (no están en el código base — se implementan en el parcial)
-
-| Firma | Descripción | Orden |
-|-------|-------------|-------|
-| `obtenerTamaño()` | Delega a `raiz.obtenerTamaño()` | O(n) |
-| `obtenerAltura()` | Delega a `raiz.obtenerAltura()` | O(n) |
-| `obtenerNivel(Comparable criterio)` | Delega a `raiz.obtenerNivel(criterio, 0)` | O(h) |
-
----
-
-## TElementoAB\<T\> / IElementoAB\<T\>
-
-Nodo del BST. Usar `IElementoAB<T>` en las firmas de los métodos propios.
-
-| Firma | Retorno | Descripción | Orden |
-|-------|---------|-------------|-------|
-| `new TElementoAB<>(Comparable etiqueta, T dato)` | — | Constructor | O(1) |
-| `getDatos()` | `T` | Retorna el dato almacenado | O(1) |
-| `getEtiqueta()` | `Comparable` | Retorna la clave del nodo | O(1) |
-| `getHijoIzq()` | `TElementoAB<T>` | Hijo izquierdo, o `null` | O(1) |
-| `getHijoDer()` | `TElementoAB<T>` | Hijo derecho, o `null` | O(1) |
-| `setHijoIzq(TElementoAB<T> elem)` | `void` | Asigna el hijo izquierdo | O(1) |
-| `setHijoDer(TElementoAB<T> elem)` | `void` | Asigna el hijo derecho | O(1) |
-| `insertar(TElementoAB<T> elem)` | `boolean` | Inserta recursivamente; `false` si ya existe | O(h) |
-| `buscar(Comparable etiqueta)` | `TElementoAB<T>` | Busca el nodo en el subárbol | O(h) |
-| `eliminar(Comparable etiqueta)` | `TElementoAB<T>` | Elimina y retorna el sucesor estructural | O(h) |
-| `obtenerTamaño()` | `int` | Cuenta nodos del subárbol | O(n) |
-| `inOrden(LinkedList<T> lista)` | `void` | Agrega datos en inorden a un `LinkedList` ¹ | O(n) |
-| `preOrden(LinkedList<T> lista)` | `void` | Agrega datos en preorden a un `LinkedList` ¹ | O(n) |
-| `postOrden(LinkedList<T> lista)` | `void` | Agrega datos en postorden a un `LinkedList` ¹ | O(n) |
-| `imprimir()` | `String` | Retorna `etiqueta.toString()` | O(1) |
-| `inOrden()` | `String` | Retorna string inorden del subárbol con separadores | O(n) |
-
-> ¹ Reciben `LinkedList` de Java — no usar en el parcial. Ver patrón manual en sección Patrones.
+    @Override
+    public String imprimir(String sep) {
+        if (esVacia()) return "";
+        Nodo<T> aux = primero;
+        StringBuilder sb = new StringBuilder(aux.getEtiqueta().toString());
+        while (aux.getSiguiente() != null) {
+            aux = aux.getSiguiente();
+            sb.append(sep).append(aux.getEtiqueta());
+        }
+        return sb.toString();
+    }
+}
+```
 
 ---
 
-## Cola\<T\> (festival-otaku)
+## ListaEnlazada\<T\>
 
-FIFO. Hereda de `TDALista<T>`.
+Lista simplemente enlazada (festival-otaku). Implementa `TDALista<T>` — acceso por índice O(n), sin restricción de duplicados.
 
-### Métodos propios
+```java
+public class ListaEnlazada<T> implements TDALista<T> {
 
-| Firma | Retorno | Descripción | Orden |
-|-------|---------|-------------|-------|
-| `poneEnCola(T dato)` | `boolean` | Inserta al final | O(1) |
-| `quitaDeCola()` | `T` | Remueve y retorna el frente | O(1) |
-| `frente()` | `T` | Consulta el frente sin remover | O(1) |
-| `esVacio()` | `boolean` | `true` si la cola está vacía | O(1) |
-| `vaciar()` | `void` | Elimina todos los elementos | O(1) |
+    private static class Nodo<T> {
+        T dato;
+        Nodo<T> siguiente;
+        Nodo(T dato) { this.dato = dato; }
+    }
 
-### Equivalencias Java ↔ pseudocódigo
+    private Nodo<T> cabeza;
+    private int tamanio;
 
-| Java | Pseudocódigo |
-|------|-------------|
-| `poneEnCola(dato)` | `encolar(dato)` |
-| `quitaDeCola()` | `desencolar()` |
-| `frente()` | `frente()` |
-| `esVacio()` | `esVacia()` |
+    public ListaEnlazada() { cabeza = null; tamanio = 0; }
 
-### Métodos heredados de TDALista\<T\>
+    @Override
+    public void agregar(T elem) {
+        Nodo<T> nuevo = new Nodo<>(elem);
+        if (cabeza == null) {
+            cabeza = nuevo;
+        } else {
+            Nodo<T> aux = cabeza;
+            while (aux.siguiente != null) aux = aux.siguiente;
+            aux.siguiente = nuevo;
+        }
+        tamanio++;
+    }
 
-| Firma | Retorno | Descripción |
-|-------|---------|-------------|
-| `agregar(T elem)` | `void` | Agrega al final |
-| `agregar(int index, T elem)` | `void` | Agrega en posición |
-| `obtener(int index)` | `T` | Acceso por índice |
-| `remover(int index)` | `T` | Remueve por índice |
-| `remover(T elem)` | `boolean` | Remueve primera ocurrencia |
-| `contiene(T elem)` | `boolean` | Verifica pertenencia |
-| `indiceDe(T elem)` | `int` | Índice de primera ocurrencia |
-| `buscar(Predicate<T>)` | `T` | Busca con criterio lambda |
-| `ordenar(Comparator<T>)` | `TDALista<T>` | Retorna lista ordenada |
-| `tamaño()` | `int` | Cantidad de elementos |
+    @Override
+    public void agregar(int index, T elem) {
+        if (index < 0 || index > tamanio) throw new IndexOutOfBoundsException();
+        Nodo<T> nuevo = new Nodo<>(elem);
+        if (index == 0) {
+            nuevo.siguiente = cabeza;
+            cabeza = nuevo;
+        } else {
+            Nodo<T> aux = nodoEn(index - 1);
+            nuevo.siguiente = aux.siguiente;
+            aux.siguiente = nuevo;
+        }
+        tamanio++;
+    }
+
+    @Override
+    public T obtener(int index) {
+        if (index < 0 || index >= tamanio) throw new IndexOutOfBoundsException();
+        return nodoEn(index).dato;
+    }
+
+    @Override
+    public T remover(int index) {
+        if (index < 0 || index >= tamanio) throw new IndexOutOfBoundsException();
+        T dato;
+        if (index == 0) {
+            dato = cabeza.dato;
+            cabeza = cabeza.siguiente;
+        } else {
+            Nodo<T> anterior = nodoEn(index - 1);
+            dato = anterior.siguiente.dato;
+            anterior.siguiente = anterior.siguiente.siguiente;
+        }
+        tamanio--;
+        return dato;
+    }
+
+    @Override
+    public boolean remover(T elem) {
+        int idx = indiceDe(elem);
+        if (idx == -1) return false;
+        remover(idx);
+        return true;
+    }
+
+    @Override
+    public boolean contiene(T elem) { return indiceDe(elem) != -1; }
+
+    @Override
+    public int indiceDe(T elem) {
+        Nodo<T> aux = cabeza;
+        int i = 0;
+        while (aux != null) {
+            if (aux.dato.equals(elem)) return i;
+            aux = aux.siguiente;
+            i++;
+        }
+        return -1;
+    }
+
+    @Override
+    public T buscar(Predicate<T> criterio) {
+        Nodo<T> aux = cabeza;
+        while (aux != null) {
+            if (criterio.test(aux.dato)) return aux.dato;
+            aux = aux.siguiente;
+        }
+        return null;
+    }
+
+    @Override
+    public TDALista<T> ordenar(Comparator<T> comparator) {
+        ListaEnlazada<T> copia = new ListaEnlazada<>();
+        Nodo<T> aux = cabeza;
+        while (aux != null) { copia.agregar(aux.dato); aux = aux.siguiente; }
+        // bubble sort sobre los datos
+        boolean cambio = true;
+        while (cambio) {
+            cambio = false;
+            Nodo<T> cur = copia.cabeza;
+            while (cur != null && cur.siguiente != null) {
+                if (comparator.compare(cur.dato, cur.siguiente.dato) > 0) {
+                    T tmp = cur.dato; cur.dato = cur.siguiente.dato; cur.siguiente.dato = tmp;
+                    cambio = true;
+                }
+                cur = cur.siguiente;
+            }
+        }
+        return copia;
+    }
+
+    @Override
+    public int tamaño()       { return tamanio; }
+
+    @Override
+    public boolean esVacio()  { return tamanio == 0; }
+
+    @Override
+    public void vaciar()      { cabeza = null; tamanio = 0; }
+
+    private Nodo<T> nodoEn(int index) {
+        Nodo<T> aux = cabeza;
+        for (int i = 0; i < index; i++) aux = aux.siguiente;
+        return aux;
+    }
+}
+```
 
 ---
 
-## Pila\<T\> (festival-otaku)
+## ListaArray\<T\>
 
-LIFO. Hereda de `TDALista<T>`.
+Lista basada en arreglo (festival-otaku). `agregar(T)` bloquea duplicados. `obtener(i)` y `tamaño()` son O(1).
 
-### Métodos propios
+```java
+public class ListaArray<T> implements TDALista<T> {
 
-| Firma | Retorno | Descripción | Orden |
-|-------|---------|-------------|-------|
-| `mete(T dato)` | `void` | Inserta en el tope | O(1) |
-| `saca()` | `T` | Remueve y retorna el tope | O(1) |
-| `tope()` | `T` | Consulta el tope sin remover | O(1) |
-| `esVacio()` | `boolean` | `true` si la pila está vacía | O(1) |
-| `vaciar()` | `void` | Elimina todos los elementos | O(1) |
+    private static final int MAX = 100;
+    private Object[] datos;
+    private int tamanio;
 
-### Equivalencias Java ↔ pseudocódigo
+    public ListaArray() { datos = new Object[MAX]; tamanio = 0; }
 
-| Java | Pseudocódigo |
-|------|-------------|
-| `mete(dato)` | `apilar(dato)` |
-| `saca()` | `desapilar()` |
-| `tope()` | `tope()` |
-| `esVacio()` | `esVacia()` |
+    @Override
+    public void agregar(T elem) {
+        if (contiene(elem)) return;          // no duplicar
+        if (tamanio == MAX) throw new RuntimeException("Lista llena");
+        datos[tamanio++] = elem;
+    }
 
-> Los métodos heredados de `TDALista<T>` son los mismos que para `Cola<T>`.
+    @Override
+    public void agregar(int index, T elem) {
+        if (index < 0 || index > tamanio || tamanio == MAX)
+            throw new IndexOutOfBoundsException();
+        for (int i = tamanio; i > index; i--)
+            datos[i] = datos[i - 1];
+        datos[index] = elem;
+        tamanio++;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public T obtener(int index) {
+        if (index < 0 || index >= tamanio) throw new IndexOutOfBoundsException();
+        return (T) datos[index];
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public T remover(int index) {
+        if (index < 0 || index >= tamanio) throw new IndexOutOfBoundsException();
+        T elem = (T) datos[index];
+        for (int i = index; i < tamanio - 1; i++)
+            datos[i] = datos[i + 1];
+        tamanio--;
+        return elem;
+    }
+
+    @Override
+    public boolean remover(T elem) {
+        int idx = indiceDe(elem);
+        if (idx == -1) return false;
+        remover(idx);
+        return true;
+    }
+
+    @Override
+    public boolean contiene(T elem) { return indiceDe(elem) != -1; }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public int indiceDe(T elem) {
+        for (int i = 0; i < tamanio; i++)
+            if (((T) datos[i]).equals(elem)) return i;
+        return -1;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public T buscar(Predicate<T> criterio) {
+        for (int i = 0; i < tamanio; i++)
+            if (criterio.test((T) datos[i])) return (T) datos[i];
+        return null;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public TDALista<T> ordenar(Comparator<T> comparator) {
+        ListaArray<T> copia = new ListaArray<>();
+        for (int i = 0; i < tamanio; i++) copia.datos[i] = datos[i];
+        copia.tamanio = tamanio;
+        // insertion sort
+        for (int i = 1; i < copia.tamanio; i++) {
+            T key = (T) copia.datos[i];
+            int j = i - 1;
+            while (j >= 0 && comparator.compare((T) copia.datos[j], key) > 0) {
+                copia.datos[j + 1] = copia.datos[j];
+                j--;
+            }
+            copia.datos[j + 1] = key;
+        }
+        return copia;
+    }
+
+    @Override
+    public int tamaño()      { return tamanio; }
+
+    @Override
+    public boolean esVacio() { return tamanio == 0; }
+
+    @Override
+    public void vaciar()     { tamanio = 0; }
+}
+```
 
 ---
 
-## Lista basada en arreglo con validación de duplicados
+## Cola\<T\>
 
-**Clase Java:** `ListaArray<T>` (festival-otaku) — implementa `TDALista<T>`.  
-**Estructura interna:** `T[] datos` de capacidad fija + `int tamanio`.  
-**Invariante:** `agregar(elem)` llama a `contiene` antes de insertar; si ya existe, no hace nada.
+FIFO (festival-otaku). Lista enlazada interna con punteros `frente` y `posterior` — `poneEnCola` y `quitaDeCola` son O(1).
 
-| Firma | Retorno | Descripción | Orden |
-|-------|---------|-------------|-------|
-| `agregar(T elem)` | `void` | Inserta al final **solo si no existe** | O(n) |
-| `agregar(int index, T elem)` | `void` | Inserta en posición, desplaza a la derecha | O(n) |
-| `obtener(int index)` | `T` | Acceso directo por índice | **O(1)** |
-| `remover(int index)` | `T` | Elimina por posición, desplaza a la izquierda | O(n) |
-| `remover(T elem)` | `boolean` | Elimina primera ocurrencia; `true` si existía | O(n) |
-| `contiene(T elem)` | `boolean` | Búsqueda lineal | O(n) |
-| `indiceDe(T elem)` | `int` | Índice de primera ocurrencia, o `-1` | O(n) |
-| `buscar(Predicate<T>)` | `T` | Primer elemento que cumple el criterio | O(n) |
-| `ordenar(Comparator<T>)` | `TDALista<T>` | Retorna nueva lista ordenada | O(n²) |
-| `tamaño()` | `int` | Cantidad de elementos | **O(1)** |
-| `esVacio()` | `boolean` | `true` si `tamanio == 0` | **O(1)** |
-| `vaciar()` | `void` | Pone `tamanio = 0` | O(1) |
+```java
+public class Cola<T> implements TDACola<T> {
 
-### Comparación con Lista enlazada (farmachop)
+    private static class Nodo<T> {
+        T dato;
+        Nodo<T> siguiente;
+        Nodo(T dato) { this.dato = dato; }
+    }
 
-| Operación | `ListaArray<T>` (arreglo) | `Lista<T>` (enlazada) |
-|-----------|--------------------------|----------------------|
-| `obtener(i)` | **O(1)** — acceso directo | O(n) — recorre hasta i |
-| `agregar` al final | O(n) — por `contiene` | O(n) — recorre hasta el último |
-| `agregar` al frente | O(n) — desplaza todo | O(1) — actualiza `primero` |
-| `contiene` / `buscar` | O(n) | O(n) |
-| `remover` | O(n) — desplaza | O(n) — busca antecesor |
-| `tamaño()` | **O(1)** — campo directo | O(n) — recorre toda la lista |
-| Memoria | Bloque contiguo fijo | Dinámica nodo a nodo |
-| Duplicados | Bloqueados | Permitidos |
+    private Nodo<T> frente;
+    private Nodo<T> posterior;
+    private int tamanio;
+
+    public Cola() { frente = null; posterior = null; tamanio = 0; }
+
+    // --- operaciones FIFO ---
+
+    @Override
+    public boolean poneEnCola(T dato) {
+        Nodo<T> nuevo = new Nodo<>(dato);
+        if (esVacio()) {
+            frente = nuevo;
+            posterior = nuevo;
+        } else {
+            posterior.siguiente = nuevo;
+            posterior = nuevo;
+        }
+        tamanio++;
+        return true;
+    }
+
+    @Override
+    public T quitaDeCola() {
+        if (esVacio()) throw new java.util.NoSuchElementException("Cola vacía");
+        T dato = frente.dato;
+        frente = frente.siguiente;
+        if (frente == null) posterior = null;
+        tamanio--;
+        return dato;
+    }
+
+    @Override
+    public T frente() {
+        if (esVacio()) throw new java.util.NoSuchElementException("Cola vacía");
+        return frente.dato;
+    }
+
+    // --- operaciones TDALista ---
+
+    @Override
+    public void agregar(T elem)                  { poneEnCola(elem); }
+
+    @Override
+    public void agregar(int index, T elem) {
+        if (index < 0 || index > tamanio) throw new IndexOutOfBoundsException();
+        if (index == tamanio) { poneEnCola(elem); return; }
+        Nodo<T> nuevo = new Nodo<>(elem);
+        if (index == 0) { nuevo.siguiente = frente; frente = nuevo; }
+        else {
+            Nodo<T> aux = nodoEn(index - 1);
+            nuevo.siguiente = aux.siguiente;
+            aux.siguiente = nuevo;
+        }
+        tamanio++;
+    }
+
+    @Override
+    public T obtener(int index) {
+        if (index < 0 || index >= tamanio) throw new IndexOutOfBoundsException();
+        return nodoEn(index).dato;
+    }
+
+    @Override
+    public T remover(int index) {
+        if (index < 0 || index >= tamanio) throw new IndexOutOfBoundsException();
+        if (index == 0) return quitaDeCola();
+        Nodo<T> anterior = nodoEn(index - 1);
+        T dato = anterior.siguiente.dato;
+        if (anterior.siguiente == posterior) posterior = anterior;
+        anterior.siguiente = anterior.siguiente.siguiente;
+        tamanio--;
+        return dato;
+    }
+
+    @Override
+    public boolean remover(T elem) {
+        int idx = indiceDe(elem);
+        if (idx == -1) return false;
+        remover(idx);
+        return true;
+    }
+
+    @Override
+    public boolean contiene(T elem)  { return indiceDe(elem) != -1; }
+
+    @Override
+    public int indiceDe(T elem) {
+        Nodo<T> aux = frente;
+        int i = 0;
+        while (aux != null) {
+            if (aux.dato.equals(elem)) return i;
+            aux = aux.siguiente; i++;
+        }
+        return -1;
+    }
+
+    @Override
+    public T buscar(Predicate<T> criterio) {
+        Nodo<T> aux = frente;
+        while (aux != null) {
+            if (criterio.test(aux.dato)) return aux.dato;
+            aux = aux.siguiente;
+        }
+        return null;
+    }
+
+    @Override
+    public TDALista<T> ordenar(Comparator<T> comparator) {
+        Cola<T> copia = new Cola<>();
+        Nodo<T> aux = frente;
+        while (aux != null) { copia.poneEnCola(aux.dato); aux = aux.siguiente; }
+        boolean cambio = true;
+        while (cambio) {
+            cambio = false;
+            Nodo<T> cur = copia.frente;
+            while (cur != null && cur.siguiente != null) {
+                if (comparator.compare(cur.dato, cur.siguiente.dato) > 0) {
+                    T tmp = cur.dato; cur.dato = cur.siguiente.dato; cur.siguiente.dato = tmp;
+                    cambio = true;
+                }
+                cur = cur.siguiente;
+            }
+        }
+        return copia;
+    }
+
+    @Override
+    public int tamaño()       { return tamanio; }
+
+    @Override
+    public boolean esVacio()  { return tamanio == 0; }
+
+    @Override
+    public void vaciar()      { frente = null; posterior = null; tamanio = 0; }
+
+    private Nodo<T> nodoEn(int index) {
+        Nodo<T> aux = frente;
+        for (int i = 0; i < index; i++) aux = aux.siguiente;
+        return aux;
+    }
+}
+```
+
+---
+
+## Pila\<T\>
+
+LIFO (festival-otaku). Lista enlazada interna con puntero `tope` — `mete`, `saca` y `tope()` son O(1).
+
+```java
+public class Pila<T> implements TDAPila<T> {
+
+    private static class Nodo<T> {
+        T dato;
+        Nodo<T> siguiente;
+        Nodo(T dato) { this.dato = dato; }
+    }
+
+    private Nodo<T> tope;
+    private int tamanio;
+
+    public Pila() { tope = null; tamanio = 0; }
+
+    // --- operaciones LIFO ---
+
+    @Override
+    public void mete(T dato) {
+        Nodo<T> nuevo = new Nodo<>(dato);
+        nuevo.siguiente = tope;
+        tope = nuevo;
+        tamanio++;
+    }
+
+    @Override
+    public T saca() {
+        if (esVacio()) throw new java.util.NoSuchElementException("Pila vacía");
+        T dato = tope.dato;
+        tope = tope.siguiente;
+        tamanio--;
+        return dato;
+    }
+
+    @Override
+    public T tope() {
+        if (esVacio()) throw new java.util.NoSuchElementException("Pila vacía");
+        return tope.dato;
+    }
+
+    // --- operaciones TDALista ---
+
+    @Override
+    public void agregar(T elem)   { mete(elem); }
+
+    @Override
+    public void agregar(int index, T elem) {
+        if (index < 0 || index > tamanio) throw new IndexOutOfBoundsException();
+        if (index == 0) { mete(elem); return; }
+        Nodo<T> nuevo = new Nodo<>(elem);
+        Nodo<T> aux = nodoEn(index - 1);
+        nuevo.siguiente = aux.siguiente;
+        aux.siguiente = nuevo;
+        tamanio++;
+    }
+
+    @Override
+    public T obtener(int index) {
+        if (index < 0 || index >= tamanio) throw new IndexOutOfBoundsException();
+        return nodoEn(index).dato;
+    }
+
+    @Override
+    public T remover(int index) {
+        if (index < 0 || index >= tamanio) throw new IndexOutOfBoundsException();
+        if (index == 0) return saca();
+        Nodo<T> anterior = nodoEn(index - 1);
+        T dato = anterior.siguiente.dato;
+        anterior.siguiente = anterior.siguiente.siguiente;
+        tamanio--;
+        return dato;
+    }
+
+    @Override
+    public boolean remover(T elem) {
+        int idx = indiceDe(elem);
+        if (idx == -1) return false;
+        remover(idx);
+        return true;
+    }
+
+    @Override
+    public boolean contiene(T elem)  { return indiceDe(elem) != -1; }
+
+    @Override
+    public int indiceDe(T elem) {
+        Nodo<T> aux = tope;
+        int i = 0;
+        while (aux != null) {
+            if (aux.dato.equals(elem)) return i;
+            aux = aux.siguiente; i++;
+        }
+        return -1;
+    }
+
+    @Override
+    public T buscar(Predicate<T> criterio) {
+        Nodo<T> aux = tope;
+        while (aux != null) {
+            if (criterio.test(aux.dato)) return aux.dato;
+            aux = aux.siguiente;
+        }
+        return null;
+    }
+
+    @Override
+    public TDALista<T> ordenar(Comparator<T> comparator) {
+        Pila<T> copia = new Pila<>();
+        Nodo<T> aux = tope;
+        while (aux != null) { copia.mete(aux.dato); aux = aux.siguiente; }
+        boolean cambio = true;
+        while (cambio) {
+            cambio = false;
+            Nodo<T> cur = copia.tope;
+            while (cur != null && cur.siguiente != null) {
+                if (comparator.compare(cur.dato, cur.siguiente.dato) > 0) {
+                    T tmp = cur.dato; cur.dato = cur.siguiente.dato; cur.siguiente.dato = tmp;
+                    cambio = true;
+                }
+                cur = cur.siguiente;
+            }
+        }
+        return copia;
+    }
+
+    @Override
+    public int tamaño()       { return tamanio; }
+
+    @Override
+    public boolean esVacio()  { return tamanio == 0; }
+
+    @Override
+    public void vaciar()      { tope = null; tamanio = 0; }
+
+    private Nodo<T> nodoEn(int index) {
+        Nodo<T> aux = tope;
+        for (int i = 0; i < index; i++) aux = aux.siguiente;
+        return aux;
+    }
+}
+```
+
+---
+
+## TElementoAB\<T\>
+
+Nodo del BST (2024-S1). Usar `IElementoAB<T>` en las firmas de métodos propios.
+
+```java
+public class TElementoAB<T> implements IElementoAB<T> {
+
+    private Comparable etiqueta;
+    private TElementoAB<T> hijoIzq;
+    private TElementoAB<T> hijoDer;
+    private T datos;
+
+    public TElementoAB(Comparable etiqueta, T datos) {
+        this.etiqueta = etiqueta;
+        this.datos = datos;
+    }
+
+    public T getDatos()                        { return datos; }
+    public Comparable getEtiqueta()            { return etiqueta; }
+    public TElementoAB<T> getHijoIzq()        { return hijoIzq; }
+    public TElementoAB<T> getHijoDer()        { return hijoDer; }
+    public void setHijoIzq(TElementoAB<T> e)  { hijoIzq = e; }
+    public void setHijoDer(TElementoAB<T> e)  { hijoDer = e; }
+    public String imprimir()                   { return etiqueta.toString(); }
+
+    @SuppressWarnings("unchecked")
+    public boolean insertar(TElementoAB<T> elem) {
+        if (elem.getEtiqueta().compareTo(etiqueta) < 0) {
+            if (hijoIzq != null) return hijoIzq.insertar(elem);
+            hijoIzq = elem; return true;
+        } else if (elem.getEtiqueta().compareTo(etiqueta) > 0) {
+            if (hijoDer != null) return hijoDer.insertar(elem);
+            hijoDer = elem; return true;
+        }
+        return false; // duplicado — no inserta
+    }
+
+    @SuppressWarnings("unchecked")
+    public TElementoAB<T> buscar(Comparable clave) {
+        if (clave.equals(etiqueta))          return this;
+        if (clave.compareTo(etiqueta) < 0)   return hijoIzq != null ? hijoIzq.buscar(clave) : null;
+        return hijoDer != null ? hijoDer.buscar(clave) : null;
+    }
+
+    @SuppressWarnings("unchecked")
+    public TElementoAB<T> eliminar(Comparable clave) {
+        if (clave.compareTo(etiqueta) < 0) {
+            if (hijoIzq != null) hijoIzq = hijoIzq.eliminar(clave);
+            return this;
+        }
+        if (clave.compareTo(etiqueta) > 0) {
+            if (hijoDer != null) hijoDer = hijoDer.eliminar(clave);
+            return this;
+        }
+        return quitaElNodo();
+    }
+
+    private TElementoAB<T> quitaElNodo() {
+        if (hijoIzq == null) return hijoDer;
+        if (hijoDer == null) return hijoIzq;
+        TElementoAB<T> hijo = hijoIzq, padre = this;
+        while (hijo.getHijoDer() != null) { padre = hijo; hijo = hijo.getHijoDer(); }
+        if (padre != this) { padre.setHijoDer(hijo.getHijoIzq()); hijo.setHijoIzq(hijoIzq); }
+        hijo.setHijoDer(hijoDer);
+        setHijoIzq(null); setHijoDer(null);
+        return hijo;
+    }
+
+    public int obtenerTamaño() {
+        int t = 1;
+        if (hijoIzq != null) t += hijoIzq.obtenerTamaño();
+        if (hijoDer != null) t += hijoDer.obtenerTamaño();
+        return t;
+    }
+
+    public void inOrden(java.util.LinkedList<T> lista) {
+        if (hijoIzq != null) hijoIzq.inOrden(lista);
+        lista.add(datos);
+        if (hijoDer != null) hijoDer.inOrden(lista);
+    }
+
+    public void preOrden(java.util.LinkedList<T> lista) {
+        lista.add(datos);
+        if (hijoIzq != null) hijoIzq.preOrden(lista);
+        if (hijoDer != null) hijoDer.preOrden(lista);
+    }
+
+    public void postOrden(java.util.LinkedList<T> lista) {
+        if (hijoIzq != null) hijoIzq.postOrden(lista);
+        if (hijoDer != null) hijoDer.postOrden(lista);
+        lista.add(datos);
+    }
+
+    public String inOrden() {
+        StringBuilder sb = new StringBuilder();
+        if (hijoIzq != null) sb.append(hijoIzq.inOrden()).append(TArbolBB.SEPARADOR_ELEMENTOS_IMPRESOS);
+        sb.append(imprimir());
+        if (hijoDer != null) sb.append(TArbolBB.SEPARADOR_ELEMENTOS_IMPRESOS).append(hijoDer.inOrden());
+        return sb.toString();
+    }
+
+    public int obtenerAltura() {
+        int altIzq = (hijoIzq != null) ? hijoIzq.obtenerAltura() : -1;
+        int altDer = (hijoDer != null) ? hijoDer.obtenerAltura() : -1;
+        return 1 + Math.max(altIzq, altDer);
+    }
+
+    @SuppressWarnings("unchecked")
+    public int obtenerNivel(Comparable criterio, int nivelActual) {
+        if (criterio.compareTo(etiqueta) == 0) return nivelActual;
+        if (criterio.compareTo(etiqueta) < 0)
+            return hijoIzq != null ? hijoIzq.obtenerNivel(criterio, nivelActual + 1) : -1;
+        return hijoDer != null ? hijoDer.obtenerNivel(criterio, nivelActual + 1) : -1;
+    }
+}
+```
+
+---
+
+## TArbolBB\<T\>
+
+BST genérico (2024-S1). `TArbolDeProductos` extiende esta clase sin agregar métodos.
+
+```java
+public class TArbolBB<T> implements IArbolBB<T> {
+
+    protected TElementoAB<T> raiz;
+    public static final String SEPARADOR_ELEMENTOS_IMPRESOS = "-";
+
+    public TArbolBB() { raiz = null; }
+
+    public boolean insertar(Comparable etiqueta, T dato) {
+        TElementoAB<T> elem = new TElementoAB<>(etiqueta, dato);
+        if (esVacio()) { raiz = elem; return true; }
+        return raiz.insertar(elem);
+    }
+
+    public T buscar(Comparable etiqueta) {
+        if (esVacio()) return null;
+        TElementoAB<T> e = raiz.buscar(etiqueta);
+        return e != null ? e.getDatos() : null;
+    }
+
+    public void eliminar(Comparable etiqueta) {
+        if (!esVacio()) raiz = raiz.eliminar(etiqueta);
+    }
+
+    public boolean esVacio()  { return raiz == null; }
+
+    public boolean vaciar() {
+        if (!esVacio()) { raiz = null; return true; }
+        return false;
+    }
+
+    public TElementoAB<T> getRaiz() { return raiz; }
+
+    public int obtenerAltura() {
+        if (esVacio()) return -1;
+        return raiz.obtenerAltura();
+    }
+
+    public int obtenerNivel(Comparable criterio) {
+        if (esVacio()) return -1;
+        return raiz.obtenerNivel(criterio, 0);
+    }
+
+    // inOrden / preOrden / postOrden usan LinkedList internamente.
+    // En el parcial: implementar recorridos manualmente con getRaiz() (ver Patrones).
+    public java.util.List<T> inOrden() {
+        if (esVacio()) return null;
+        java.util.LinkedList<T> lista = new java.util.LinkedList<>();
+        raiz.inOrden(lista);
+        return lista;
+    }
+
+    public java.util.List<T> preOrden() {
+        if (esVacio()) return null;
+        java.util.LinkedList<T> lista = new java.util.LinkedList<>();
+        raiz.preOrden(lista);
+        return lista;
+    }
+
+    public java.util.List<T> postOrden() {
+        if (esVacio()) return null;
+        java.util.LinkedList<T> lista = new java.util.LinkedList<>();
+        raiz.postOrden(lista);
+        return lista;
+    }
+}
+```
+
+---
+
+## TElementoAVL\<T\>
+
+Nodo del AVL. Extiende `TElementoAB<T>` agregando el campo `altura` almacenado — esto permite que `obtenerAltura`, `factorBalance` y todas las rotaciones sean **O(1)**.
+
+```java
+public class TElementoAVL<T> extends TElementoAB<T> {
+
+    private int altura;
+
+    public TElementoAVL(Comparable etiqueta, T datos) {
+        super(etiqueta, datos);
+        this.altura = 0;
+    }
+
+    public int getAltura() { return altura; }
+
+    // --- auxiliares O(1) ---
+
+    private static int altura(TElementoAVL<?> nodo) {
+        return nodo == null ? -1 : nodo.altura;
+    }
+
+    private void actualizarAltura() {
+        this.altura = 1 + Math.max(
+            altura((TElementoAVL<?>) getHijoIzq()),
+            altura((TElementoAVL<?>) getHijoDer())
+        );
+    }
+
+    private int factorBalance() {
+        return altura((TElementoAVL<?>) getHijoDer())
+             - altura((TElementoAVL<?>) getHijoIzq());
+    }
+
+    // --- rotaciones O(1) ---
+
+    private TElementoAVL<T> rotacionDerecha() {          // LL
+        TElementoAVL<T> k1 = (TElementoAVL<T>) getHijoIzq();
+        setHijoIzq(k1.getHijoDer());
+        k1.setHijoDer(this);
+        this.actualizarAltura();
+        k1.actualizarAltura();
+        return k1;
+    }
+
+    private TElementoAVL<T> rotacionIzquierda() {        // RR
+        TElementoAVL<T> k2 = (TElementoAVL<T>) getHijoDer();
+        setHijoDer(k2.getHijoIzq());
+        k2.setHijoIzq(this);
+        this.actualizarAltura();
+        k2.actualizarAltura();
+        return k2;
+    }
+
+    private TElementoAVL<T> rotacionDobleIzquierdaDerecha() {  // LR
+        setHijoIzq(((TElementoAVL<T>) getHijoIzq()).rotacionIzquierda());
+        return rotacionDerecha();
+    }
+
+    private TElementoAVL<T> rotacionDobleDerechaIzquierda() {  // RL
+        setHijoDer(((TElementoAVL<T>) getHijoDer()).rotacionDerecha());
+        return rotacionIzquierda();
+    }
+
+    // --- balancear O(1) ---
+
+    private TElementoAVL<T> balancear() {
+        actualizarAltura();
+        int bf = factorBalance();
+        if (bf == -2) {
+            TElementoAVL<T> hijoIzq = (TElementoAVL<T>) getHijoIzq();
+            return hijoIzq.factorBalance() <= 0
+                ? rotacionDerecha()                   // LL
+                : rotacionDobleIzquierdaDerecha();    // LR
+        }
+        if (bf == 2) {
+            TElementoAVL<T> hijoDer = (TElementoAVL<T>) getHijoDer();
+            return hijoDer.factorBalance() >= 0
+                ? rotacionIzquierda()                 // RR
+                : rotacionDobleDerechaIzquierda();    // RL
+        }
+        return this;
+    }
+
+    // --- insertar con balanceo O(log n) ---
+
+    @SuppressWarnings("unchecked")
+    public TElementoAVL<T> insertarAVL(TElementoAVL<T> elemento) {
+        if (elemento.getEtiqueta().compareTo(getEtiqueta()) < 0) {
+            if (getHijoIzq() == null)
+                setHijoIzq(elemento);
+            else
+                setHijoIzq(((TElementoAVL<T>) getHijoIzq()).insertarAVL(elemento));
+        } else if (elemento.getEtiqueta().compareTo(getEtiqueta()) > 0) {
+            if (getHijoDer() == null)
+                setHijoDer(elemento);
+            else
+                setHijoDer(((TElementoAVL<T>) getHijoDer()).insertarAVL(elemento));
+        }
+        // si la etiqueta ya existe, no inserta (duplicado ignorado)
+        return balancear();
+    }
+}
+```
+
+---
+
+## TArbolAVL\<T\>
+
+AVL completo. Extiende `TArbolBB<T>` y sobreescribe solo `insertar` para usar `insertarAVL`. Hereda `buscar`, `eliminar`, `getRaiz`, `esVacio`, `obtenerAltura`, `obtenerNivel` sin cambios.
+
+```java
+public class TArbolAVL<T> extends TArbolBB<T> {
+
+    public TArbolAVL() { super(); }
+
+    @Override
+    public boolean insertar(Comparable etiqueta, T dato) {
+        TElementoAVL<T> elemento = new TElementoAVL<>(etiqueta, dato);
+        if (esVacio()) {
+            raiz = elemento;
+            return true;
+        }
+        int tamAntes = raiz.obtenerTamaño();
+        raiz = ((TElementoAVL<T>) raiz).insertarAVL(elemento);
+        return raiz.obtenerTamaño() > tamAntes;   // false si fue duplicado
+    }
+}
+```
 
 ---
 
 ## ManejadorArchivosGenerico
 
-Clase utilitaria estática. Misma API en todos los parciales.
+Clase utilitaria estática (2024-S1). Misma API en todos los parciales.
 
-| Firma | Retorno | Descripción |
-|-------|---------|-------------|
-| `leerArchivo(String ruta)` | `String[]` | Lee el archivo; una línea por elemento del arreglo |
-| `escribirArchivo(String ruta, String[] lineas)` | `void` | Escribe el arreglo de líneas (modo append) |
+```java
+public class ManejadorArchivosGenerico {
+
+    public static void escribirArchivo(String ruta, String[] lineas) {
+        try (java.io.FileWriter fw = new java.io.FileWriter(ruta, true);
+             java.io.BufferedWriter bw = new java.io.BufferedWriter(fw)) {
+            for (String linea : lineas) { bw.write(linea); bw.newLine(); }
+        } catch (java.io.IOException e) { e.printStackTrace(); }
+    }
+
+    public static String[] leerArchivo(String ruta) {
+        java.util.ArrayList<String> lineas = new java.util.ArrayList<>();
+        try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader(ruta))) {
+            String linea;
+            while ((linea = br.readLine()) != null) lineas.add(linea);
+        } catch (java.io.IOException e) { e.printStackTrace(); }
+        return lineas.toArray(new String[0]);
+    }
+}
+```
+
+---
+
+## Patrones de uso frecuentes
+
+### Recorrer Lista\<T\>
+
+```java
+Nodo<T> aux = lista.getPrimero();
+while (aux != null) {
+    T dato = aux.getDato();
+    aux = aux.getSiguiente();
+}
+```
+
+### Selection sort sobre Lista\<T\>
+
+```java
+Nodo<T> i = lista.getPrimero();
+while (i != null) {
+    Nodo<T> min = i, j = i.getSiguiente();
+    while (j != null) {
+        if (j.getDato().getCampo().compareTo(min.getDato().getCampo()) < 0) min = j;
+        j = j.getSiguiente();
+    }
+    T tmp = i.getDato(); i.setDato(min.getDato()); min.setDato(tmp);
+    i = i.getSiguiente();
+}
+```
+
+### Recorrido inorden manual sobre árbol
+
+```java
+// En la clase árbol
+public Lista<T> filtrar() {
+    Lista<T> resultado = new Lista<>();
+    if (!esVacio()) filtrarNodo(getRaiz(), resultado);
+    return resultado;
+}
+
+// Método privado recursivo
+private void filtrarNodo(IElementoAB<T> nodo, Lista<T> lista) {
+    if (nodo == null) return;
+    filtrarNodo(nodo.getHijoIzq(), lista);
+    if (condicion(nodo.getDatos()))
+        lista.insertar(nodo.getEtiqueta(), nodo.getDatos());
+    filtrarNodo(nodo.getHijoDer(), lista);
+}
+```
+
+### Acceso al N-ésimo elemento de Lista\<T\>
+
+```java
+// Equivalente a get(3) — cuarto elemento
+T cuarto = lista.getPrimero()
+    .getSiguiente().getSiguiente().getSiguiente().getDato();
+```
+
+### Leer archivo y parsear
 
 ```java
 String[] lineas = ManejadorArchivosGenerico.leerArchivo("datos.txt");
@@ -303,81 +1135,4 @@ for (String linea : lineas) {
 
 ---
 
-## Patrones de uso frecuentes
-
-### Recorrer una Lista\<T\>
-
-```java
-Nodo<T> aux = lista.getPrimero();
-while (aux != null) {
-    T dato = aux.getDato();
-    // procesar dato
-    aux = aux.getSiguiente();
-}
-```
-
-### Selection sort sobre Lista\<T\> (sin sort() nativo)
-
-```java
-Nodo<T> i = lista.getPrimero();
-while (i != null) {
-    Nodo<T> minNodo = i;
-    Nodo<T> j = i.getSiguiente();
-    while (j != null) {
-        if (j.getDato().getCampo().compareTo(minNodo.getDato().getCampo()) < 0)
-            minNodo = j;
-        j = j.getSiguiente();
-    }
-    T tmp = i.getDato(); i.setDato(minNodo.getDato()); minNodo.setDato(tmp);
-    i = i.getSiguiente();
-}
-```
-
-### Recorrido inorden manual sobre árbol
-
-```java
-// Nivel árbol
-public Lista<T> filtrar() {
-    Lista<T> resultado = new Lista<>();
-    if (!esVacio()) filtrarNodo(getRaiz(), resultado);
-    return resultado;
-}
-
-// Nivel nodo
-private void filtrarNodo(IElementoAB<T> nodo, Lista<T> lista) {
-    if (nodo == null) return;
-    filtrarNodo(nodo.getHijoIzq(), lista);
-    if (condicion(nodo.getDatos()))
-        lista.insertar(nodo.getEtiqueta(), nodo.getDatos());
-    filtrarNodo(nodo.getHijoDer(), lista);
-}
-```
-
-### Acceso al N-ésimo elemento (sin get(i))
-
-```java
-// Equivalente a get(3)
-T cuarto = lista.getPrimero()
-    .getSiguiente()
-    .getSiguiente()
-    .getSiguiente()
-    .getDato();
-```
-
-### Cola y Pila
-
-```java
-Cola<T> cola = new Cola<>();
-cola.poneEnCola(dato);
-T frente = cola.frente();
-T removido = cola.quitaDeCola();
-
-Pila<T> pila = new Pila<>();
-pila.mete(dato);
-T tope = pila.tope();
-T removido = pila.saca();
-```
-
----
-
-*Referencia compilada a partir del código base AED UCU 2024-S1, festival-otaku, farmachop — 2026.*
+*Código base AED UCU 2024-S1, festival-otaku, farmachop — 2026.*
