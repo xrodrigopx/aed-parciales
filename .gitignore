@@ -4,7 +4,7 @@
 *.war
 *.ear
 /bin/
-/target/
+target/
 
 # Archivos de configuración de IDEs
 .project
