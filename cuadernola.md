@@ -28,6 +28,7 @@ Material de estudio consolidado para el primer parcial de Algoritmos y Estructur
   - [Recorridos del árbol](#recorridos-del-árbol) — inOrden, preOrden, postOrden, Recorrido en Anchura
   - [Tabla de posiciones en recorridos (tipo parcial)](#tabla-de-posiciones-en-recorridos-tipo-parcial)
 - [AVL — Árbol Binario de Búsqueda Autobalanceado](#avl--árbol-binario-de-búsqueda-autobalanceado) — auxiliares, rotaciones, `balancear`, `insertar`, `eliminar`
+- [Clave Compuesta en ABB/AVL](#clave-compuesta-en-abbavl) — cuándo usarla, `compareTo`, `insertar` con clave compuesta
 
 ---
 
@@ -87,6 +88,7 @@ Ningún ingeniero tiene en la cabeza los casos borde de todas las estructuras. L
 
 - No puede haber duplicados → Conjunto (su invariante es unicidad)
 - Puede haber duplicados → Lista o árbol (con política definida: insertar igual o ignorar)
+- Pueden existir múltiples elementos con el mismo valor en el campo elegido como clave (ej: dos películas del mismo año), pero cada elemento es único por la combinación de dos campos → **ABB/AVL con clave compuesta**. Ver [Clave Compuesta en ABB/AVL](#clave-compuesta-en-abbavl).
 
 **5. ¿Necesito acceder a ambos extremos?**
 
@@ -1503,3 +1505,69 @@ fin método
 ```
 
 **Orden:** O(log n) garantizado.
+
+---
+
+### Clave Compuesta en ABB/AVL
+
+**¿Cuándo se necesita?**
+
+Cuando la clave natural de los elementos puede repetirse, pero la *combinación* de dos campos es única. El árbol requiere que cada nodo tenga una etiqueta distinta; si se insertan dos películas con el mismo año, el ABB/AVL rechazaría la segunda (duplicado). La solución es definir una **clave compuesta** que combine los dos campos en un tipo que implementa `Comparable`.
+
+**Señales en el enunciado:**
+- "Puede haber varias películas del mismo año" (clave por año puede colisionar)
+- "Ordenar por año; si coincide el año, ordenar por título" (desempate explícito)
+- "Cada película se identifica unívocamente por año + título" (unicidad compuesta)
+
+**Cómo funciona:**
+
+La clave compuesta implementa `compareTo` con prioridad de campos:
+1. Comparar por el **campo primario** (ej: año).
+2. Si son iguales, comparar por el **campo secundario** (ej: título).
+3. Si ambos son iguales, son el mismo elemento → retornar 0.
+
+Esto convierte al árbol en un índice ordenado primero por año, luego por título dentro del mismo año. El recorrido inorden produce los elementos en ese orden exacto.
+
+**Estructura de la clave:**
+
+```
+ClavePelicula:
+  anio:   entero
+  titulo: cadena
+
+ClavePelicula.compareTo(otra: ClavePelicula): entero
+  si this.anio < otra.anio entonces retornar -1
+  si this.anio > otra.anio entonces retornar +1
+  // años iguales → desempate por título
+  retornar this.titulo.compareTo(otra.titulo)
+fin método
+```
+
+**Uso en el árbol:**
+
+```
+// Insertar
+clave ← nueva ClavePelicula(pelicula.anio, pelicula.titulo)
+arbol.insertar(clave, pelicula)
+
+// Buscar exacto (requiere año + título)
+clave ← nueva ClavePelicula(anio, titulo)
+resultado ← arbol.buscar(clave)
+```
+
+El árbol usa `compareTo` internamente en cada nodo — no necesita saber que la etiqueta tiene dos campos. Solo requiere que `Comparable` esté implementado.
+
+**Consecuencias sobre los recorridos:**
+
+- **inOrden:** produce los elementos ordenados por año ascendente; dentro del mismo año, por título alfabético.
+- **buscarPorRangoAnio(anioMin, anioMax):** no se puede usar directamente `buscar(año)` porque la clave tiene dos campos. Para el rango se recorre inorden y se filtra por año. Ver pseudocódigo completo en `pseudocodigos/clave-compuesta.md`.
+
+**Trade-off:**
+
+| Enfoque | Ventaja | Limitación |
+|---------|---------|-----------|
+| Clave simple (solo año) | Más simple, O(log n) por año | No tolera años duplicados sin política de duplicados |
+| Clave compuesta (año + título) | Unicidad garantizada; inorden da orden por año luego título | `buscar(anio)` ya no funciona — necesitás año + título; el rango por año requiere recorrido inorden completo |
+| Truco `año * 10000L + hashCode` | No requiere clase extra | Colisiones de hash posibles; frágil |
+
+> **Regla del parcial:** si el enunciado garantiza que la clave principal es única (ej: "el año de estreno es único por película"), usá clave simple. Si puede haber duplicados en esa clave, definí una clave compuesta con `compareTo` en dos campos.
