@@ -17,6 +17,7 @@ Contiene enunciados de parciales anteriores (2024–2025), soluciones completas 
   - [Ejercicios de parcial](#ejercicios-de-parcial)
 - [Soluciones](#soluciones)
 - [Código Base](#código-base)
+- [Referencia de Métodos Java](#referencia-de-métodos-java)
 - [Lo más importante para el parcial](#lo-más-importante-para-el-parcial)
 
 ---
@@ -125,6 +126,14 @@ Código Java provisto por la cátedra en cada parcial:
 | `codigo-base/farmachop/` | Práctico #10 | `Lista`, `Nodo`, `ILista`, `INodo`, archivos `.txt` de datos |
 | `codigo-base/festival-otaku/` | Recuperatorio 2025 S1 | `TDALista`, `TDACola`, `TDAPila`, `TDAConjunto` + implementaciones |
 | `codigo-base/parentesco/` | Parcial 2024 S2 | `TArbolBB`, `TElementoAB`, `Genealogia` (stub), `Persona`, `ResultadoParentesco`, tests |
+
+---
+
+## Referencia de Métodos Java
+
+**[`metodos_java.md`](metodos_java.md)** — catálogo completo de métodos disponibles en cada TDA del curso, separado por estructura.
+
+Incluye: `Lista<T>`, `Nodo<T>`, `TArbolBB<T>`, `TElementoAB<T>`, `Cola<T>`, `Pila<T>`, `Conjunto<T>`, `ManejadorArchivosGenerico`, patrones de uso frecuentes (recorrido inorden manual, selection sort sobre Lista, uso de Cola y Pila en Java).
 
 ---
 
