@@ -261,6 +261,16 @@ Lista<T>:
   tamanio: entero  ← cantidad de elementos actuales (0 si vacía)
 ```
 
+*Implementación en Java:*
+
+`Lista`
+```java
+public class Lista<T> {
+    private T[] datos;
+    private int tamanio;
+}
+```
+
 #### obtener(indice)
 
 **Lenguaje natural:** Retorna el dato en la posición indicada sin modificar la lista.
@@ -278,6 +288,16 @@ fin método
 ```
 
 **Orden:** O(1)
+
+*Implementación en Java:*
+
+`Lista`
+```java
+public T obtener(int indice) {
+    if (indice < 0 || indice >= tamanio) throw new RuntimeException("Índice fuera de rango");
+    return datos[indice]; // acceso directo por índice
+}
+```
 
 ---
 
@@ -299,6 +319,17 @@ fin método
 ```
 
 **Orden:** O(1)
+
+*Implementación en Java:*
+
+`Lista`
+```java
+public void insertar(T dato) {
+    if (tamanio == datos.length) throw new RuntimeException("Lista llena");
+    datos[tamanio] = dato; // agrega al final
+    tamanio++;
+}
+```
 
 ---
 
@@ -326,6 +357,18 @@ fin método
 
 **Orden:** O(n) — desplazamiento de hasta n elementos.
 
+*Implementación en Java:*
+
+`Lista`
+```java
+public void insertar(int indice, T dato) {
+    if (indice < 0 || indice > tamanio || tamanio == datos.length) throw new RuntimeException("Inserción inválida");
+    for (int i = tamanio - 1; i >= indice; i--) datos[i + 1] = datos[i]; // desplaza a la derecha
+    datos[indice] = dato;
+    tamanio++;
+}
+```
+
 ---
 
 #### buscar(dato)
@@ -349,6 +392,18 @@ fin método
 ```
 
 **Orden:** O(n)
+
+*Implementación en Java:*
+
+`Lista`
+```java
+public int buscar(T dato) {
+    for (int i = 0; i < tamanio; i++) {
+        if (datos[i].equals(dato)) return i; // retorna índice del primero que coincide
+    }
+    return -1;
+}
+```
 
 ---
 
@@ -375,6 +430,17 @@ fin método
 
 **Orden:** O(n) — desplazamiento de hasta n−1 elementos.
 
+*Implementación en Java:*
+
+`Lista`
+```java
+public void eliminar(int indice) {
+    if (indice < 0 || indice >= tamanio) throw new RuntimeException("Índice fuera de rango");
+    for (int i = indice; i < tamanio - 1; i++) datos[i] = datos[i + 1]; // desplaza a la izquierda
+    tamanio--;
+}
+```
+
 ---
 
 ### Lista Enlazada Simple
@@ -395,6 +461,24 @@ Nodo<T>:
 
 Lista<T>:
   primero: Nodo<T>  ← nulo si la lista está vacía
+```
+
+*Implementación en Java:*
+
+`Nodo`
+```java
+public class Nodo<T> {
+    private Comparable etiqueta;
+    private T dato;
+    private Nodo<T> siguiente;
+}
+```
+
+`Lista`
+```java
+public class Lista<T> {
+    private Nodo<T> primero;
+}
 ```
 
 #### insertar(etiqueta, dato) — al final
@@ -421,6 +505,22 @@ fin método
 
 **Orden:** O(n)
 
+*Implementación en Java:*
+
+`Lista`
+```java
+public void insertar(Comparable etiqueta, T dato) {
+    Nodo<T> nodo = new Nodo<>(etiqueta, dato);
+    if (primero == null) {
+        primero = nodo;
+    } else {
+        Nodo<T> aux = primero;
+        while (aux.getSiguiente() != null) aux = aux.getSiguiente(); // llega al último
+        aux.setSiguiente(nodo);
+    }
+}
+```
+
 ---
 
 #### buscar(clave)
@@ -444,6 +544,20 @@ fin método
 ```
 
 **Orden:** O(n)
+
+*Implementación en Java:*
+
+`Lista`
+```java
+public Nodo<T> buscar(Comparable clave) {
+    Nodo<T> aux = primero;
+    while (aux != null) {
+        if (aux.getEtiqueta().equals(clave)) return aux; // encontrado
+        aux = aux.getSiguiente();
+    }
+    return null;
+}
+```
 
 ---
 
@@ -477,6 +591,25 @@ fin método
 
 **Orden:** O(n)
 
+*Implementación en Java:*
+
+`Lista`
+```java
+public boolean eliminar(Comparable clave) {
+    if (primero == null) return false;
+    if (primero.getEtiqueta().equals(clave)) { primero = primero.getSiguiente(); return true; } // era el primero
+    Nodo<T> aux = primero;
+    while (aux.getSiguiente() != null) {
+        if (aux.getSiguiente().getEtiqueta().equals(clave)) {
+            aux.setSiguiente(aux.getSiguiente().getSiguiente()); // desvincula el nodo
+            return true;
+        }
+        aux = aux.getSiguiente();
+    }
+    return false;
+}
+```
+
 ---
 
 ### Lista Doblemente Enlazada
@@ -498,6 +631,26 @@ NodoDoble<T>:
 ListaDoble<T>:
   primero: NodoDoble<T>  ← nulo si la lista está vacía
   ultimo:  NodoDoble<T>  ← nulo si la lista está vacía
+```
+
+*Implementación en Java:*
+
+`NodoDoble`
+```java
+public class NodoDoble<T> {
+    private Comparable etiqueta;
+    private T dato;
+    private NodoDoble<T> anterior;
+    private NodoDoble<T> siguiente;
+}
+```
+
+`ListaDoble`
+```java
+public class ListaDoble<T> {
+    private NodoDoble<T> primero;
+    private NodoDoble<T> ultimo;
+}
 ```
 
 #### insertar(etiqueta, dato) — al final
@@ -522,6 +675,23 @@ fin método
 ```
 
 **Orden:** O(1) — gracias al puntero `ultimo`.
+
+*Implementación en Java:*
+
+`ListaDoble`
+```java
+public void insertar(Comparable etiqueta, T dato) {
+    NodoDoble<T> nodo = new NodoDoble<>(etiqueta, dato);
+    if (primero == null) {
+        primero = nodo;
+        ultimo = nodo;
+    } else {
+        nodo.setAnterior(ultimo);    // apunta hacia atrás
+        ultimo.setSiguiente(nodo);   // apunta hacia adelante
+        ultimo = nodo;
+    }
+}
+```
 
 ---
 
@@ -548,6 +718,23 @@ fin método
 
 **Orden:** O(1)
 
+*Implementación en Java:*
+
+`ListaDoble`
+```java
+public void insertarAlFrente(Comparable etiqueta, T dato) {
+    NodoDoble<T> nodo = new NodoDoble<>(etiqueta, dato);
+    if (primero == null) {
+        primero = nodo;
+        ultimo = nodo;
+    } else {
+        nodo.setSiguiente(primero);  // apunta hacia adelante
+        primero.setAnterior(nodo);   // ex-primero apunta hacia atrás
+        primero = nodo;
+    }
+}
+```
+
 ---
 
 #### buscar(clave)
@@ -571,6 +758,20 @@ fin método
 ```
 
 **Orden:** O(n)
+
+*Implementación en Java:*
+
+`ListaDoble`
+```java
+public NodoDoble<T> buscar(Comparable clave) {
+    NodoDoble<T> aux = primero;
+    while (aux != null) {
+        if (aux.getEtiqueta().equals(clave)) return aux; // encontrado
+        aux = aux.getSiguiente();
+    }
+    return null;
+}
+```
 
 ---
 
@@ -603,6 +804,21 @@ fin método
 
 **Orden:** O(n) — dominado por `buscar`.
 
+*Implementación en Java:*
+
+`ListaDoble`
+```java
+public boolean eliminar(Comparable clave) {
+    NodoDoble<T> nodo = buscar(clave);
+    if (nodo == null) return false;
+    if (nodo.getAnterior() != null) nodo.getAnterior().setSiguiente(nodo.getSiguiente()); // desvincula hacia adelante
+    else primero = nodo.getSiguiente();                                                    // era el primero
+    if (nodo.getSiguiente() != null) nodo.getSiguiente().setAnterior(nodo.getAnterior()); // desvincula hacia atrás
+    else ultimo = nodo.getAnterior();                                                      // era el último
+    return true;
+}
+```
+
 ---
 
 ### Pila
@@ -623,6 +839,23 @@ Pila<T>:
   tope: Nodo<T>  ← nulo si la pila está vacía
 ```
 
+*Implementación en Java:*
+
+`Nodo`
+```java
+public class Nodo<T> {
+    private T dato;
+    private Nodo<T> siguiente;
+}
+```
+
+`Pila`
+```java
+public class Pila<T> {
+    private Nodo<T> tope;
+}
+```
+
 #### apilar(dato)
 
 **Lenguaje natural:** Coloca el nuevo nodo al tope y lo enlaza con el tope anterior.
@@ -639,6 +872,17 @@ fin método
 ```
 
 **Orden:** O(1)
+
+*Implementación en Java:*
+
+`Pila`
+```java
+public void apilar(T dato) {
+    Nodo<T> nodo = new Nodo<>(dato);
+    nodo.setSiguiente(tope); // enlaza al tope actual
+    tope = nodo;
+}
+```
 
 ---
 
@@ -662,6 +906,18 @@ fin método
 
 **Orden:** O(1)
 
+*Implementación en Java:*
+
+`Pila`
+```java
+public T desapilar() {
+    if (tope == null) throw new RuntimeException("Pila vacía");
+    T dato = tope.getDato();
+    tope = tope.getSiguiente(); // avanza el tope
+    return dato;
+}
+```
+
 ---
 
 ### Cola
@@ -680,6 +936,24 @@ Nodo<T>:
 Cola<T>:
   frente:    Nodo<T>  ← nulo si la cola está vacía
   posterior: Nodo<T>  ← nulo si la cola está vacía
+```
+
+*Implementación en Java:*
+
+`Nodo`
+```java
+public class Nodo<T> {
+    private T dato;
+    private Nodo<T> siguiente;
+}
+```
+
+`Cola`
+```java
+public class Cola<T> {
+    private Nodo<T> frente;
+    private Nodo<T> posterior;
+}
 ```
 
 #### encolar(dato)
@@ -703,6 +977,22 @@ fin método
 ```
 
 **Orden:** O(1)
+
+*Implementación en Java:*
+
+`Cola`
+```java
+public void encolar(T dato) {
+    Nodo<T> nodo = new Nodo<>(dato);
+    if (frente == null) {
+        frente = nodo;
+        posterior = nodo;
+    } else {
+        posterior.setSiguiente(nodo); // enlaza al final
+        posterior = nodo;
+    }
+}
+```
 
 ---
 
@@ -729,6 +1019,19 @@ fin método
 
 **Orden:** O(1)
 
+*Implementación en Java:*
+
+`Cola`
+```java
+public T desencolar() {
+    if (frente == null) throw new RuntimeException("Cola vacía");
+    T dato = frente.getDato();
+    frente = frente.getSiguiente();       // avanza el frente
+    if (frente == null) posterior = null; // cola quedó vacía
+    return dato;
+}
+```
+
 ---
 
 ### Cola de Prioridad (variante de Cola)
@@ -749,6 +1052,24 @@ Nodo<T>:
 
 ColaPrioridad<T>:
   frente: Nodo<T>  ← siempre el de mayor prioridad; nulo si vacía
+```
+
+*Implementación en Java:*
+
+`Nodo`
+```java
+public class Nodo<T> {
+    private T dato;
+    private int prioridad;
+    private Nodo<T> siguiente;
+}
+```
+
+`ColaPrioridad`
+```java
+public class ColaPrioridad<T> {
+    private Nodo<T> frente;
+}
 ```
 
 #### encolar(dato, prioridad)
@@ -777,6 +1098,25 @@ fin método
 ```
 
 **Orden:** O(n) — hay que encontrar la posición correcta.
+
+*Implementación en Java:*
+
+`ColaPrioridad`
+```java
+public void encolar(T dato, int prioridad) {
+    Nodo<T> nodo = new Nodo<>(dato, prioridad);
+    if (frente == null || prioridad < frente.getPrioridad()) {
+        nodo.setSiguiente(frente); // inserta al frente
+        frente = nodo;
+    } else {
+        Nodo<T> aux = frente;
+        while (aux.getSiguiente() != null && aux.getSiguiente().getPrioridad() <= prioridad)
+            aux = aux.getSiguiente(); // busca la posición correcta
+        nodo.setSiguiente(aux.getSiguiente());
+        aux.setSiguiente(nodo);
+    }
+}
+```
 
 ---
 
@@ -817,6 +1157,23 @@ Conjunto<T>:
   primero: Nodo<T>  ← nulo si el conjunto está vacío
 ```
 
+*Implementación en Java:*
+
+`Nodo`
+```java
+public class Nodo<T> {
+    private T dato;
+    private Nodo<T> siguiente;
+}
+```
+
+`Conjunto`
+```java
+public class Conjunto<T> {
+    private Nodo<T> primero;
+}
+```
+
 #### insertar(dato)
 
 **Lenguaje natural:** Verifica con `buscar` que no exista; si no, inserta al frente. El invariante es que no hay duplicados.
@@ -837,6 +1194,19 @@ fin método
 ```
 
 **Orden:** O(n) — dominado por `buscar`.
+
+*Implementación en Java:*
+
+`Conjunto`
+```java
+public boolean insertar(T dato) {
+    if (buscar(dato) != null) return false; // ya existe, no se inserta
+    Nodo<T> nodo = new Nodo<>(dato);
+    nodo.setSiguiente(primero); // inserta al frente
+    primero = nodo;
+    return true;
+}
+```
 
 ---
 
@@ -862,6 +1232,20 @@ fin método
 
 **Orden:** O(n)
 
+*Implementación en Java:*
+
+`Conjunto`
+```java
+public Nodo<T> buscar(T dato) {
+    Nodo<T> aux = primero;
+    while (aux != null) {
+        if (aux.getDato().equals(dato)) return aux; // encontrado
+        aux = aux.getSiguiente();
+    }
+    return null;
+}
+```
+
 ---
 
 ### ABB — Árbol Binario de Búsqueda
@@ -884,6 +1268,25 @@ TElementoAB<T>:
 
 TArbolBB<T>:
   raiz: TElementoAB<T>  ← nulo si el árbol está vacío
+```
+
+*Implementación en Java:*
+
+`TElementoAB`
+```java
+public class TElementoAB<T> {
+    private Comparable etiqueta;
+    private T dato;
+    private TElementoAB<T> hijoIzq;
+    private TElementoAB<T> hijoDer;
+}
+```
+
+`TArbolBB`
+```java
+public class TArbolBB<T> {
+    private TElementoAB<T> raiz;
+}
 ```
 
 #### insertar(etiqueta, dato)
@@ -927,6 +1330,31 @@ fin método
 
 **Orden:** O(h). Promedio O(log n), peor caso O(n).
 
+*Implementación en Java:*
+
+`TArbolBB`
+```java
+public boolean insertar(Comparable etiqueta, T dato) {
+    TElementoAB<T> elemento = new TElementoAB<>(etiqueta, dato);
+    if (raiz == null) { raiz = elemento; return true; } // árbol vacío
+    return raiz.insertar(elemento);
+}
+```
+
+`TElementoAB`
+```java
+public boolean insertar(TElementoAB<T> elemento) {
+    if (elemento.getEtiqueta().compareTo(this.etiqueta) < 0) {
+        if (hijoIzq == null) { hijoIzq = elemento; return true; } // inserta a la izquierda
+        return hijoIzq.insertar(elemento);
+    } else if (elemento.getEtiqueta().compareTo(this.etiqueta) > 0) {
+        if (hijoDer == null) { hijoDer = elemento; return true; } // inserta a la derecha
+        return hijoDer.insertar(elemento);
+    }
+    return false; // duplicado, no se inserta
+}
+```
+
 ---
 
 #### buscar(etiqueta)
@@ -969,6 +1397,27 @@ fin método
 ```
 
 **Orden:** O(h). Promedio O(log n), peor caso O(n).
+
+*Implementación en Java:*
+
+`TArbolBB`
+```java
+public T buscar(Comparable etiqueta) {
+    if (raiz == null) return null;
+    TElementoAB<T> nodo = raiz.buscar(etiqueta);
+    return nodo != null ? nodo.getDato() : null;
+}
+```
+
+`TElementoAB`
+```java
+public TElementoAB<T> buscar(Comparable etiqueta) {
+    int cmp = etiqueta.compareTo(this.etiqueta);
+    if (cmp == 0) return this;                                              // encontrado
+    if (cmp < 0) return hijoIzq != null ? hijoIzq.buscar(etiqueta) : null; // busca a la izquierda
+    return hijoDer != null ? hijoDer.buscar(etiqueta) : null;               // busca a la derecha
+}
+```
 
 ---
 
@@ -1024,6 +1473,35 @@ fin método
 
 **Orden:** O(h). Promedio O(log n), peor caso O(n).
 
+*Implementación en Java:*
+
+`TArbolBB`
+```java
+public void eliminar(Comparable etiqueta) {
+    if (raiz != null) raiz = raiz.eliminar(etiqueta);
+}
+```
+
+`TElementoAB`
+```java
+public TElementoAB<T> eliminar(Comparable etiqueta) {
+    int cmp = etiqueta.compareTo(this.etiqueta);
+    if (cmp < 0) { if (hijoIzq != null) hijoIzq = hijoIzq.eliminar(etiqueta); return this; }
+    if (cmp > 0) { if (hijoDer != null) hijoDer = hijoDer.eliminar(etiqueta); return this; }
+    return quitarNodo(); // encontrado, elimina
+}
+
+public TElementoAB<T> quitarNodo() {
+    if (hijoIzq == null) return hijoDer; // caso 0 o 1 hijo derecho
+    if (hijoDer == null) return hijoIzq; // caso 1 hijo izquierdo
+    TElementoAB<T> hijo = hijoIzq, padre = this;
+    while (hijo.hijoDer != null) { padre = hijo; hijo = hijo.hijoDer; } // predecesor inorden
+    if (padre != this) { padre.hijoDer = hijo.hijoIzq; hijo.hijoIzq = hijoIzq; }
+    hijo.hijoDer = hijoDer;
+    return hijo;
+}
+```
+
 ---
 
 #### Recorridos del árbol
@@ -1064,6 +1542,26 @@ fin método
 
 **Orden:** O(n)
 
+*Implementación en Java:*
+
+`TArbolBB`
+```java
+public Lista<T> inOrden() {
+    Lista<T> lista = new Lista<>();
+    if (raiz != null) raiz.inOrden(lista);
+    return lista;
+}
+```
+
+`TElementoAB`
+```java
+public void inOrden(Lista<T> lista) {
+    if (hijoIzq != null) hijoIzq.inOrden(lista); // 1. subárbol izquierdo
+    lista.insertar(this.getDato());               // 2. nodo actual
+    if (hijoDer != null) hijoDer.inOrden(lista);  // 3. subárbol derecho
+}
+```
+
 ---
 
 #### preOrden()
@@ -1091,6 +1589,26 @@ fin método
 
 **Orden:** O(n)
 
+*Implementación en Java:*
+
+`TArbolBB`
+```java
+public Lista<T> preOrden() {
+    Lista<T> lista = new Lista<>();
+    if (raiz != null) raiz.preOrden(lista);
+    return lista;
+}
+```
+
+`TElementoAB`
+```java
+public void preOrden(Lista<T> lista) {
+    lista.insertar(this.getDato());                // 1. nodo actual (primero)
+    if (hijoIzq != null) hijoIzq.preOrden(lista); // 2. subárbol izquierdo
+    if (hijoDer != null) hijoDer.preOrden(lista);  // 3. subárbol derecho
+}
+```
+
 ---
 
 #### postOrden()
@@ -1117,6 +1635,26 @@ fin método
 ```
 
 **Orden:** O(n)
+
+*Implementación en Java:*
+
+`TArbolBB`
+```java
+public Lista<T> postOrden() {
+    Lista<T> lista = new Lista<>();
+    if (raiz != null) raiz.postOrden(lista); // delega al nodo raíz
+    return lista;
+}
+```
+
+`TElementoAB`
+```java
+public void postOrden(Lista<T> lista) {
+    if (hijoIzq != null) hijoIzq.postOrden(lista); // 1. subárbol izquierdo
+    if (hijoDer != null) hijoDer.postOrden(lista);  // 2. subárbol derecho
+    lista.insertar(this.getDato());                 // 3. nodo actual (último)
+}
+```
 
 ---
 
@@ -1169,6 +1707,25 @@ fin método
 
 **Orden:** O(n) — cada nodo se encola y desencola exactamente una vez.
 
+*Implementación en Java:*
+
+`TArbolBB`
+```java
+public Lista<T> recorridoEnAnchura() {
+    Lista<T> lista = new Lista<>();
+    if (raiz == null) return lista;
+    Cola<TElementoAB<T>> cola = new Cola<>();
+    cola.encolar(raiz);
+    while (!cola.esVacia()) {
+        TElementoAB<T> nodo = cola.desencolar();
+        lista.insertar(nodo.getDato());                                      // procesa el nodo
+        if (nodo.getHijoIzq() != null) cola.encolar(nodo.getHijoIzq());     // encola hijo izquierdo
+        if (nodo.getHijoDer() != null) cola.encolar(nodo.getHijoDer());     // encola hijo derecho
+    }
+    return lista;
+}
+```
+
 ---
 
 #### calcularAltura()
@@ -1199,6 +1756,25 @@ TElementoAB.calcularAltura(): entero
   fin si
   retornar max(alturaIzq, alturaDer) + 1
 fin método
+```
+
+*Implementación en Java:*
+
+`TArbolBB`
+```java
+public int calcularAltura() {
+    if (raiz == null) return -1;
+    return raiz.calcularAltura();
+}
+```
+
+`TElementoAB`
+```java
+public int calcularAltura() {
+    int alturaIzq = hijoIzq != null ? hijoIzq.calcularAltura() : -1; // altura del subárbol izquierdo
+    int alturaDer = hijoDer != null ? hijoDer.calcularAltura() : -1; // altura del subárbol derecho
+    return Math.max(alturaIzq, alturaDer) + 1;
+}
 ```
 
 **Traza:**
@@ -1250,6 +1826,26 @@ TElementoAB.calcularTamanio(): entero
   fin si
   retornar tamanio
 fin método
+```
+
+*Implementación en Java:*
+
+`TArbolBB`
+```java
+public int calcularTamanio() {
+    if (raiz == null) return 0;
+    return raiz.calcularTamanio();
+}
+```
+
+`TElementoAB`
+```java
+public int calcularTamanio() {
+    int tamanio = 1;
+    if (hijoIzq != null) tamanio += hijoIzq.calcularTamanio(); // suma subárbol izquierdo
+    if (hijoDer != null) tamanio += hijoDer.calcularTamanio(); // suma subárbol derecho
+    return tamanio;
+}
 ```
 
 **Traza:**
@@ -1316,6 +1912,26 @@ TArbolAVL<T>:
   raiz: TElementoAVL<T>  ← nulo si el árbol está vacío
 ```
 
+*Implementación en Java:*
+
+`TElementoAVL`
+```java
+public class TElementoAVL<T> {
+    private Comparable etiqueta;
+    private T dato;
+    private TElementoAVL<T> hijoIzq;
+    private TElementoAVL<T> hijoDer;
+    private int altura;
+}
+```
+
+`TArbolAVL`
+```java
+public class TArbolAVL<T> {
+    private TElementoAVL<T> raiz;
+}
+```
+
 #### Auxiliares: altura, actualizarAltura, factorBalance
 
 **Lenguaje natural:** `altura` retorna la altura del nodo (−1 si nulo); `actualizarAltura` la recalcula desde los hijos; `factorBalance` retorna `h(der) − h(izq)` — si es ±2, hay desbalance.
@@ -1339,6 +1955,23 @@ fin método
 ```
 
 **Orden:** O(1)
+
+*Implementación en Java:*
+
+`TElementoAVL`
+```java
+private int altura(TElementoAVL<T> nodo) {
+    return nodo == null ? -1 : nodo.altura; // -1 para nulos
+}
+
+private void actualizarAltura(TElementoAVL<T> nodo) {
+    nodo.altura = 1 + Math.max(altura(nodo.hijoIzq), altura(nodo.hijoDer)); // recalcula desde hijos
+}
+
+private int factorBalance(TElementoAVL<T> nodo) {
+    return altura(nodo.hijoDer) - altura(nodo.hijoIzq); // positivo = carga a la derecha
+}
+```
 
 ---
 
@@ -1389,6 +2022,37 @@ fin método
 
 **Orden:** O(1) todas las rotaciones.
 
+*Implementación en Java:*
+
+`TElementoAVL`
+```java
+private TElementoAVL<T> rotacionDerecha(TElementoAVL<T> k2) { // LL
+    TElementoAVL<T> k1 = k2.hijoIzq;
+    k2.hijoIzq = k1.hijoDer; // k2 adopta el hijo derecho de k1
+    k1.hijoDer = k2;          // k1 sube, k2 baja a la derecha
+    actualizarAltura(k2); actualizarAltura(k1);
+    return k1;
+}
+
+private TElementoAVL<T> rotacionIzquierda(TElementoAVL<T> k1) { // RR
+    TElementoAVL<T> k2 = k1.hijoDer;
+    k1.hijoDer = k2.hijoIzq; // k1 adopta el hijo izquierdo de k2
+    k2.hijoIzq = k1;          // k2 sube, k1 baja a la izquierda
+    actualizarAltura(k1); actualizarAltura(k2);
+    return k2;
+}
+
+private TElementoAVL<T> rotacionDobleIzquierdaDerecha(TElementoAVL<T> k3) { // LR
+    k3.hijoIzq = rotacionIzquierda(k3.hijoIzq); // primero izquierda en el hijo
+    return rotacionDerecha(k3);                   // luego derecha en el nodo
+}
+
+private TElementoAVL<T> rotacionDobleDerechaIzquierda(TElementoAVL<T> k1) { // RL
+    k1.hijoDer = rotacionDerecha(k1.hijoDer); // primero derecha en el hijo
+    return rotacionIzquierda(k1);              // luego izquierda en el nodo
+}
+```
+
 ---
 
 #### balancear(nodo)
@@ -1422,6 +2086,23 @@ fin método
 ```
 
 **Orden:** O(1)
+
+*Implementación en Java:*
+
+`TElementoAVL`
+```java
+private TElementoAVL<T> balancear(TElementoAVL<T> nodo) {
+    actualizarAltura(nodo);
+    int bf = factorBalance(nodo);
+    if (bf == -2) return factorBalance(nodo.hijoIzq) <= 0
+        ? rotacionDerecha(nodo)                // LL
+        : rotacionDobleIzquierdaDerecha(nodo); // LR
+    if (bf == +2) return factorBalance(nodo.hijoDer) >= 0
+        ? rotacionIzquierda(nodo)              // RR
+        : rotacionDobleDerechaIzquierda(nodo); // RL
+    return nodo; // ya balanceado, no se rota
+}
+```
 
 ---
 
@@ -1461,6 +2142,31 @@ fin método
 ```
 
 **Orden:** O(log n) garantizado.
+
+*Implementación en Java:*
+
+`TArbolAVL`
+```java
+public void insertar(Comparable etiqueta, T dato) {
+    TElementoAVL<T> elemento = new TElementoAVL<>(etiqueta, dato);
+    if (raiz == null) { raiz = elemento; return; }
+    raiz = raiz.insertarAVL(elemento); // la raíz puede cambiar tras el balanceo
+}
+```
+
+`TElementoAVL`
+```java
+public TElementoAVL<T> insertarAVL(TElementoAVL<T> elemento) {
+    if (elemento.getEtiqueta().compareTo(this.etiqueta) < 0) {
+        if (hijoIzq == null) hijoIzq = elemento;            // inserta a la izquierda
+        else hijoIzq = hijoIzq.insertarAVL(elemento);
+    } else if (elemento.getEtiqueta().compareTo(this.etiqueta) > 0) {
+        if (hijoDer == null) hijoDer = elemento;             // inserta a la derecha
+        else hijoDer = hijoDer.insertarAVL(elemento);
+    }
+    return balancear(this); // rebalancea al regresar
+}
+```
 
 ---
 
@@ -1506,6 +2212,35 @@ fin método
 
 **Orden:** O(log n) garantizado.
 
+*Implementación en Java:*
+
+`TArbolAVL`
+```java
+public void eliminar(Comparable etiqueta) {
+    if (raiz != null) raiz = raiz.eliminarAVL(etiqueta);
+}
+```
+
+`TElementoAVL`
+```java
+public TElementoAVL<T> eliminarAVL(Comparable etiqueta) {
+    int cmp = etiqueta.compareTo(this.etiqueta);
+    if (cmp < 0) { if (hijoIzq != null) hijoIzq = hijoIzq.eliminarAVL(etiqueta); }
+    else if (cmp > 0) { if (hijoDer != null) hijoDer = hijoDer.eliminarAVL(etiqueta); }
+    else {
+        if (hijoIzq == null) return hijoDer; // caso 0 o 1 hijo
+        if (hijoDer == null) return hijoIzq;
+        TElementoAVL<T> pred = hijoIzq;
+        while (pred.hijoDer != null) pred = pred.hijoDer; // predecesor inorden
+        TElementoAVL<T> nuevoIzq = hijoIzq.eliminarAVL(pred.getEtiqueta());
+        pred.hijoIzq = nuevoIzq;
+        pred.hijoDer = hijoDer;
+        return balancear(pred); // rebalancea el predecesor que sube
+    }
+    return balancear(this); // rebalancea al regresar
+}
+```
+
 ---
 
 ### Clave Compuesta en ABB/AVL
@@ -1543,6 +2278,17 @@ ClavePelicula.compareTo(otra: ClavePelicula): entero
 fin método
 ```
 
+*Implementación en Java:*
+
+`ClavePelicula`
+```java
+public int compareTo(ClavePelicula otra) {
+    if (this.anio < otra.anio) return -1; // compara por año primero
+    if (this.anio > otra.anio) return 1;
+    return this.titulo.compareTo(otra.titulo); // desempate por título
+}
+```
+
 **Uso en el árbol:**
 
 ```
@@ -1553,6 +2299,18 @@ arbol.insertar(clave, pelicula)
 // Buscar exacto (requiere año + título)
 clave ← nueva ClavePelicula(anio, titulo)
 resultado ← arbol.buscar(clave)
+```
+
+*Implementación en Java:*
+
+```java
+// Insertar
+ClavePelicula clave = new ClavePelicula(pelicula.getAnio(), pelicula.getTitulo());
+arbol.insertar(clave, pelicula); // la clave garantiza unicidad año + título
+
+// Buscar exacto
+ClavePelicula clave = new ClavePelicula(anio, titulo);
+Pelicula resultado = arbol.buscar(clave);
 ```
 
 El árbol usa `compareTo` internamente en cada nodo — no necesita saber que la etiqueta tiene dos campos. Solo requiere que `Comparable` esté implementado.

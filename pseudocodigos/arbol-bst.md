@@ -292,6 +292,14 @@ fin método
 ### postOrden() — izquierda → derecha → raíz
 
 ```
+TArbolBB.postOrden(): Lista<T>
+  lista ← nueva Lista vacía
+  si ¬esVacio() entonces
+    raiz.postOrden(lista)
+  fin si
+  retornar lista
+fin método
+
 TElementoAB.postOrden(lista: Lista<T>): void
   si hijoIzq ≠ nulo entonces hijoIzq.postOrden(lista)
   si hijoDer ≠ nulo entonces hijoDer.postOrden(lista)
@@ -300,6 +308,26 @@ fin método
 ```
 
 **Orden:** O(n)
+
+*Java:*
+
+`TArbolBB`
+```java
+public Lista<T> postOrden() {
+    Lista<T> lista = new Lista<>();
+    if (raiz != null) raiz.postOrden(lista);
+    return lista;
+}
+```
+
+`TElementoAB`
+```java
+public void postOrden(Lista<T> lista) {
+    if (hijoIzq != null) hijoIzq.postOrden(lista);
+    if (hijoDer != null) hijoDer.postOrden(lista);
+    lista.insertar(this.getDato());
+}
+```
 
 ---
 
