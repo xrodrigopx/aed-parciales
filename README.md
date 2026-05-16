@@ -1,24 +1,6 @@
-# AED — Primer Parcial: Material de Estudio
+# AED — Material de Parciales
 
-Repositorio de preparación para el **Primer Parcial de Algoritmos y Estructuras de Datos** — Universidad Católica del Uruguay, Ingeniería en Sistemas.
-
-Contiene enunciados de parciales anteriores (2024–2025), soluciones completas con pseudocódigo y Java, y el código base provisto por la cátedra.
-
----
-
-## Índice
-
-- [Estructura](#estructura)
-- [Cuadernola](#cuadernola)
-- [Estructura del Parcial](#estructura-del-parcial-desde-2026)
-- [Letras disponibles](#letras-disponibles)
-- [Pseudocódigos](#pseudocódigos)
-  - [TDAs](#tdas)
-  - [Ejercicios de parcial](#ejercicios-de-parcial)
-- [Soluciones](#soluciones)
-- [Código Base](#código-base)
-- [Referencia de Métodos Java](#referencia-de-métodos-java)
-- [Lo más importante para el parcial](#lo-más-importante-para-el-parcial)
+Repositorio de preparación para los parciales de **Algoritmos y Estructuras de Datos** — Universidad Católica del Uruguay, Ingeniería en Sistemas.
 
 ---
 
@@ -26,37 +8,38 @@ Contiene enunciados de parciales anteriores (2024–2025), soluciones completas 
 
 ```
 aed-parciales/
-├── README.md                    ← este archivo
-├── cuadernola.md                ← todo lo que necesitas para la primera parte del parcial
-├── guia-de-estudio.md           ← análisis de patrones + plan de estudio priorizado
-├── letras/                      ← enunciados originales de los parciales
-├── pseudocodigos/               ← pseudocódigo de TDAs y ejercicios de parcial
-├── soluciones/                  ← soluciones con pseudocódigo + Java + JUnit
-└── codigo-base/                 ← código Java provisto por la cátedra en cada parcial
+├── README.md
+├── parcial1/                    ← todo el material del primer parcial
+│   ├── cuadernola.md
+│   ├── guia-de-estudio.md
+│   ├── metodos_java.md
+│   ├── letras/
+│   ├── pseudocodigos/
+│   ├── soluciones/
+│   └── codigo-base/
+└── parcial2/                    ← material del segundo parcial (en construcción)
 ```
 
 ---
 
-## Cuadernola
+## Parcial 1
 
-**[`cuadernola.md`](cuadernola.md)** — todo lo que necesitas en la cuadernola para cumplir con la primera parte del parcial (antiguamente parte 2, ahora la parte 1).
+Contiene enunciados de parciales anteriores (2024–2025), soluciones completas con pseudocódigo y Java, y el código base provisto por la cátedra.
 
-Contiene: guía de elección de TDA (ABB vs AVL vs Lista vs Cola vs Pila vs Conjunto), pseudocódigos completos con lenguaje natural, pre/postcondiciones y análisis de orden para todos los TDAs del parcial.
-
----
-
-## Estructura del Parcial (desde 2026)
-
-El primer parcial tiene **2 partes**:
+### Estructura del Parcial 1 (desde 2026)
 
 | Parte | Contenido | Duración | Modalidad |
 |-------|-----------|----------|-----------|
 | **Parte 2** | Ejercicios de pseudocódigo | 60 min | Individual |
 | **Parte 3** | Programación Java + JUnit | 60 min | Individual |
 
----
+### Cuadernola
 
-## Letras disponibles
+**[`parcial1/cuadernola.md`](parcial1/cuadernola.md)** — todo lo que necesitas en la cuadernola para cumplir con la primera parte del parcial.
+
+Contiene: guía de elección de TDA (ABB vs AVL vs Lista vs Cola vs Pila vs Conjunto), pseudocódigos completos con lenguaje natural, pre/postcondiciones y análisis de orden para todos los TDAs del parcial.
+
+### Letras disponibles
 
 | Archivo | Descripción |
 |---------|-------------|
@@ -73,13 +56,9 @@ El primer parcial tiene **2 partes**:
 | `festivalOtaku-completo.md` | Parcial completo: AVL + Trie + comboViable + Java |
 | `parentesco-parte3.md` | Parte 3 2024 S2: Java calcularParentesco árbol genealógico |
 
----
+### Pseudocódigos
 
-## Pseudocódigos
-
-Referencia rápida de TDAs y pseudocódigo de los ejercicios recurrentes en parciales.
-
-### TDAs
+#### TDAs
 
 | Archivo | Descripción |
 |---------|-------------|
@@ -91,7 +70,7 @@ Referencia rápida de TDAs y pseudocódigo de los ejercicios recurrentes en parc
 | `lista-enlazada.md` | Lista simplemente enlazada con puntero `primero` |
 | `pila.md` | Pila — lista enlazada con tope al frente |
 
-### Ejercicios de parcial
+#### Ejercicios de parcial
 
 | Archivo | Ejercicio | Apareció en |
 |---------|-----------|-------------|
@@ -101,9 +80,7 @@ Referencia rápida de TDAs y pseudocódigo de los ejercicios recurrentes en parc
 | `ejercicio-bst-peliculas.md` | Recomendador de películas con ABB/AVL | 2025 S1 |
 | `ejercicio-combo-viable.md` | preparadoViable / comboViable (lista blanca + negra) | Práctico #10, Festival Otaku |
 
----
-
-## Soluciones
+### Soluciones
 
 | Archivo | Ejercicio | Incluye |
 |---------|-----------|---------|
@@ -114,11 +91,7 @@ Referencia rápida de TDAs y pseudocódigo de los ejercicios recurrentes en parc
 | `calcular-parentesco.md` | **calcularParentesco** en árbol genealógico invertido | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
 | `bst-peliculas.md` | **Recomendador de películas** con ABB/AVL | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
 
----
-
-## Código Base
-
-Código Java provisto por la cátedra en cada parcial:
+### Código Base
 
 | Directorio | Parcial | Contenido |
 |------------|---------|-----------|
@@ -127,21 +100,23 @@ Código Java provisto por la cátedra en cada parcial:
 | `codigo-base/festival-otaku/` | Recuperatorio 2025 S1 | `TDALista`, `TDACola`, `TDAPila`, `TDAConjunto` + implementaciones |
 | `codigo-base/parentesco/` | Parcial 2024 S2 | `TArbolBB`, `TElementoAB`, `Genealogia` (stub), `Persona`, `ResultadoParentesco`, tests |
 
----
+### Referencia de Métodos Java
 
-## Referencia de Métodos Java
-
-**[`metodos_java.md`](metodos_java.md)** — implementaciones Java completas de todas las clases TDA del curso.
+**[`parcial1/metodos_java.md`](parcial1/metodos_java.md)** — implementaciones Java completas de todas las clases TDA del curso.
 
 Incluye: `Nodo<T>`, `Lista<T>`, `ListaEnlazada<T>`, `ListaArray<T>` (sin duplicados), `Cola<T>`, `Pila<T>`, `TElementoAB<T>`, `TArbolBB<T>`, `TElementoAVL<T>`, `TArbolAVL<T>`, `ManejadorArchivosGenerico`.
 
----
-
-## Lo más importante para el parcial
+### Lo más importante para el parcial
 
 El **Ejercicio 1 de la Parte 2** es casi siempre **inserciones en AVL**. Lee `guia-de-estudio.md` para el análisis completo de patrones y el plan de estudio priorizado.
 
 **Algoritmos nuevos (PS-UT02):** `obtenerNivel(criterio)` en `arbol-bst.md` y `pseudos-completo.md`. Tabla de posiciones simultáneas de recorridos en `arbol-binario.md` y `cuadernola.md`.
+
+---
+
+## Parcial 2
+
+Material en construcción.
 
 ---
 
