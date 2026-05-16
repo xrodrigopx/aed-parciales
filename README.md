@@ -28,10 +28,12 @@ Contiene enunciados de parciales anteriores (2024–2025), soluciones completas 
 
 ### Estructura del Parcial 1 (desde 2026)
 
+El parcial tiene **2 partes** (anteriormente eran 3).
+
 | Parte | Contenido | Duración | Modalidad |
 |-------|-----------|----------|-----------|
-| **Parte 2** | Ejercicios de pseudocódigo | 60 min | Individual |
-| **Parte 3** | Programación Java + JUnit | 60 min | Individual |
+| **Parte 1** | Ejercicios de pseudocódigo | 60 min | Individual |
+| **Parte 2** | Programación Java + JUnit | 60 min | Individual |
 
 ### Cuadernola
 
@@ -43,18 +45,18 @@ Contiene: guía de elección de TDA (ABB vs AVL vs Lista vs Cola vs Pila vs Conj
 
 | Archivo | Descripción |
 |---------|-------------|
-| `2024-S1-parte2-examen1.md` | Parte 2 — 11 mayo 2024, variante 1: AVL (72,24,12,...) + LTIM |
-| `2024-S1-parte2-examen2.md` | Parte 2 — 11 mayo 2024, variante 2: AVL (74,25,10,...) + Hojas/Internos |
-| `2024-S2-parte2.md` | Parte 2 — 2do sem 2024: Árbol genealógico + ListaDePrioridades |
-| `2025-S1-parte2.md` | Parte 2 — 17 mayo 2025: AVL (45,35,...) + Recomendador películas ABB |
-| `2025-S2-parte2.md` | Parte 2 — 18 oct 2025: Organismo ectotermo + ABB (solo Java) |
-| `2024-S1-parte3-examen1.md` | Parte 3 — 11 mayo 2024, variante 1: Java LTIM en TArbolDeProductos |
-| `2024-S1-parte3-examen2.md` | Parte 3 — 11 mayo 2024, variante 2: Java Hojas/Internos |
-| `2025-S1-parte3.md` | Parte 3 — 17 mayo 2025: Java Recomendador películas |
+| `2024-S1-parte2-examen1.md` | Parte 1 (ex-Parte 2) — 11 mayo 2024, variante 1: AVL (72,24,12,...) + LTIM |
+| `2024-S1-parte2-examen2.md` | Parte 1 (ex-Parte 2) — 11 mayo 2024, variante 2: AVL (74,25,10,...) + Hojas/Internos |
+| `2024-S2-parte2.md` | Parte 1 (ex-Parte 2) — 2do sem 2024: Árbol genealógico + ListaDePrioridades |
+| `2025-S1-parte2.md` | Parte 1 (ex-Parte 2) — 17 mayo 2025: AVL (45,35,...) + Recomendador películas ABB |
+| `2025-S2-parte2.md` | Parte 1 (ex-Parte 2) — 18 oct 2025: Organismo ectotermo + ABB (solo Java) |
+| `2024-S1-parte3-examen1.md` | Parte 2 (ex-Parte 3) — 11 mayo 2024, variante 1: Java LTIM en TArbolDeProductos |
+| `2024-S1-parte3-examen2.md` | Parte 2 (ex-Parte 3) — 11 mayo 2024, variante 2: Java Hojas/Internos |
+| `2025-S1-parte3.md` | Parte 2 (ex-Parte 3) — 17 mayo 2025: Java Recomendador películas |
 | `2025-S1-parte3-recuperatorio.md` | Recuperatorio 2025 S1: Java comboViable Festival Otaku |
 | `practico10-farmachop.md` | Práctico #10 UT01: preparadoViable (lista blanca/negra) |
 | `festivalOtaku-completo.md` | Parcial completo: AVL + Trie + comboViable + Java |
-| `parentesco-parte3.md` | Parte 3 2024 S2: Java calcularParentesco árbol genealógico |
+| `parentesco-parte3.md` | Parte 2 (ex-Parte 3) 2024 S2: Java calcularParentesco árbol genealógico |
 
 ### Pseudocódigos
 
@@ -108,7 +110,7 @@ Incluye: `Nodo<T>`, `Lista<T>`, `ListaEnlazada<T>`, `ListaArray<T>` (sin duplica
 
 ### Lo más importante para el parcial
 
-El **Ejercicio 1 de la Parte 2** es casi siempre **inserciones en AVL**. Lee `guia-de-estudio.md` para el análisis completo de patrones y el plan de estudio priorizado.
+El **Ejercicio 1 de la Parte 1** es casi siempre **inserciones en AVL**. Lee `guia-de-estudio.md` para el análisis completo de patrones y el plan de estudio priorizado.
 
 **Algoritmos nuevos (PS-UT02):** `obtenerNivel(criterio)` en `arbol-bst.md` y `pseudos-completo.md`. Tabla de posiciones simultáneas de recorridos en `arbol-binario.md` y `cuadernola.md`.
 
