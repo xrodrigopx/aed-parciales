@@ -9,7 +9,7 @@ Repositorio de preparación para los parciales de **Algoritmos y Estructuras de 
 ```
 aed-parciales/
 ├── README.md
-├── parcial1/                    ← todo el material del primer parcial
+├── parcial1/                    ← material completo del primer parcial
 │   ├── cuadernola.md
 │   ├── guia-de-estudio.md
 │   ├── metodos_java.md
@@ -17,7 +17,16 @@ aed-parciales/
 │   ├── pseudocodigos/
 │   ├── soluciones/
 │   └── codigo-base/
-└── parcial2/                    ← material del segundo parcial (en construcción)
+└── parcial2/                    ← material del segundo parcial (UT3)
+    ├── cuadernola.md
+    ├── guia-de-estudio.md
+    ├── metodos_java.md
+    ├── ut3-resumen-completo.md
+    ├── letras/
+    ├── pseudocodigos/
+    ├── soluciones/
+    └── codigo-base/
+        └── ut03-01/             ← proyecto Maven provisto por la cátedra
 ```
 
 ---
@@ -37,9 +46,9 @@ El parcial tiene **2 partes** (anteriormente eran 3).
 
 ### Cuadernola
 
-**[`parcial1/cuadernola.md`](parcial1/cuadernola.md)** — todo lo que necesitas en la cuadernola para cumplir con la primera parte del parcial.
+**[`parcial1/cuadernola.md`](parcial1/cuadernola.md)** — referencia completa para la Parte 1 del parcial.
 
-Contiene: guía de elección de TDA (ABB vs AVL vs Lista vs Cola vs Pila vs Conjunto), pseudocódigos completos con lenguaje natural, pre/postcondiciones y análisis de orden para todos los TDAs del parcial.
+Contiene: guía de elección de TDA (ABB vs AVL vs Lista vs Cola vs Pila vs Conjunto), pseudocódigos completos con lenguaje natural, pre/postcondiciones, implementaciones Java y análisis de orden para todos los TDAs del parcial.
 
 ### Letras disponibles
 
@@ -64,7 +73,7 @@ Contiene: guía de elección de TDA (ABB vs AVL vs Lista vs Cola vs Pila vs Conj
 
 | Archivo | Descripción |
 |---------|-------------|
-| `arbol-binario.md` | AB — definición, terminología, propiedades, recorridos, árbol de expresión, reconstrucción (pre+in y post+in), tabla de posiciones simultáneas |
+| `arbol-binario.md` | AB — definición, terminología, recorridos, tabla de posiciones simultáneas |
 | `arbol-avl.md` | AVL — propiedad, rotaciones simples y dobles, `insertar`, `eliminar` |
 | `arbol-bst.md` | ABB — insertar, buscar, eliminar, tamaño, altura, nivel, recorridos |
 | `cola.md` | Cola — arreglo circular y lista enlazada |
@@ -86,39 +95,85 @@ Contiene: guía de elección de TDA (ABB vs AVL vs Lista vs Cola vs Pila vs Conj
 
 | Archivo | Ejercicio | Incluye |
 |---------|-----------|---------|
-| `avl-inserciones.md` | **AVL insertions** — traza completa de 2 secuencias | Paso a paso, rotaciones, árbol final verificado |
-| `lti-media.md` | **Longitud de Trayectoria Interna Media** | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
-| `separar-hojas-internos.md` | **Separar nodos hoja/internos** de un ABB | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
-| `combo-viable.md` | **preparadoViable / comboViable** (lista blanca + negra) | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
-| `calcular-parentesco.md` | **calcularParentesco** en árbol genealógico invertido | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
-| `bst-peliculas.md` | **Recomendador de películas** con ABB/AVL | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
+| `avl-inserciones.md` | AVL insertions — traza completa de 2 secuencias | Paso a paso, rotaciones, árbol final |
+| `lti-media.md` | Longitud de Trayectoria Interna Media | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
+| `separar-hojas-internos.md` | Separar nodos hoja/internos de un ABB | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
+| `combo-viable.md` | preparadoViable / comboViable (lista blanca + negra) | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
+| `calcular-parentesco.md` | calcularParentesco en árbol genealógico invertido | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
+| `bst-peliculas.md` | Recomendador de películas con ABB/AVL | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
 
 ### Código Base
 
-| Directorio | Parcial | Contenido |
-|------------|---------|-----------|
-| `codigo-base/2024-S1/` | Parcial 2024 S1 | `TArbolBB`, `TElementoAB`, `TArbolDeProductos`, `Producto`, `ManejadorArchivosGenerico`, tests |
-| `codigo-base/farmachop/` | Práctico #10 | `Lista`, `Nodo`, `ILista`, `INodo`, archivos `.txt` de datos |
-| `codigo-base/festival-otaku/` | Recuperatorio 2025 S1 | `TDALista`, `TDACola`, `TDAPila`, `TDAConjunto` + implementaciones |
-| `codigo-base/parentesco/` | Parcial 2024 S2 | `TArbolBB`, `TElementoAB`, `Genealogia` (stub), `Persona`, `ResultadoParentesco`, tests |
+| Directorio | Contenido |
+|------------|-----------|
+| `codigo-base/2024-S1/` | `TArbolBB`, `TElementoAB`, `TArbolDeProductos`, `Producto`, tests |
+| `codigo-base/farmachop/` | `Lista`, `Nodo`, `ILista`, `INodo`, archivos `.txt` de datos |
+| `codigo-base/festival-otaku/` | `TDALista`, `TDACola`, `TDAPila`, `TDAConjunto` + implementaciones |
+| `codigo-base/parentesco/` | `TArbolBB`, `TElementoAB`, `Genealogia` (stub), `Persona`, `ResultadoParentesco`, tests |
 
 ### Referencia de Métodos Java
 
 **[`parcial1/metodos_java.md`](parcial1/metodos_java.md)** — implementaciones Java completas de todas las clases TDA del curso.
 
-Incluye: `Nodo<T>`, `Lista<T>`, `ListaEnlazada<T>`, `ListaArray<T>` (sin duplicados), `Cola<T>`, `Pila<T>`, `TElementoAB<T>`, `TArbolBB<T>`, `TElementoAVL<T>`, `TArbolAVL<T>`, `ManejadorArchivosGenerico`.
+Incluye: `Nodo<T>`, `Lista<T>`, `ListaEnlazada<T>`, `ListaArray<T>`, `Cola<T>`, `Pila<T>`, `TElementoAB<T>`, `TArbolBB<T>`, `TElementoAVL<T>`, `TArbolAVL<T>`, `ManejadorArchivosGenerico`.
 
 ### Lo más importante para el parcial
 
-El **Ejercicio 1 de la Parte 1** es casi siempre **inserciones en AVL**. Lee `guia-de-estudio.md` para el análisis completo de patrones y el plan de estudio priorizado.
-
-**Algoritmos nuevos (PS-UT02):** `obtenerNivel(criterio)` en `arbol-bst.md` y `pseudos-completo.md`. Tabla de posiciones simultáneas de recorridos en `arbol-binario.md` y `cuadernola.md`.
+El **Ejercicio 1 de la Parte 1** es casi siempre **inserciones en AVL**. Leer `guia-de-estudio.md` para el análisis completo de patrones y el plan de estudio priorizado.
 
 ---
 
 ## Parcial 2
 
-Material en construcción.
+Material basado en la **Unidad Temática 3 (UT3)**: Árboles Genéricos, Trie, Patricia, Hashing, TDA Mapa, TDA Diccionario y Java Collections Framework.
+
+### Cuadernola
+
+**[`parcial2/cuadernola.md`](parcial2/cuadernola.md)** — referencia completa para el parcial.
+
+Contiene: guía de elección de estructura para UT3, pseudocódigos completos con pre/postcondiciones e implementaciones Java para todos los TDAs, patrones de uso de colecciones Java, contrato `hashCode`/`equals`, y ejercicios típicos de árbol genérico (`listarDescendientes`, `obtenerGeneracion`, `esDescendiente`, `ancestroComun`).
+
+### Pseudocódigos
+
+| Archivo | Descripción |
+|---------|-------------|
+| `arbol-generico.md` | Árbol genérico — `agregarHijo`, `eliminar`, `buscar`, `obtenerPadre`, recorridos, `altura`, `grado` |
+| `trie.md` | Trie — `insertar`, `buscar`, `predecir`, `eliminar` |
+| `trie-patricia.md` | Patricia (Trie comprimido) — motivación, tríadas (i,j,k), comparativa |
+| `hash.md` | Hash — función de hash, chaining, open addressing (sondeo lineal), tombstones |
+| `mapa.md` | TDA Mapa — operaciones, `HashMap`/`LinkedHashMap`/`TreeMap`, patrones Java |
+| `diccionario.md` | TDA Diccionario — diferencia con Mapa, `Map<K, List<V>>` |
+
+### Código Base — UT03-01
+
+Proyecto Maven provisto por la cátedra en `codigo-base/ut03-01/`.
+
+**TDAs implementados:**
+
+| Paquete | Interfaz | Implementación |
+|---------|----------|----------------|
+| `tda.generic_tree` | `TArbolGenerico`, `TNodoGenerico` | `ArbolGenerico`, `NodoGenerico` |
+| `tda.trie` | `TTrie`, `TNodoTrie` | `Trie`, `NodoTrie` |
+| `tda.hash` | `THash` (abstracta) | `Hash` (open addressing, sondeo lineal) |
+
+**Ejercicios entregables:** 5, 7, 9, 11, 12, 13, 14, 15, 16
+
+**Comandos (dentro de `codigo-base/ut03-01/`):**
+```bash
+mvn compile
+mvn test
+mvn test -Dtest=NombreTest
+```
+
+### Referencia de Métodos Java
+
+**[`parcial2/metodos_java.md`](parcial2/metodos_java.md)** — implementaciones Java completas en estilo estudiante.
+
+Incluye: `NodoGenerico<T>`, `ArbolGenerico<T>`, `NodoTrie<T>`, `Hash<K,V>`, `TNodoHash<K,V>`, patrones de `hashCode`/`equals`, y referencia de Collections Framework.
+
+### Resumen de la unidad
+
+**[`parcial2/ut3-resumen-completo.md`](parcial2/ut3-resumen-completo.md)** — resumen teórico completo de la UT3 tal como viene de la cátedra.
 
 ---
 
