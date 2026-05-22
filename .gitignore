@@ -1,13 +1,16 @@
+# Claude Code
+CLAUDE.md
+
 # Compilados de Java
 *.class
 *.jar
-pom.xml
 *.war
 *.ear
-/bin/
+
+# Maven
 target/
 
-# Archivos de configuración de IDEs
+# IDEs
 .project
 .classpath
 .settings/
@@ -16,20 +19,11 @@ target/
 .vscode/
 .factorypath
 
-# Logs y archivos temporales
+# Logs y temporales
 *.log
 tmp/
 temp/
 
-# Bases de datos y archivos locales
-*.db
-*.sqlite
-.dbeaver/
-DataSource.java.bak
-
-# Archivos del sistema
+# Sistema operativo
 .DS_Store
 Thumbs.db
-
-# Configuración de herramientas de automatización
-.pentaho/
