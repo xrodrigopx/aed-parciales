@@ -196,6 +196,23 @@ El repositorio incluye un grafo de conocimiento generado con [graphify](https://
 
 El grafo conecta conceptos teóricos (pseudocódigos, TDAs), implementaciones Java, tests y enunciados de parciales anteriores. Útil para entender qué temas están relacionados y cómo.
 
+### Si usás Claude Code
+
+Podés agregar esto a tu `CLAUDE.md` local para que Claude use el grafo antes de leer archivos uno por uno, ahorrando tokens en preguntas sobre el repositorio:
+
+```markdown
+## Graphify — fast path para preguntas sobre el repositorio
+
+Si `graphify-out/graph.json` existe en el directorio actual, usar `graphify query "<pregunta>"` como primera fuente antes de hacer reads masivos o greps cuando la pregunta es sobre relaciones entre componentes, qué implementa qué, o cómo están conectados dos conceptos. Solo ir directo a archivos cuando la pregunta requiere ver código concreto.
+
+\`\`\`bash
+graphify query "<pregunta>"        # BFS — contexto amplio
+graphify query "<pregunta>" --dfs  # DFS — trazar un camino específico
+\`\`\`
+```
+
+El `CLAUDE.md` va en la raíz del repo y no se sube a git (está en `.gitignore`).
+
 ---
 
 *Material compilado por estudiantes de Ingeniería en Sistemas — UCU 2026.*
