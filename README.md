@@ -35,6 +35,37 @@ aed-parciales/
 
 ---
 
+## Grafo de conocimiento
+
+El repositorio incluye un grafo de conocimiento generado con [graphify](https://github.com/safishamsi/graphify) sobre todos los archivos del repo.
+
+| Archivo | Descripción |
+|---------|-------------|
+| [`graphify-out/graph.html`](graphify-out/graph.html) | Visualización interactiva — abrir directamente en el browser, sin servidor |
+| [`graphify-out/GRAPH_REPORT.md`](graphify-out/GRAPH_REPORT.md) | Reporte: comunidades detectadas, nodos hub, conexiones sorpresivas |
+| [`graphify-out/graph.json`](graphify-out/graph.json) | Datos crudos del grafo (1539 nodos, 2698 aristas, 115 comunidades) |
+
+El grafo conecta conceptos teóricos (pseudocódigos, TDAs), implementaciones Java, tests y enunciados de parciales anteriores. Útil para entender qué temas están relacionados y cómo.
+
+### Si usás Claude Code
+
+Podés agregar esto a tu `CLAUDE.md` local para que Claude use el grafo antes de leer archivos uno por uno, ahorrando tokens en preguntas sobre el repositorio:
+
+```markdown
+## Graphify — fast path para preguntas sobre el repositorio
+
+Si `graphify-out/graph.json` existe en el directorio actual, usar `graphify query "<pregunta>"` como primera fuente antes de hacer reads masivos o greps cuando la pregunta es sobre relaciones entre componentes, qué implementa qué, o cómo están conectados dos conceptos. Solo ir directo a archivos cuando la pregunta requiere ver código concreto.
+
+\`\`\`bash
+graphify query "<pregunta>"        # BFS — contexto amplio
+graphify query "<pregunta>" --dfs  # DFS — trazar un camino específico
+\`\`\`
+```
+
+El `CLAUDE.md` va en la raíz del repo y no se sube a git (está en `.gitignore`).
+
+---
+
 ## Parcial 1
 
 Contiene enunciados de parciales anteriores (2024–2025), soluciones completas con pseudocódigo y Java, y el código base provisto por la cátedra.
@@ -179,39 +210,6 @@ Incluye: `NodoGenerico<T>`, `ArbolGenerico<T>`, `NodoTrie<T>`, `Hash<K,V>`, `TNo
 ### Resumen de la unidad
 
 **[`parcial2/ut3-resumen-completo.md`](parcial2/ut3-resumen-completo.md)** — resumen teórico completo de la UT3 tal como viene de la cátedra.
-
----
-
----
-
-## Grafo de conocimiento
-
-El repositorio incluye un grafo de conocimiento generado con [graphify](https://github.com/safishamsi/graphify) sobre todos los archivos del repo.
-
-| Archivo | Descripción |
-|---------|-------------|
-| [`graphify-out/graph.html`](graphify-out/graph.html) | Visualización interactiva — abrir directamente en el browser, sin servidor |
-| [`graphify-out/GRAPH_REPORT.md`](graphify-out/GRAPH_REPORT.md) | Reporte: comunidades detectadas, nodos hub, conexiones sorpresivas |
-| [`graphify-out/graph.json`](graphify-out/graph.json) | Datos crudos del grafo (1539 nodos, 2698 aristas, 115 comunidades) |
-
-El grafo conecta conceptos teóricos (pseudocódigos, TDAs), implementaciones Java, tests y enunciados de parciales anteriores. Útil para entender qué temas están relacionados y cómo.
-
-### Si usás Claude Code
-
-Podés agregar esto a tu `CLAUDE.md` local para que Claude use el grafo antes de leer archivos uno por uno, ahorrando tokens en preguntas sobre el repositorio:
-
-```markdown
-## Graphify — fast path para preguntas sobre el repositorio
-
-Si `graphify-out/graph.json` existe en el directorio actual, usar `graphify query "<pregunta>"` como primera fuente antes de hacer reads masivos o greps cuando la pregunta es sobre relaciones entre componentes, qué implementa qué, o cómo están conectados dos conceptos. Solo ir directo a archivos cuando la pregunta requiere ver código concreto.
-
-\`\`\`bash
-graphify query "<pregunta>"        # BFS — contexto amplio
-graphify query "<pregunta>" --dfs  # DFS — trazar un camino específico
-\`\`\`
-```
-
-El `CLAUDE.md` va en la raíz del repo y no se sube a git (está en `.gitignore`).
 
 ---
 
