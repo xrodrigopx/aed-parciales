@@ -9,6 +9,10 @@ Repositorio de preparación para los parciales de **Algoritmos y Estructuras de 
 ```
 aed-parciales/
 ├── README.md
+├── graphify-out/                ← grafo de conocimiento del repositorio
+│   ├── graph.html               ← visualización interactiva (abrir en browser)
+│   ├── graph.json               ← datos del grafo (GraphRAG-ready)
+│   └── GRAPH_REPORT.md          ← reporte: comunidades, hubs, conexiones
 ├── parcial1/                    ← material completo del primer parcial
 │   ├── cuadernola.md
 │   ├── guia-de-estudio.md
@@ -17,7 +21,7 @@ aed-parciales/
 │   ├── pseudocodigos/
 │   ├── soluciones/
 │   └── codigo-base/
-└── parcial2/                    ← material del segundo parcial (UT3)
+└── parcial2/                    ← material del segundo parcial (UT3 + UT4)
     ├── cuadernola.md
     ├── guia-de-estudio.md
     ├── metodos_java.md
@@ -125,7 +129,7 @@ El **Ejercicio 1 de la Parte 1** es casi siempre **inserciones en AVL**. Leer `g
 
 ## Parcial 2
 
-Material basado en la **Unidad Temática 3 (UT3)**: Árboles Genéricos, Trie, Patricia, Hashing, TDA Mapa, TDA Diccionario y Java Collections Framework.
+Material basado en la **Unidad Temática 3 (UT3)** y **Unidad Temática 4 (UT4)**: Árboles Genéricos, Trie, Patricia, Hashing, TDA Mapa, TDA Diccionario, Java Collections Framework, y Grafos Dirigidos (Dijkstra, Floyd, Warshall, DFS, BEA, clasificación topológica).
 
 ### Cuadernola
 
@@ -143,6 +147,7 @@ Contiene: guía de elección de estructura para UT3, pseudocódigos completos co
 | `hash.md` | Hash — función de hash, chaining, open addressing (sondeo lineal), tombstones |
 | `mapa.md` | TDA Mapa — operaciones, `HashMap`/`LinkedHashMap`/`TreeMap`, patrones Java |
 | `diccionario.md` | TDA Diccionario — diferencia con Mapa, `Map<K, List<V>>` |
+| `grafo-dirigido.md` | Grafos dirigidos — Dijkstra, Floyd, Warshall, DFS, BEA, clasificación topológica, ciclos, todos los caminos |
 
 ### Código Base — UT03-01
 
@@ -174,6 +179,22 @@ Incluye: `NodoGenerico<T>`, `ArbolGenerico<T>`, `NodoTrie<T>`, `Hash<K,V>`, `TNo
 ### Resumen de la unidad
 
 **[`parcial2/ut3-resumen-completo.md`](parcial2/ut3-resumen-completo.md)** — resumen teórico completo de la UT3 tal como viene de la cátedra.
+
+---
+
+---
+
+## Grafo de conocimiento
+
+El repositorio incluye un grafo de conocimiento generado con [graphify](https://github.com/safishamsi/graphify) sobre todos los archivos del repo.
+
+| Archivo | Descripción |
+|---------|-------------|
+| [`graphify-out/graph.html`](graphify-out/graph.html) | Visualización interactiva — abrir directamente en el browser, sin servidor |
+| [`graphify-out/GRAPH_REPORT.md`](graphify-out/GRAPH_REPORT.md) | Reporte: comunidades detectadas, nodos hub, conexiones sorpresivas |
+| [`graphify-out/graph.json`](graphify-out/graph.json) | Datos crudos del grafo (1539 nodos, 2698 aristas, 115 comunidades) |
+
+El grafo conecta conceptos teóricos (pseudocódigos, TDAs), implementaciones Java, tests y enunciados de parciales anteriores. Útil para entender qué temas están relacionados y cómo.
 
 ---
 

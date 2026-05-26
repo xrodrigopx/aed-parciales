@@ -28,3 +28,8 @@ temp/
 # Sistema operativo
 .DS_Store
 Thumbs.db
+
+# Graphify — archivos internos de pipeline (no subir)
+graphify-out/cache/
+graphify-out/.*
+graphify-out/.chunk_files_*
