@@ -1,8 +1,10 @@
-# Guía de estudio — Parcial 2 (UT3)
+# Guía de estudio — Parcial 2 (UT3 + UT4)
 
 ---
 
 ## TDAs del Parcial 2
+
+### UT3
 
 | TDA | Archivo pseudocódigo | Archivo metodos_java |
 |-----|---------------------|---------------------|
@@ -12,6 +14,18 @@
 | Hash (open addressing) | `pseudocodigos/hash.md` | `metodos_java.md` |
 | TDA Mapa | `pseudocodigos/mapa.md` | `metodos_java.md` |
 | TDA Diccionario | `pseudocodigos/diccionario.md` | `metodos_java.md` |
+
+### UT4
+
+| Algoritmo | Archivo pseudocódigo | Archivo metodos_java |
+|-----------|---------------------|---------------------|
+| Dijkstra | `pseudocodigos/grafo-dirigido.md` | `metodos_java.md` |
+| Floyd-Warshall | `pseudocodigos/grafo-dirigido.md` | `metodos_java.md` |
+| Warshall | `pseudocodigos/grafo-dirigido.md` | `metodos_java.md` |
+| DFS / BPF | `pseudocodigos/grafo-dirigido.md` | `metodos_java.md` |
+| Clasificación topológica | `pseudocodigos/grafo-dirigido.md` | `metodos_java.md` |
+| Detección de ciclos | `pseudocodigos/grafo-dirigido.md` | `metodos_java.md` |
+| Todos los caminos | `pseudocodigos/grafo-dirigido.md` | `metodos_java.md` |
 
 ---
 
@@ -110,7 +124,115 @@ El enunciado describe un problema y pide elegir la colección Java más adecuada
 
 ---
 
+---
+
+## Patrones recurrentes en parciales — UT4
+
+### Patrón 6 — Camino mínimo entre dos ciudades / vértices
+
+El enunciado da un grafo con pesos y pide el camino de menor costo entre un origen y uno o todos los destinos.
+
+**Si es un solo origen → Dijkstra.** Si son todos los pares → Floyd.
+
+**Claves:**
+- Inicializar D[origen] = 0, D[resto] = ∞.
+- El vector P[v] guarda el predecesor de v en el camino óptimo.
+- Para recuperar el camino de origen a t: recorrer P desde t hacia atrás (`t ← P[t]`) hasta llegar al origen. Invertir la lista.
+
+**Error típico:** olvidar actualizar P[v] cuando se mejora D[v]. Sin P no se puede recuperar el camino.
+
+---
+
+### Patrón 7 — Todos los pares / excentricidad / centro
+
+El enunciado pide la distancia mínima entre todos los pares y encontrar el vértice más "central".
+
+**Siempre es Floyd.**
+
+**Flujo:**
+1. Construir matriz C inicial (∞ si no hay arco, 0 en diagonal).
+2. Ejecutar Floyd → matriz A de distancias mínimas.
+3. Para cada vértice v: `e(v) = max(columna v de A)`.
+4. Centro = vértice con menor e(v).
+
+**Error típico:** confundir fila con columna. La excentricidad de v es el máximo de la columna v (la distancia máxima desde cualquier otro vértice hacia v).
+
+---
+
+### Patrón 8 — Conectividad / cerradura transitiva
+
+El enunciado pregunta "¿puede llegarse de X a Y?" para todos los pares.
+
+**Siempre es Warshall.**
+
+**Flujo:**
+1. Construir matriz C booleana (verdadero si hay arco directo).
+2. Ejecutar Warshall → matriz A donde `A[i,j] = verdadero` si existe algún camino de i a j.
+
+**Diferencia con Floyd:** Warshall solo responde "¿existe camino?", no calcula costos.
+
+---
+
+### Patrón 9 — Recorrido sistemático / DFS
+
+El enunciado pide visitar todos los vértices o hacer algo en cada uno (imprimir, marcar, acumular).
+
+**Siempre es DFS.**
+
+**Flujo:**
+1. Inicializar conjunto visitados vacío.
+2. Para cada vértice no visitado: llamar a BPF recursivo.
+3. En BPF: marcar como visitado, procesar, recorrer adyacentes no visitados.
+
+**Error típico:** olvidar que DFS en un grafo desconectado necesita llamar BPF desde múltiples vértices de inicio.
+
+---
+
+### Patrón 10 — Orden topológico / previaturas
+
+El enunciado modela tareas con dependencias (A debe completarse antes de B).
+
+**Siempre es clasificación topológica** (solo válida si el grafo no tiene ciclos).
+
+**Clave:** la inserción se hace **al principio de la lista en la salida recursiva**, no al entrar.
+
+**Flujo:**
+1. DFS sobre todos los vértices.
+2. Al terminar la recursión de cada vértice (después de procesar sus adyacentes): insertar al frente de la lista resultado.
+
+---
+
+### Patrón 11 — Detección de ciclos
+
+El enunciado pide determinar si existe un ciclo en un grafo dirigido.
+
+**Flujo con conjunto activo:**
+1. Mantener un conjunto `enRecursion` (vértices activos en la pila de llamadas).
+2. Al entrar a un vértice: agregarlo a `enRecursion`.
+3. Si un adyacente ya está en `enRecursion`: hay ciclo (arco de retroceso).
+4. Al salir: remover de `enRecursion` (backtracking).
+
+**Error típico:** usar solo "visitados" sin distinción entre "en proceso" y "terminado" — esto no detecta si hay un arco de retroceso.
+
+---
+
+### Patrón 12 — Todos los itinerarios posibles
+
+El enunciado pide listar todos los caminos entre origen y destino.
+
+**DFS con backtracking:**
+1. Agregar vértice actual al camino y a visitados.
+2. Si es el destino: guardar copia del camino.
+3. Si no: explorar adyacentes no visitados.
+4. Al retroceder: **desmarcar el vértice** (sacarlo de visitados) para que otros caminos puedan usarlo.
+
+**Clave:** el backtracking (desmarcar al retroceder) es lo que permite explorar todos los caminos, no solo uno.
+
+---
+
 ## Errores comunes a evitar
+
+### UT3
 
 | Error | Correcto |
 |-------|----------|
@@ -121,9 +243,23 @@ El enunciado describe un problema y pide elegir la colección Java más adecuada
 | N = potencia de 2 en función hash con strings | N = número primo |
 | `hashCode` con atributos mutables | Solo atributos que definen identidad lógica |
 
+### UT4
+
+| Error | Correcto |
+|-------|----------|
+| Usar Dijkstra con pesos negativos | Dijkstra solo funciona con pesos ≥ 0 |
+| Inicializar diagonal de Floyd en ∞ | La diagonal siempre es 0 (`A[i,i] = 0`) |
+| Warshall con costos numéricos | Warshall usa booleanos; Floyd usa números |
+| En DFS poner null en el conjunto visitados al retroceder | Solo remover del conjunto activo en detección de ciclos |
+| Clasificación topológica: agregar al final de la lista | Agregar **al principio** (en la salida recursiva) |
+| En Floyd, recuperar camino con solo `P[i,j]` | `P[i,j]` es el vértice intermedio, hay que llamar recursivamente a `camino(i,k)` y `camino(k,j)` |
+| Confundir excentricidad de fila con excentricidad de columna | `e(v)` = máximo de la **columna** v (mayor distancia que alguien debe recorrer para llegar a v) |
+
 ---
 
 ## Complejidades para tener en la cabeza
+
+### UT3
 
 | Estructura | Búsqueda | Inserción | Eliminación |
 |------------|---------|-----------|-------------|
@@ -136,6 +272,18 @@ El enunciado describe un problema y pide elegir la colección Java más adecuada
 | Árbol genérico (buscar) | O(n) | O(n) | O(n) |
 
 m = largo de la palabra/clave
+
+### UT4
+
+| Algoritmo | Complejidad | Nota |
+|-----------|-------------|------|
+| Dijkstra (naive) | O(V²) | V = cantidad de vértices |
+| Floyd | O(V³) | Para todos los pares |
+| Warshall | O(V³) | Solo conectividad |
+| DFS | O(V+E) | E = cantidad de aristas |
+| Clasificación topológica | O(V+E) | Solo grafos acíclicos |
+| Detección de ciclos | O(V+E) | — |
+| Todos los caminos | exponencial | DFS + backtracking |
 
 ---
 

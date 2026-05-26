@@ -6,7 +6,7 @@ Material de estudio consolidado para el segundo parcial de Algoritmos y Estructu
 
 ## Índice
 
-### Elegir la estructura correcta
+### Elegir la estructura correcta (UT3)
 - [Preguntas clave — UT3](#preguntas-clave--ut3)
 - [Tabla de decisión](#tabla-de-decisión)
 - [Trie vs HashMap para búsqueda de strings](#trie-vs-hashmap-para-búsqueda-de-strings)
@@ -14,7 +14,7 @@ Material de estudio consolidado para el segundo parcial de Algoritmos y Estructu
 - [Cuando hay dos operaciones incompatibles](#cuando-hay-dos-operaciones-incompatibles)
 - [Cómo redactar la justificación en el parcial](#cómo-redactar-la-justificación-en-el-parcial)
 
-### Pseudocódigos de referencia
+### Pseudocódigos de referencia (UT3)
 - [Árbol Genérico](#árbol-genérico) — `agregarHijo`, `eliminar`, `buscar`, `obtenerPadre`, `preOrden`, `postOrden`, `altura`, `grado`
   - [Ejercicios típicos de árbol genérico](#ejercicios-típicos-de-árbol-genérico) — `listarDescendientes`, `obtenerGeneracion`, `esDescendiente`, `ancestroComun`
 - [Trie](#trie) — `insertar`, `buscar`, `predecir`, `eliminar`
@@ -25,6 +25,21 @@ Material de estudio consolidado para el segundo parcial de Algoritmos y Estructu
 - [TDA Diccionario — Patrones Java](#tda-diccionario--patrones-java)
 - [hashCode / equals — Contrato](#hashcode--equals--contrato)
 - [Collections Framework](#collections-framework)
+
+### Grafos (UT4)
+- [Elegir el algoritmo correcto — UT4](#elegir-el-algoritmo-correcto--ut4)
+- [Tabla de decisión — UT4](#tabla-de-decisión--ut4)
+- [Representaciones de grafos](#representaciones-de-grafos)
+- [Dijkstra — caminos mínimos desde un origen](#dijkstra--caminos-mínimos-desde-un-origen)
+- [Floyd — caminos mínimos entre todos los pares](#floyd--caminos-mínimos-entre-todos-los-pares)
+- [Warshall — cerradura transitiva](#warshall--cerradura-transitiva)
+- [DFS — búsqueda en profundidad](#dfs--búsqueda-en-profundidad)
+- [Clasificación topológica](#clasificación-topológica)
+- [Excentricidad y centro del grafo](#excentricidad-y-centro-del-grafo)
+- [Detección de ciclos](#detección-de-ciclos)
+- [Todos los caminos posibles](#todos-los-caminos-posibles)
+- [Variantes de Dijkstra para el parcial](#variantes-de-dijkstra-para-el-parcial)
+- [Variantes de Floyd para el parcial](#variantes-de-floyd-para-el-parcial)
 
 ---
 
@@ -1402,3 +1417,259 @@ Collections.sort(lista, porNombre);
 | Transformación (Hash) | Tabla dispersa | **O(1) prom.** | No eficiente | No | O(1) chaining |
 
 > k = tamaño del resultado; m = largo del patrón/palabra
+
+---
+
+## Grafos (UT4)
+
+---
+
+### Elegir el algoritmo correcto — UT4
+
+**1. ¿Caminos más cortos desde UN origen a todos los demás?**
+→ **Dijkstra**. Técnica ávida. Solo funciona con pesos no negativos. O(V²).
+
+**2. ¿Caminos más cortos entre TODOS los pares?**
+→ **Floyd**. Triple bucle anidado. O(V³). Recupera caminos con matriz P.
+
+**3. ¿Solo saber si existe camino entre cada par (sí/no)?**
+→ **Warshall**. Igual que Floyd pero con booleanos: `A[i,j] = A[i,j] OR (A[i,k] AND A[k,j])`.
+
+**4. ¿Recorrer sistemáticamente todos los vértices?**
+→ **DFS**. Recursivo. O(V+E).
+
+**5. ¿Ordenar vértices respetando dependencias (sin ciclos)?**
+→ **Clasificación topológica**. DFS, insertar al frente en la salida recursiva.
+
+**6. ¿Saber si el grafo tiene ciclos?**
+→ **DFS con conjunto activo**: ciclo ↔ se encuentra un nodo que ya está en la recursión activa.
+
+**7. ¿Centro del grafo?**
+→ **Floyd** + excentricidad: max de cada columna = e(v). Centro = vértice con e mínima.
+
+---
+
+### Tabla de decisión — UT4
+
+| Problema | Algoritmo | Complejidad |
+|----------|-----------|-------------|
+| Camino mínimo desde 1 origen | Dijkstra | O(V²) |
+| Caminos mínimos todos los pares | Floyd | O(V³) |
+| Cerradura transitiva | Warshall | O(V³) |
+| Recorrido sistemático | DFS | O(V+E) |
+| Orden topológico | DFS (salida recursiva) | O(V+E) |
+| Detección de ciclos | DFS con conjunto activo | O(V+E) |
+| Centro del grafo | Floyd + excentricidad | O(V³) |
+| Todos los caminos posibles | DFS + backtracking | exponencial |
+
+---
+
+### Representaciones de grafos
+
+| Representación | Espacio | Buscar arista | Adyacentes de v | Cuándo usar |
+|----------------|---------|---------------|-----------------|-------------|
+| Matriz adyacencia | O(V²) | O(1) | O(V) | Grafos densos, Floyd/Warshall |
+| Lista adyacencia | O(V+E) | O(grado) | O(grado) | Grafos dispersos, DFS |
+
+**Lista de adyacencias en Java:**
+```java
+HashMap<V, List<Edge<V, D>>> adyacencias = new HashMap<>();
+```
+
+---
+
+### Dijkstra — caminos mínimos desde un origen
+
+```
+dijkstra(origen, C, V):
+  D[origen] = 0; D[v] = ∞ para el resto
+  P[v] = origen para todo v
+  S ← {origen}
+
+  Mientras V ≠ S:
+    w ← vértice en V-S con D[w] mínimo
+    Agregar w a S
+    Para todo v en V-S:
+      Si D[w] + C[w,v] < D[v]:
+        D[v] = D[w] + C[w,v]
+        P[v] = w
+```
+
+**Recuperar camino origen→t:** recorrer P desde t hacia atrás hasta el origen, luego invertir.
+
+**Ejemplo (vértices 1–5, origen = 1):**
+
+| Iteración | S | w | D[2] | D[3] | D[4] | D[5] |
+|-----------|---|---|------|------|------|------|
+| inicial | {1} | — | 10 | ∞ | 30 | 100 |
+| 1 | {1,2} | 2 | 10 | 60 | 30 | 100 |
+| 2 | {1,2,4} | 4 | 10 | 50 | 30 | 90 |
+| 3 | {1,2,4,3} | 3 | 10 | 50 | 30 | 60 |
+| 4 | {1,2,4,3,5} | 5 | 10 | 50 | 30 | 60 |
+
+---
+
+### Floyd — caminos mínimos entre todos los pares
+
+```
+floyd(C, n):
+  A[i,j] = C[i,j] para i≠j;  A[i,i] = 0;  P[i,j] = 0
+
+  Para k = 1..n:
+    Para i = 1..n:
+      Para j = 1..n:
+        Si A[i,k] + A[k,j] < A[i,j]:
+          A[i,j] = A[i,k] + A[k,j]
+          P[i,j] = k
+```
+
+**Recuperar camino(i, j):**
+```
+camino(i, j):
+  k = P[i,j]
+  Si k = 0: el arco i→j es directo, no hay intermedio
+  Sino: camino(i, k)  →  imprimir k  →  camino(k, j)
+```
+
+**Excentricidad de v:** máximo valor en la columna v de la matriz A final.
+**Centro del grafo:** vértice con excentricidad mínima.
+
+---
+
+### Warshall — cerradura transitiva
+
+```
+warshall(C, n):
+  A[i,j] = C[i,j]   // booleano: verdadero si hay arco directo
+
+  Para k = 1..n:
+    Para i = 1..n:
+      Para j = 1..n:
+        Si A[i,j] = falso:
+          A[i,j] = A[i,k] AND A[k,j]
+```
+
+**Diferencia clave con Floyd:** Warshall responde "¿existe camino?". Floyd responde "¿cuánto cuesta el camino mínimo?".
+
+---
+
+### DFS — búsqueda en profundidad
+
+```
+main(G):
+  visitados ← conjunto vacío
+  Para cada v en G:
+    Si v no en visitados: bpf(v, visitados)
+
+bpf(v, visitados):
+  agregar v a visitados
+  Para cada w adyacente a v:
+    Si w no en visitados: bpf(w, visitados)
+```
+
+**Tipos de arcos en DFS:**
+
+| Tipo | Descripción | Implicación |
+|------|-------------|-------------|
+| Árbol | Lleva a vértice nuevo | Construye el árbol DFS |
+| Retroceso | Va a un antecesor activo | Indica ciclo |
+| Avance | Va a un descendiente ya terminado | Solo en dirigidos |
+| Cruzado | Va a otro nodo sin relación ancestral | Solo en dirigidos |
+
+---
+
+### Clasificación topológica
+
+Solo válida en grafos acíclicos dirigidos (GDA).
+
+```
+clasificacionTopologica(G):
+  visitados ← ∅
+  lista ← []
+  Para cada v en G:
+    clasificacionTopologicaAux(v, visitados, lista)
+  retornar lista
+
+clasificacionTopologicaAux(nodo, visitados, lista):
+  Si nodo no en visitados:
+    agregar nodo a visitados
+    Para cada w adyacente a nodo:
+      clasificacionTopologicaAux(w, visitados, lista)
+    agregar nodo AL PRINCIPIO de lista   ← en la salida recursiva
+```
+
+---
+
+### Excentricidad y centro del grafo
+
+```
+e(v) = max{ d(u, v) }  para todo u ∈ V
+```
+
+**Pasos:**
+1. Aplicar Floyd → matriz A de distancias mínimas.
+2. Para cada vértice v: `e(v) = max valor en la columna v`.
+3. Centro = vértice con menor e(v).
+
+---
+
+### Detección de ciclos
+
+```
+tieneCiclos(G):
+  enRecursion ← ∅
+  Para cada v en G:
+    Si tieneCiclosAux(v, enRecursion): retornar verdadero
+  retornar falso
+
+tieneCiclosAux(v, enRecursion):
+  agregar v a enRecursion
+  Para cada w adyacente a v:
+    Si w en enRecursion: retornar verdadero   ← arco de retroceso → ciclo
+    Si tieneCiclosAux(w, enRecursion): retornar verdadero
+  remover v de enRecursion
+  retornar falso
+```
+
+---
+
+### Todos los caminos posibles
+
+```
+todosLosCaminos(origen, destino, G):
+  visitados ← ∅; camino ← []; resultado ← []
+  todosLosCaminosAux(origen, destino, visitados, camino, resultado)
+  retornar resultado
+
+todosLosCaminosAux(actual, destino, visitados, camino, resultado):
+  agregar actual a visitados
+  camino.push(actual)
+  Si actual = destino:
+    resultado.agregar(copia de camino)
+  Sino:
+    Para cada w adyacente a actual:
+      Si w no en visitados:
+        todosLosCaminosAux(w, destino, visitados, camino, resultado)
+  camino.pop()
+  remover actual de visitados   ← backtracking: desmarcar para otros caminos
+```
+
+---
+
+### Variantes de Dijkstra para el parcial
+
+| Variante | Modificación clave |
+|----------|-------------------|
+| Aristas bloqueadas | Agregar condición `H[w,v] = verdadero` antes de relajar |
+| Parada obligatoria en v | Ejecutar Dijkstra dos veces: origen→v, luego v→destino |
+| Aristas con horario | Condición `H[hora][w,v]` en la relajación |
+
+---
+
+### Variantes de Floyd para el parcial
+
+| Variante | Modificación clave |
+|----------|-------------------|
+| Contar caminos alternativos | Matriz Q: `Q[i,j]++` cuando `A[i,k]+A[k,j] = A[i,j]` |
+| Nodos críticos | Ejecutar Floyd excluyendo cada nodo y comparar matrices |
+| Arista que más impacta al eliminarse | Eliminar aristas una a una y comparar matrices |

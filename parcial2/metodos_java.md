@@ -649,3 +649,341 @@ Collections.sort(lista, porNombre);
 | TreeSet | ✅ | ❌ | ❌ | ❌ |
 | HashMap | ❌ | ✅ | ✅ | ❌ |
 | TreeMap | ✅ | ✅ | ✅ | ❌ |
+
+---
+
+## Grafos Dirigidos (UT4)
+
+Los algoritmos se implementan sobre una interfaz de grafo. Los tipos genéricos `V` (vértice) y `D` (dato de arista) varían según el enunciado. Para el parcial se asume que el grafo tiene un método `vertices()` que retorna todos los vértices y un método `adyacencias(v)` que retorna los arcos salientes de v.
+
+---
+
+### Dijkstra
+
+```java
+public HashMap<V, Double> dijkstra(V origen, IGraph<V, D> grafo) {
+    HashMap<V, Double> distancias = new HashMap<>();
+    HashMap<V, V> predecesores = new HashMap<>();
+    HashSet<V> visitados = new HashSet<>();
+
+    for (V v : grafo.vertices()) {
+        distancias.put(v, Double.MAX_VALUE);
+        predecesores.put(v, null);
+    }
+    distancias.put(origen, 0.0);
+
+    while (visitados.size() < grafo.vertices().size()) {
+        V minVertice = null;
+        double minDist = Double.MAX_VALUE;
+        for (V v : distancias.keySet()) {
+            if (!visitados.contains(v)) {
+                if (distancias.get(v) < minDist) {
+                    minDist = distancias.get(v);
+                    minVertice = v;
+                }
+            }
+        }
+        if (minVertice == null) {
+            break;
+        }
+        visitados.add(minVertice);
+
+        for (Edge<V, D> arista : grafo.adyacencias(minVertice)) {
+            V vecino = arista.target();
+            if (!visitados.contains(vecino)) {
+                double peso = arista.weight();
+                double nuevaDist = distancias.get(minVertice) + peso;
+                if (nuevaDist < distancias.get(vecino)) {
+                    distancias.put(vecino, nuevaDist);
+                    predecesores.put(vecino, minVertice);
+                }
+            }
+        }
+    }
+    return distancias;
+}
+
+public List<V> recuperarCamino(V origen, V destino, HashMap<V, V> predecesores) {
+    List<V> camino = new ArrayList<>();
+    V actual = destino;
+    while (actual != null) {
+        camino.add(0, actual);
+        if (actual.equals(origen)) {
+            break;
+        }
+        actual = predecesores.get(actual);
+    }
+    return camino;
+}
+```
+
+---
+
+### Floyd
+
+```java
+public double[][] floyd(double[][] C, int n, int[][] predecesores) {
+    double[][] A = new double[n][n];
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            A[i][j] = C[i][j];
+            predecesores[i][j] = -1;
+        }
+        A[i][i] = 0;
+    }
+
+    for (int k = 0; k < n; k++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (A[i][k] != Double.MAX_VALUE) {
+                    if (A[k][j] != Double.MAX_VALUE) {
+                        double nuevoDist = A[i][k] + A[k][j];
+                        if (nuevoDist < A[i][j]) {
+                            A[i][j] = nuevoDist;
+                            predecesores[i][j] = k;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return A;
+}
+
+public void imprimirCamino(int i, int j, int[][] P) {
+    int k = P[i][j];
+    if (k == -1) {
+        return;
+    }
+    imprimirCamino(i, k, P);
+    System.out.print(k + " ");
+    imprimirCamino(k, j, P);
+}
+```
+
+---
+
+### Warshall
+
+```java
+public boolean[][] warshall(boolean[][] C, int n) {
+    boolean[][] A = new boolean[n][n];
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            A[i][j] = C[i][j];
+        }
+    }
+
+    for (int k = 0; k < n; k++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (!A[i][j]) {
+                    if (A[i][k]) {
+                        if (A[k][j]) {
+                            A[i][j] = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return A;
+}
+```
+
+---
+
+### DFS (búsqueda en profundidad)
+
+```java
+public void dfs(IGraph<V, D> grafo, Consumer<V> consumer) {
+    HashSet<V> visitados = new HashSet<>();
+    for (V v : grafo.vertices()) {
+        if (!visitados.contains(v)) {
+            dfsAux(grafo, v, visitados, consumer);
+        }
+    }
+}
+
+private void dfsAux(IGraph<V, D> grafo, V actual, HashSet<V> visitados, Consumer<V> consumer) {
+    visitados.add(actual);
+    consumer.accept(actual);
+    for (Edge<V, D> arista : grafo.adyacencias(actual)) {
+        V vecino = arista.target();
+        if (!visitados.contains(vecino)) {
+            dfsAux(grafo, vecino, visitados, consumer);
+        }
+    }
+}
+```
+
+---
+
+### Clasificación topológica
+
+```java
+public List<V> clasificacionTopologica(IGraph<V, D> grafo) {
+    HashSet<V> visitados = new HashSet<>();
+    List<V> lista = new ArrayList<>();
+    for (V v : grafo.vertices()) {
+        clasificacionTopologicaAux(grafo, v, visitados, lista);
+    }
+    return lista;
+}
+
+private void clasificacionTopologicaAux(IGraph<V, D> grafo, V nodo, HashSet<V> visitados, List<V> lista) {
+    if (!visitados.contains(nodo)) {
+        visitados.add(nodo);
+        for (Edge<V, D> arista : grafo.adyacencias(nodo)) {
+            V vecino = arista.target();
+            clasificacionTopologicaAux(grafo, vecino, visitados, lista);
+        }
+        lista.add(0, nodo);
+    }
+}
+```
+
+---
+
+### Detección de ciclos
+
+```java
+public boolean tieneCiclos(IGraph<V, D> grafo) {
+    HashSet<V> enRecursion = new HashSet<>();
+    for (V v : grafo.vertices()) {
+        if (tieneCiclosAux(grafo, v, enRecursion)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+private boolean tieneCiclosAux(IGraph<V, D> grafo, V v, HashSet<V> enRecursion) {
+    enRecursion.add(v);
+    for (Edge<V, D> arista : grafo.adyacencias(v)) {
+        V vecino = arista.target();
+        if (enRecursion.contains(vecino)) {
+            return true;
+        }
+        if (tieneCiclosAux(grafo, vecino, enRecursion)) {
+            return true;
+        }
+    }
+    enRecursion.remove(v);
+    return false;
+}
+```
+
+---
+
+### Todos los caminos posibles
+
+```java
+public List<List<V>> todosLosCaminos(IGraph<V, D> grafo, V origen, V destino) {
+    HashSet<V> visitados = new HashSet<>();
+    List<V> camino = new ArrayList<>();
+    List<List<V>> resultado = new ArrayList<>();
+    todosLosCaminosAux(grafo, origen, destino, visitados, camino, resultado);
+    return resultado;
+}
+
+private void todosLosCaminosAux(IGraph<V, D> grafo, V actual, V destino,
+        HashSet<V> visitados, List<V> camino, List<List<V>> resultado) {
+    visitados.add(actual);
+    camino.add(actual);
+    if (actual.equals(destino)) {
+        resultado.add(new ArrayList<>(camino));
+    } else {
+        for (Edge<V, D> arista : grafo.adyacencias(actual)) {
+            V vecino = arista.target();
+            if (!visitados.contains(vecino)) {
+                todosLosCaminosAux(grafo, vecino, destino, visitados, camino, resultado);
+            }
+        }
+    }
+    camino.remove(camino.size() - 1);
+    visitados.remove(actual);
+}
+```
+
+---
+
+### Excentricidad y centro del grafo
+
+```java
+public int centroDelGrafo(double[][] A, int n) {
+    double[] excentricidades = new double[n];
+    for (int v = 0; v < n; v++) {
+        double max = 0;
+        for (int u = 0; u < n; u++) {
+            if (A[u][v] > max) {
+                max = A[u][v];
+            }
+        }
+        excentricidades[v] = max;
+    }
+    int centro = 0;
+    for (int v = 1; v < n; v++) {
+        if (excentricidades[v] < excentricidades[centro]) {
+            centro = v;
+        }
+    }
+    return centro;
+}
+```
+
+---
+
+### BEA (búsqueda en amplitud)
+
+```java
+public void bea(IGraph<V, D> grafo, V origen, Consumer<V> consumer) {
+    HashSet<V> visitados = new HashSet<>();
+    ArrayDeque<V> cola = new ArrayDeque<>();
+    visitados.add(origen);
+    cola.offer(origen);
+
+    while (!cola.isEmpty()) {
+        V actual = cola.poll();
+        consumer.accept(actual);
+        for (Edge<V, D> arista : grafo.adyacencias(actual)) {
+            V vecino = arista.target();
+            if (!visitados.contains(vecino)) {
+                visitados.add(vecino);
+                cola.offer(vecino);
+            }
+        }
+    }
+}
+```
+
+**Número de Bacon / distancia en saltos:**
+
+```java
+public int numeroDeDistancia(IGraph<V, D> grafo, V origen, V destino) {
+    HashSet<V> visitados = new HashSet<>();
+    ArrayDeque<V> cola = new ArrayDeque<>();
+    HashMap<V, Integer> distancia = new HashMap<>();
+    visitados.add(origen);
+    cola.offer(origen);
+    distancia.put(origen, 0);
+
+    while (!cola.isEmpty()) {
+        V actual = cola.poll();
+        if (actual.equals(destino)) {
+            return distancia.get(actual);
+        }
+        for (Edge<V, D> arista : grafo.adyacencias(actual)) {
+            V vecino = arista.target();
+            if (!visitados.contains(vecino)) {
+                visitados.add(vecino);
+                distancia.put(vecino, distancia.get(actual) + 1);
+                cola.offer(vecino);
+            }
+        }
+    }
+    return -1;
+}
+```
