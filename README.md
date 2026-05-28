@@ -160,15 +160,32 @@ El **Ejercicio 1 de la Parte 1** es casi siempre **inserciones en AVL**. Leer `g
 
 ## Parcial 2
 
-Material basado en la **Unidad Temática 3 (UT3)** y **Unidad Temática 4 (UT4)**: Árboles Genéricos, Trie, Patricia, Hashing, TDA Mapa, TDA Diccionario, Java Collections Framework, y Grafos Dirigidos (Dijkstra, Floyd, Warshall, DFS, BEA, clasificación topológica).
+Material basado en la **Unidad Temática 3 (UT3)** y **Unidad Temática 4 (UT4)**: Árboles Genéricos, Trie, Patricia, Hashing, TDA Mapa, TDA Diccionario, Java Collections Framework, Ordenamiento (Inserción, Heapsort, Quicksort), y Grafos Dirigidos (Dijkstra, Floyd, Warshall, DFS, BEA, clasificación topológica).
 
 ### Cuadernola
 
 **[`parcial2/cuadernola.md`](parcial2/cuadernola.md)** — referencia completa para el parcial.
 
-Contiene: guía de elección de estructura para UT3, pseudocódigos completos con pre/postcondiciones e implementaciones Java para todos los TDAs, patrones de uso de colecciones Java, contrato `hashCode`/`equals`, y ejercicios típicos de árbol genérico (`listarDescendientes`, `obtenerGeneracion`, `esDescendiente`, `ancestroComun`).
+Contiene: guía de elección de estructura para UT3, pseudocódigos completos con pre/postcondiciones e implementaciones Java para todos los TDAs, patrones de uso de colecciones Java, contrato `hashCode`/`equals`, ejercicios típicos de árbol genérico, **sección de ordenamiento** (cuándo elegir cada algoritmo, pseudocódigo y ejemplo manual), y algoritmos de grafos.
+
+### Letras disponibles
+
+| Archivo | Descripción |
+|---------|-------------|
+| `2023-2S-parte2.md` | Parte 2 — nov 2023: conectividad grafo + sorting descendente (IoT) |
+| `2023-2S-parte3.md` | Parte 3 — nov 2023: Java conectividad + obtener mayor medición |
+| `2024-1S-parte2-examen1.md` | Parte 2 — jun 2024 v1: sorting casi ordenado + todos los caminos (switches) |
+| `2024-1S-parte2-examen2.md` | Parte 2 — jun 2024 v2: sorting peor caso garantizado + todos los caminos (trenes) |
+| `2024-1S-parte3-examen1.md` | Parte 3 — jun 2024 v1: Java todos los caminos (switches) |
+| `2024-1S-parte3-examen2.md` | Parte 3 — jun 2024 v2: Java todos los caminos (trenes) |
+| `2024-2S-parte2.md` | Parte 2 — nov 2024: Dijkstra / MST + heapsort manual |
+| `2024-2S-parte3.md` | Parte 3 — nov 2024: Java Dijkstra / MST sistema de transporte |
+| `2025-1S-parte2.md` | Parte 2 — jul 2025: Dijkstra manual + quicksort (1000 elementos) |
+| `2025-2S-parte2.md` | Parte 2 — nov 2025: Java grafo no dirigido (traje Iron Man, BFS/articulación) |
 
 ### Pseudocódigos
+
+#### TDAs (UT3)
 
 | Archivo | Descripción |
 |---------|-------------|
@@ -178,7 +195,29 @@ Contiene: guía de elección de estructura para UT3, pseudocódigos completos co
 | `hash.md` | Hash — función de hash, chaining, open addressing (sondeo lineal), tombstones |
 | `mapa.md` | TDA Mapa — operaciones, `HashMap`/`LinkedHashMap`/`TreeMap`, patrones Java |
 | `diccionario.md` | TDA Diccionario — diferencia con Mapa, `Map<K, List<V>>` |
+
+#### TDAs (UT4)
+
+| Archivo | Descripción |
+|---------|-------------|
 | `grafo-dirigido.md` | Grafos dirigidos — Dijkstra, Floyd, Warshall, DFS, BEA, clasificación topológica, ciclos, todos los caminos |
+
+#### Ejercicios de parcial — Ordenamiento
+
+| Archivo | Ejercicio | Apareció en |
+|---------|-----------|-------------|
+| `ejercicio-sorting-insercion.md` | Inserción — datos casi ordenados, memoria limitada | 2024-1S examen 1, 2023-2S (variante desc.) |
+| `ejercicio-sorting-heapsort.md` | Heapsort — peor caso garantizado, ejemplo manual paso a paso | 2024-1S examen 2, 2024-2S |
+| `ejercicio-sorting-quicksort.md` | Quicksort — buen promedio, variante descendente | 2023-2S, 2025-1S |
+
+### Soluciones
+
+| Archivo | Ejercicio | Incluye |
+|---------|-----------|---------|
+| `sorting-insercion.md` | Ordenamiento por inserción | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
+| `sorting-heapsort.md` | Heapsort | Lenguaje Natural, Pre/Post, Pseudocódigo, ejemplo manual 2024-2S, Java, JUnit |
+| `sorting-quicksort.md` | Quicksort (asc. y desc.) | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
+| `AlgoritmosCaminos.java` | Todos los caminos en grafo dirigido (UT4) | Helper Java: `todosLosCaminos`, `caminoCritico`, `holgura` |
 
 ### Código Base — UT03-01
 
@@ -207,9 +246,12 @@ mvn test -Dtest=NombreTest
 
 Incluye: `NodoGenerico<T>`, `ArbolGenerico<T>`, `NodoTrie<T>`, `Hash<K,V>`, `TNodoHash<K,V>`, patrones de `hashCode`/`equals`, y referencia de Collections Framework.
 
-### Resumen de la unidad
+### Resúmenes de unidades
 
-**[`parcial2/ut3-resumen-completo.md`](parcial2/ut3-resumen-completo.md)** — resumen teórico completo de la UT3 tal como viene de la cátedra.
+| Archivo | Descripción |
+|---------|-------------|
+| [`parcial2/ut3-resumen-completo.md`](parcial2/ut3-resumen-completo.md) | Resumen teórico UT3 (cátedra): árboles genéricos, hashing, diccionarios, mapas |
+| [`parcial2/AED_UT04_Grafos_Completo.md`](parcial2/AED_UT04_Grafos_Completo.md) | Resumen completo UT4: grafos dirigidos, algoritmos, representaciones |
 
 ---
 

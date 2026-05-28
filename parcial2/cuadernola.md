@@ -26,6 +26,12 @@ Material de estudio consolidado para el segundo parcial de Algoritmos y Estructu
 - [hashCode / equals — Contrato](#hashcode--equals--contrato)
 - [Collections Framework](#collections-framework)
 
+### Ordenamiento (aparece en todos los exámenes)
+- [Elegir el algoritmo correcto — Sorting](#elegir-el-algoritmo-correcto--sorting)
+- [Inserción](#inserción) — datos casi ordenados + memoria limitada → O(n) mejor caso
+- [Heapsort](#heapsort) — peor caso garantizado + memoria limitada → O(n log n) siempre
+- [Quicksort](#quicksort) — buen promedio en práctica → O(n log n) promedio
+
 ### Grafos (UT4)
 - [Elegir el algoritmo correcto — UT4](#elegir-el-algoritmo-correcto--ut4)
 - [Tabla de decisión — UT4](#tabla-de-decisión--ut4)
@@ -1417,6 +1423,169 @@ Collections.sort(lista, porNombre);
 | Transformación (Hash) | Tabla dispersa | **O(1) prom.** | No eficiente | No | O(1) chaining |
 
 > k = tamaño del resultado; m = largo del patrón/palabra
+
+---
+
+## Ordenamiento
+
+Aparece en **todos los exámenes del segundo parcial** como ejercicio autónomo. La clave es leer las señales del enunciado para elegir el algoritmo correcto.
+
+---
+
+### Elegir el algoritmo correcto — Sorting
+
+| Señal en el enunciado | Algoritmo | Orden mejor | Orden peor | Espacio |
+|----------------------|-----------|------------|------------|---------|
+| "casi ordenados" + memoria limitada | **Inserción** | **O(n)** | O(n²) | O(1) |
+| "rendimiento constante en el peor caso" + memoria limitada | **Heapsort** | O(n log n) | **O(n log n)** | O(1) |
+| "pocas comparaciones en promedio" / general | **Quicksort** | O(n log n) | O(n²) | O(log n) |
+
+**Regla de oro:** si menciona **peor caso garantizado** → Heapsort. Si menciona **casi ordenados** → Inserción. Si no dice nada especial → Quicksort.
+
+---
+
+### Inserción
+
+**Cuándo:** datos **casi ordenados** + memoria **limitada** (microcontrolador, IoT).
+
+**Por qué:** cuando los datos están casi ordenados, el while interno casi no ejecuta → O(n) efectivo.
+
+```
+insercion(datos: double[], n: entero): void
+  i ← 1
+  mientras i < n hacer
+    clave ← datos[i]
+    j ← i - 1
+    mientras j >= 0 Y datos[j] > clave hacer
+      datos[j + 1] ← datos[j]
+      j ← j - 1
+    fin mientras
+    datos[j + 1] ← clave
+    i ← i + 1
+  fin mientras
+fin método
+```
+
+**Variante descendente** (cambiar `>` por `<` en la comparación):
+```
+mientras j >= 0 Y datos[j].medicion < clave.medicion hacer
+```
+
+**Java:**
+```java
+public static void insercion(double[] datos, int n) {
+    int i = 1;
+    while (i < n) {
+        double clave = datos[i];
+        int j = i - 1;
+        while (j >= 0) {
+            if (datos[j] > clave) {
+                datos[j + 1] = datos[j];
+                j--;
+            } else {
+                break;
+            }
+        }
+        datos[j + 1] = clave;
+        i++;
+    }
+}
+```
+
+---
+
+### Heapsort
+
+**Cuándo:** se exige **O(n log n) en el peor caso** + sin memoria adicional. Mergesort también da O(n log n) garantizado pero necesita O(n) espacio → descartado en microcontroladores.
+
+**Dos fases:** (1) construir max-heap en O(n), (2) extraer máximos sucesivamente en O(n log n).
+
+```
+heapsort(datos: double[], n: entero): void
+  // Fase 1: construir max-heap
+  i ← n / 2 - 1
+  mientras i >= 0 hacer
+    hundir(datos, i, n)
+    i ← i - 1
+  fin mientras
+  // Fase 2: ordenar
+  i ← n - 1
+  mientras i > 0 hacer
+    aux ← datos[0]
+    datos[0] ← datos[i]
+    datos[i] ← aux
+    hundir(datos, 0, i)
+    i ← i - 1
+  fin mientras
+fin método
+
+hundir(datos: double[], i: entero, tamanio: entero): void
+  izq ← 2 * i + 1
+  der ← 2 * i + 2
+  maximo ← i
+  si izq < tamanio entonces
+    si datos[izq] > datos[maximo] entonces maximo ← izq fin si
+  fin si
+  si der < tamanio entonces
+    si datos[der] > datos[maximo] entonces maximo ← der fin si
+  fin si
+  si maximo ≠ i entonces
+    aux ← datos[i]; datos[i] ← datos[maximo]; datos[maximo] ← aux
+    hundir(datos, maximo, tamanio)
+  fin si
+fin método
+```
+
+**Propiedad max-heap en arreglo:** posición `i` → hijos en `2i+1` y `2i+2`. El máximo siempre está en posición 0.
+
+**Ejemplo manual (examen 2024-2S):** vector inicial `[97,19,61,07,04,25,02,06]` ya es max-heap. Solo fase 2:
+
+| swap | resultado después del swap y hundir |
+|------|-------------------------------------|
+| pos 0↔7 | → [61,19,25,07,04,06,02,**97**] |
+| pos 0↔6 | → [25,19,06,07,04,02,**61**,97] |
+| pos 0↔5 | → [19,07,06,02,04,**25**,61,97] |
+| pos 0↔4 | → [07,04,06,02,**19**,25,61,97] |
+| pos 0↔3 | → [06,04,02,**07**,19,25,61,97] |
+| pos 0↔2 | → [04,02,**06**,07,19,25,61,97] |
+| pos 0↔1 | → [**02,04**,06,07,19,25,61,97] ✓ |
+
+---
+
+### Quicksort
+
+**Cuándo:** buen rendimiento **en promedio**, datos no casi ordenados, sin restricción extrema de memoria.
+
+**Pivote:** último elemento del segmento. Particionar → colocar pivote en posición definitiva → recursión.
+
+```
+quicksort(datos: double[], inicio: entero, fin: entero): void
+  si inicio < fin entonces
+    posPivote ← particionar(datos, inicio, fin)
+    quicksort(datos, inicio, posPivote - 1)
+    quicksort(datos, posPivote + 1, fin)
+  fin si
+fin método
+
+particionar(datos: double[], inicio: entero, fin: entero): entero
+  pivote ← datos[fin]
+  i ← inicio - 1
+  j ← inicio
+  mientras j < fin hacer
+    si datos[j] <= pivote entonces
+      i ← i + 1
+      aux ← datos[i]; datos[i] ← datos[j]; datos[j] ← aux
+    fin si
+    j ← j + 1
+  fin mientras
+  aux ← datos[i + 1]; datos[i + 1] ← datos[fin]; datos[fin] ← aux
+  retornar i + 1
+fin método
+```
+
+**Llamada inicial:** `quicksort(datos, 0, n - 1)`
+
+**Variante descendente** (examen 2023-2S): cambiar `datos[j] <= pivote` por `datos[j].medicion >= pivote.medicion`.
 
 ---
 
