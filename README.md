@@ -21,17 +21,22 @@ aed-parciales/
 │   ├── pseudocodigos/
 │   ├── soluciones/
 │   └── codigo-base/
-└── parcial2/                    ← material del segundo parcial (UT3 + UT4)
-    ├── cuadernola.md
-    ├── guia-de-estudio.md
-    ├── metodos_java.md
-    ├── ut3-resumen-completo.md
+├── parcial2/                    ← material del segundo parcial (UT3 + UT4 grafos)
+│   ├── cuadernola.md
+│   ├── guia-de-estudio.md
+│   ├── metodos_java.md
+│   ├── ut3-resumen-completo.md
+│   ├── letras/
+│   ├── pseudocodigos/
+│   ├── soluciones/
+│   └── codigo-base/
+│       ├── ut03-01/             ← proyecto Maven UT3 (árboles genéricos, Trie, Hash)
+│       └── ut04-01/             ← proyecto Maven UT4 (grafos dirigidos y no dirigidos)
+└── examen_final/                ← material del examen final (Sorting)
+    ├── pseudocodigos/           ← ejercicio-sorting-insercion/heapsort/quicksort.md
+    ├── soluciones/              ← sorting-insercion/heapsort/quicksort.md
     ├── letras/
-    ├── pseudocodigos/
-    ├── soluciones/
     └── codigo-base/
-        ├── ut03-01/             ← proyecto Maven UT3 (árboles genéricos, Trie, Hash)
-        └── ut04-01/             ← proyecto Maven UT4 (grafos dirigidos y no dirigidos)
 ```
 
 ---
@@ -161,13 +166,13 @@ El **Ejercicio 1 de la Parte 1** es casi siempre **inserciones en AVL**. Leer `g
 
 ## Parcial 2
 
-Material basado en la **Unidad Temática 3 (UT3)** y **Unidad Temática 4 (UT4)**: Árboles Genéricos, Trie, Patricia, Hashing, TDA Mapa, TDA Diccionario, Java Collections Framework, Ordenamiento (Inserción, Heapsort, Quicksort), Grafos Dirigidos (Dijkstra, Floyd, Warshall, DFS, BEA, clasificación topológica, ciclos, todos los caminos) y Grafos No Dirigidos (BEA, Prim, Kruskal, Puntos de articulación).
+Material basado en la **Unidad Temática 3 (UT3)** y **Unidad Temática 4 (UT4)**: Árboles Genéricos, Trie, Patricia, Hashing, TDA Mapa, TDA Diccionario, Java Collections Framework, Grafos Dirigidos (Dijkstra, Floyd, Warshall, DFS, BEA, clasificación topológica, ciclos, todos los caminos) y Grafos No Dirigidos (BEA, Prim, Kruskal, Puntos de articulación).
 
 ### Cuadernola
 
 **[`parcial2/cuadernola.md`](parcial2/cuadernola.md)** — referencia completa para el parcial.
 
-Contiene: guía de elección de estructura para UT3, pseudocódigos completos con pre/postcondiciones e implementaciones Java para todos los TDAs, patrones de uso de colecciones Java, contrato `hashCode`/`equals`, ejercicios típicos de árbol genérico, **sección de ordenamiento** (cuándo elegir cada algoritmo, pseudocódigo y ejemplo manual), y algoritmos de grafos.
+Contiene: guía de elección de estructura para UT3, pseudocódigos completos con pre/postcondiciones e implementaciones Java para todos los TDAs, patrones de uso de colecciones Java, contrato `hashCode`/`equals`, ejercicios típicos de árbol genérico, y algoritmos de grafos.
 
 ### Letras disponibles
 
@@ -203,23 +208,7 @@ Contiene: guía de elección de estructura para UT3, pseudocódigos completos co
 |---------|-------------|
 | `grafo-dirigido.md` | Grafos — Dijkstra, Floyd, Warshall, DFS, BEA, clasificación topológica, ciclos, todos los caminos, **Prim**, **Kruskal**, **Puntos de articulación** |
 
-#### Ejercicios de parcial — Ordenamiento
-
-| Archivo | Ejercicio | Apareció en |
-|---------|-----------|-------------|
-| `ejercicio-sorting-insercion.md` | Inserción — datos casi ordenados, memoria limitada | 2024-1S examen 1, 2023-2S (variante desc.) |
-| `ejercicio-sorting-heapsort.md` | Heapsort — peor caso garantizado, ejemplo manual paso a paso | 2024-1S examen 2, 2024-2S |
-| `ejercicio-sorting-quicksort.md` | Quicksort — buen promedio, variante descendente | 2023-2S, 2025-1S |
-
 ### Soluciones
-
-#### Sorting
-
-| Archivo | Ejercicio | Incluye |
-|---------|-----------|---------|
-| `sorting-insercion.md` | Ordenamiento por inserción | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
-| `sorting-heapsort.md` | Heapsort | Lenguaje Natural, Pre/Post, Pseudocódigo, ejemplo manual 2024-2S, Java, JUnit |
-| `sorting-quicksort.md` | Quicksort (asc. y desc.) | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
 
 #### UT4 — Grafos (patrones de examen)
 
@@ -290,6 +279,36 @@ Incluye: `NodoGenerico<T>`, `ArbolGenerico<T>`, `NodoTrie<T>`, `Hash<K,V>`, `TNo
 |---------|-------------|
 | [`parcial2/ut3-resumen-completo.md`](parcial2/ut3-resumen-completo.md) | Resumen teórico UT3 (cátedra): árboles genéricos, hashing, diccionarios, mapas |
 | [`parcial2/AED_UT04_Grafos_Completo.md`](parcial2/AED_UT04_Grafos_Completo.md) | Resumen completo UT4: grafos dirigidos, algoritmos, representaciones |
+
+---
+
+## Examen Final
+
+Material de **Ordenamiento** (Sorting): Inserción, Heapsort, Quicksort.
+
+### Pseudocódigos
+
+| Archivo | Ejercicio | Apareció en |
+|---------|-----------|-------------|
+| `ejercicio-sorting-insercion.md` | Inserción — datos casi ordenados, memoria limitada | 2024-1S examen 1, 2023-2S |
+| `ejercicio-sorting-heapsort.md` | Heapsort — peor caso garantizado, ejemplo manual paso a paso | 2024-1S examen 2, 2024-2S |
+| `ejercicio-sorting-quicksort.md` | Quicksort — buen promedio, variante descendente | 2023-2S, 2025-1S |
+
+### Guía para elegir algoritmo de sorting
+
+| Señal en el enunciado | Algoritmo |
+|----------------------|-----------|
+| "casi ordenado" + memoria limitada | Inserción |
+| "peor caso garantizado" + memoria limitada | Heapsort |
+| "buen promedio" + "pocas comparaciones" | Quicksort |
+
+### Soluciones
+
+| Archivo | Ejercicio | Incluye |
+|---------|-----------|---------|
+| `sorting-insercion.md` | Ordenamiento por inserción | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
+| `sorting-heapsort.md` | Heapsort | Lenguaje Natural, Pre/Post, Pseudocódigo, ejemplo manual 2024-2S, Java, JUnit |
+| `sorting-quicksort.md` | Quicksort (asc. y desc.) | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
 
 ---
 
