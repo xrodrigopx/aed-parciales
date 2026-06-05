@@ -17,26 +17,36 @@ aed-parciales/
 │   ├── cuadernola.md
 │   ├── guia-de-estudio.md
 │   ├── metodos_java.md
-│   ├── letras/
-│   ├── pseudocodigos/
-│   ├── soluciones/
-│   └── codigo-base/
+│   ├── parte1/                  ← pseudocódigo en papel
+│   │   ├── letras/
+│   │   ├── pseudocodigos/
+│   │   └── soluciones/
+│   └── parte2/                  ← programación Java
+│       ├── letras/
+│       ├── codigo-base/
+│       └── soluciones/
 ├── parcial2/                    ← material del segundo parcial (UT3 + UT4 grafos)
 │   ├── cuadernola.md
 │   ├── guia-de-estudio.md
 │   ├── metodos_java.md
 │   ├── ut3-resumen-completo.md
-│   ├── letras/
-│   ├── pseudocodigos/
-│   ├── soluciones/
-│   └── codigo-base/
-│       ├── ut03-01/             ← proyecto Maven UT3 (árboles genéricos, Trie, Hash)
-│       └── ut04-01/             ← proyecto Maven UT4 (grafos dirigidos y no dirigidos)
+│   ├── parte1/                  ← pseudocódigo en papel
+│   │   ├── letras/
+│   │   ├── pseudocodigos/
+│   │   └── soluciones/
+│   └── parte2/                  ← programación Java
+│       ├── letras/
+│       ├── codigo-base/
+│       │   ├── ut03-01/         ← proyecto Maven UT3 (árboles genéricos, Trie, Hash)
+│       │   └── ut04-01/         ← proyecto Maven UT4 (grafos dirigidos y no dirigidos)
+│       └── soluciones/
 └── examen_final/                ← material del examen final (Sorting)
-    ├── pseudocodigos/           ← ejercicio-sorting-insercion/heapsort/quicksort.md
-    ├── soluciones/              ← sorting-insercion/heapsort/quicksort.md
-    ├── letras/
-    └── codigo-base/
+    ├── parte1/                  ← pseudocódigo en papel
+    │   ├── pseudocodigos/       ← ejercicio-sorting-insercion/heapsort/quicksort.md
+    │   ├── soluciones/          ← sorting-insercion/heapsort/quicksort.md
+    │   └── letras/
+    └── parte2/                  ← programación Java
+        └── codigo-base/
 ```
 
 ---
@@ -93,20 +103,27 @@ Contiene: guía de elección de TDA (ABB vs AVL vs Lista vs Cola vs Pila vs Conj
 
 ### Letras disponibles
 
+**`parte1/letras/`** — pseudocódigo en papel:
+
 | Archivo | Descripción |
 |---------|-------------|
-| `2024-S1-parte2-examen1.md` | Parte 1 (ex-Parte 2) — 11 mayo 2024, variante 1: AVL (72,24,12,...) + LTIM |
-| `2024-S1-parte2-examen2.md` | Parte 1 (ex-Parte 2) — 11 mayo 2024, variante 2: AVL (74,25,10,...) + Hojas/Internos |
-| `2024-S2-parte2.md` | Parte 1 (ex-Parte 2) — 2do sem 2024: Árbol genealógico + ListaDePrioridades |
-| `2025-S1-parte2.md` | Parte 1 (ex-Parte 2) — 17 mayo 2025: AVL (45,35,...) + Recomendador películas ABB |
-| `2025-S2-parte2.md` | Parte 1 (ex-Parte 2) — 18 oct 2025: Organismo ectotermo + ABB (solo Java) |
-| `2024-S1-parte3-examen1.md` | Parte 2 (ex-Parte 3) — 11 mayo 2024, variante 1: Java LTIM en TArbolDeProductos |
-| `2024-S1-parte3-examen2.md` | Parte 2 (ex-Parte 3) — 11 mayo 2024, variante 2: Java Hojas/Internos |
-| `2025-S1-parte3.md` | Parte 2 (ex-Parte 3) — 17 mayo 2025: Java Recomendador películas |
-| `2025-S1-parte3-recuperatorio.md` | Recuperatorio 2025 S1: Java comboViable Festival Otaku |
+| `2024-S1-parte2-examen1.md` | 11 mayo 2024, variante 1: AVL (72,24,12,...) + LTIM |
+| `2024-S1-parte2-examen2.md` | 11 mayo 2024, variante 2: AVL (74,25,10,...) + Hojas/Internos |
+| `2024-S2-parte2.md` | 2do sem 2024: Árbol genealógico + ListaDePrioridades |
+| `2025-S1-parte2.md` | 17 mayo 2025: AVL (45,35,...) + Recomendador películas ABB |
+| `2025-S2-parte2.md` | 18 oct 2025: Organismo ectotermo + ABB (solo Java) |
 | `practico10-farmachop.md` | Práctico #10 UT01: preparadoViable (lista blanca/negra) |
 | `festivalOtaku-completo.md` | Parcial completo: AVL + Trie + comboViable + Java |
-| `parentesco-parte3.md` | Parte 2 (ex-Parte 3) 2024 S2: Java calcularParentesco árbol genealógico |
+
+**`parte2/letras/`** — programación Java:
+
+| Archivo | Descripción |
+|---------|-------------|
+| `2024-S1-parte3-examen1.md` | 11 mayo 2024, variante 1: Java LTIM en TArbolDeProductos |
+| `2024-S1-parte3-examen2.md` | 11 mayo 2024, variante 2: Java Hojas/Internos |
+| `2025-S1-parte3.md` | 17 mayo 2025: Java Recomendador películas |
+| `2025-S1-parte3-recuperatorio.md` | Recuperatorio 2025 S1: Java comboViable Festival Otaku |
+| `parentesco-parte3.md` | 2024 S2: Java calcularParentesco árbol genealógico |
 
 ### Pseudocódigos
 
@@ -145,12 +162,14 @@ Contiene: guía de elección de TDA (ABB vs AVL vs Lista vs Cola vs Pila vs Conj
 
 ### Código Base
 
+En `parte2/codigo-base/`:
+
 | Directorio | Contenido |
 |------------|-----------|
-| `codigo-base/2024-S1/` | `TArbolBB`, `TElementoAB`, `TArbolDeProductos`, `Producto`, tests |
-| `codigo-base/farmachop/` | `Lista`, `Nodo`, `ILista`, `INodo`, archivos `.txt` de datos |
-| `codigo-base/festival-otaku/` | `TDALista`, `TDACola`, `TDAPila`, `TDAConjunto` + implementaciones |
-| `codigo-base/parentesco/` | `TArbolBB`, `TElementoAB`, `Genealogia` (stub), `Persona`, `ResultadoParentesco`, tests |
+| `2024-S1/` | `TArbolBB`, `TElementoAB`, `TArbolDeProductos`, `Producto`, tests |
+| `farmachop/` | `Lista`, `Nodo`, `ILista`, `INodo`, archivos `.txt` de datos |
+| `festival-otaku/` | `TDALista`, `TDACola`, `TDAPila`, `TDAConjunto` + implementaciones |
+| `parentesco/` | `TArbolBB`, `TElementoAB`, `Genealogia` (stub), `Persona`, `ResultadoParentesco`, tests |
 
 ### Referencia de Métodos Java
 
@@ -176,18 +195,25 @@ Contiene: guía de elección de estructura para UT3, pseudocódigos completos co
 
 ### Letras disponibles
 
+**`parte1/letras/`** — pseudocódigo en papel:
+
 | Archivo | Descripción |
 |---------|-------------|
-| `2023-2S-parte2.md` | Parte 2 — nov 2023: conectividad grafo + sorting descendente (IoT) |
-| `2023-2S-parte3.md` | Parte 3 — nov 2023: Java conectividad + obtener mayor medición |
-| `2024-1S-parte2-examen1.md` | Parte 2 — jun 2024 v1: sorting casi ordenado + todos los caminos (switches) |
-| `2024-1S-parte2-examen2.md` | Parte 2 — jun 2024 v2: sorting peor caso garantizado + todos los caminos (trenes) |
-| `2024-1S-parte3-examen1.md` | Parte 3 — jun 2024 v1: Java todos los caminos (switches) |
-| `2024-1S-parte3-examen2.md` | Parte 3 — jun 2024 v2: Java todos los caminos (trenes) |
-| `2024-2S-parte2.md` | Parte 2 — nov 2024: Dijkstra / MST + heapsort manual |
-| `2024-2S-parte3.md` | Parte 3 — nov 2024: Java Dijkstra / MST sistema de transporte |
-| `2025-1S-parte2.md` | Parte 2 — jul 2025: Dijkstra manual + quicksort (1000 elementos) |
-| `2025-2S-parte2.md` | Parte 2 — nov 2025: Java grafo no dirigido (traje Iron Man, BFS/articulación) |
+| `2023-2S-parte2.md` | nov 2023: conectividad grafo |
+| `2024-1S-parte2-examen1.md` | jun 2024 v1: todos los caminos (switches) |
+| `2024-1S-parte2-examen2.md` | jun 2024 v2: todos los caminos (trenes) |
+| `2024-2S-parte2.md` | nov 2024: Dijkstra / MST |
+| `2025-1S-parte2.md` | jul 2025: Dijkstra manual (A→E) |
+| `2025-2S-parte2.md` | nov 2025: grafo no dirigido (traje Iron Man, BFS) |
+
+**`parte2/letras/`** — programación Java:
+
+| Archivo | Descripción |
+|---------|-------------|
+| `2023-2S-parte3.md` | nov 2023: Java conectividad + obtener mayor medición |
+| `2024-1S-parte3-examen1.md` | jun 2024 v1: Java todos los caminos (switches) |
+| `2024-1S-parte3-examen2.md` | jun 2024 v2: Java todos los caminos (trenes) |
+| `2024-2S-parte3.md` | nov 2024: Java Dijkstra / MST sistema de transporte |
 
 ### Pseudocódigos
 
@@ -223,7 +249,7 @@ Contiene: guía de elección de estructura para UT3, pseudocódigos completos co
 
 ### Código Base — UT03-01
 
-Proyecto Maven provisto por la cátedra en `codigo-base/ut03-01/`.
+Proyecto Maven provisto por la cátedra en `parte2/codigo-base/ut03-01/`.
 
 **TDAs implementados:**
 
@@ -235,7 +261,7 @@ Proyecto Maven provisto por la cátedra en `codigo-base/ut03-01/`.
 
 **Ejercicios entregables:** 5, 7, 9, 11, 12, 13, 14, 15, 16
 
-**Comandos (dentro de `codigo-base/ut03-01/`):**
+**Comandos (dentro de `parte2/codigo-base/ut03-01/`):**
 ```bash
 mvn compile
 mvn test
@@ -244,7 +270,7 @@ mvn test -Dtest=NombreTest
 
 ### Código Base — UT04-01
 
-Proyecto Maven provisto por la cátedra en `codigo-base/ut04-01/`. Contiene las interfaces, implementaciones y tests para todos los ejercicios de grafos de UT4 (Ej 1–12).
+Proyecto Maven provisto por la cátedra en `parte2/codigo-base/ut04-01/`. Contiene las interfaces, implementaciones y tests para todos los ejercicios de grafos de UT4 (Ej 1–12).
 
 **Estructura de paquetes:**
 
@@ -260,7 +286,7 @@ Proyecto Maven provisto por la cátedra en `codigo-base/ut04-01/`. Contiene las 
 
 **Algoritmos implementados en `AlgoritmosGrafoNoDirigido`:** BEA, Prim, Kruskal, Puntos de articulación.
 
-**Comandos (dentro de `codigo-base/ut04-01/`):**
+**Comandos (dentro de `parte2/codigo-base/ut04-01/`):**
 ```bash
 mvn compile
 mvn test
