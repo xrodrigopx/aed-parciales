@@ -1,4 +1,4 @@
-# Métodos Java — Parcial 2 (UT3)
+# Métodos Java — Parcial 2 (UT3 + UT4)
 
 ---
 
@@ -652,9 +652,9 @@ Collections.sort(lista, porNombre);
 
 ---
 
-## Grafos Dirigidos (UT4)
+## Grafos (UT4)
 
-Los algoritmos se implementan sobre una interfaz de grafo. Los tipos genéricos `V` (vértice) y `D` (dato de arista) varían según el enunciado. Para el parcial se asume que el grafo tiene un método `vertices()` que retorna todos los vértices y un método `adyacencias(v)` que retorna los arcos salientes de v.
+Los algoritmos se implementan sobre la interfaz `IGraph<V, D>`. Los tipos genéricos `V` (vértice) y `D` (dato de arista) varían según el enunciado. Para grafos con peso se usa `D extends WeightedEdge` y el peso se accede con `arista.dato().getWeight()`. Para grafos no dirigidos con peso se usa `IUndirectedGraph<V, D extends WeightedEdge>`.
 
 ---
 
@@ -987,3 +987,212 @@ public int numeroDeDistancia(IGraph<V, D> grafo, V origen, V destino) {
     return -1;
 }
 ```
+
+---
+
+### Prim (grafo no dirigido con pesos)
+
+Construye el Árbol Generador Mínimo creciendo desde un origen. En cada paso agrega la arista más barata que une el árbol con el resto.
+
+```java
+public <V, D extends WeightedEdge> IUndirectedGraph<V, D> prim(
+        IUndirectedGraph<V, D> grafo, Comparable<V> source) {
+    V origen = grafo.buscarVertice(source);
+    GrafoNoDirigido<V, D> arbol = new GrafoNoDirigido<>();
+
+    if (origen == null) {
+        return arbol;
+    }
+
+    for (V v : grafo.vertices()) {
+        arbol.agregarVertice(v);
+    }
+
+    Set<V> U = new HashSet<>();
+    Set<V> noU = new HashSet<>();
+    for (V v : grafo.vertices()) {
+        noU.add(v);
+    }
+    U.add(origen);
+    noU.remove(origen);
+
+    while (!noU.isEmpty()) {
+        Edge<V, D> minArista = searchMinEdge(grafo, U, noU);
+        if (minArista == null) {
+            break;
+        }
+        V nuevo = minArista.target();
+        U.add(nuevo);
+        noU.remove(nuevo);
+        arbol.agregarArista(minArista.source(), minArista.target(), minArista.dato());
+    }
+    return arbol;
+}
+
+// auxiliar: busca la arista de menor peso con source en U y target en noU
+private <V, D extends WeightedEdge> Edge<V, D> searchMinEdge(
+        IUndirectedGraph<V, D> grafo, Collection<V> U, Collection<V> noU) {
+    Edge<V, D> minArista = null;
+    double minPeso = Double.MAX_VALUE;
+    for (V u : U) {
+        for (Edge<V, D> arista : grafo.adyacencias(grafo.construirComparable(u))) {
+            V vecino = arista.target();
+            if (noU.contains(vecino)) {
+                double peso = arista.dato().getWeight();
+                if (peso < minPeso) {
+                    minPeso = peso;
+                    minArista = arista;
+                }
+            }
+        }
+    }
+    return minArista;
+}
+```
+
+---
+
+### Kruskal (grafo no dirigido con pesos)
+
+Construye el Árbol Generador Mínimo ordenando todas las aristas por peso y agregando las que no forman ciclo. Usa union-find con conjuntos para detectar ciclos.
+
+```java
+public <V, D extends WeightedEdge> IUndirectedGraph<V, D> kruskal(IUndirectedGraph<V, D> grafo) {
+    GrafoNoDirigido<V, D> arbol = new GrafoNoDirigido<>();
+    for (V v : grafo.vertices()) {
+        arbol.agregarVertice(v);
+    }
+
+    // copiar aristas a lista para ordenar
+    List<Edge<V, D>> aristas = new ArrayList<>();
+    for (Edge<V, D> arista : grafo.aristas()) {
+        aristas.add(arista);
+    }
+
+    // selection sort por peso (sin lambdas)
+    for (int i = 0; i < aristas.size(); i++) {
+        int minIdx = i;
+        for (int j = i + 1; j < aristas.size(); j++) {
+            if (aristas.get(j).dato().getWeight() < aristas.get(minIdx).dato().getWeight()) {
+                minIdx = j;
+            }
+        }
+        Edge<V, D> temp = aristas.get(i);
+        aristas.set(i, aristas.get(minIdx));
+        aristas.set(minIdx, temp);
+    }
+
+    // union-find con lista de conjuntos
+    List<Set<V>> grupos = new ArrayList<>();
+    for (V v : grafo.vertices()) {
+        Set<V> grupo = new HashSet<>();
+        grupo.add(v);
+        grupos.add(grupo);
+    }
+
+    for (Edge<V, D> arista : aristas) {
+        V source = arista.source();
+        V target = arista.target();
+
+        Set<V> grupoSource = null;
+        Set<V> grupoTarget = null;
+        boolean encontrados = false;
+        for (Set<V> grupo : grupos) {
+            if (!encontrados) {
+                if (grupo.contains(source)) {
+                    grupoSource = grupo;
+                }
+                if (grupo.contains(target)) {
+                    grupoTarget = grupo;
+                }
+                if (grupoSource != null) {
+                    if (grupoTarget != null) {
+                        encontrados = true;
+                    }
+                }
+            }
+        }
+
+        if (grupoSource != grupoTarget) {
+            arbol.agregarArista(source, target, arista.dato());
+            grupoSource.addAll(grupoTarget);
+            grupos.remove(grupoTarget);
+        }
+    }
+    return arbol;
+}
+```
+
+---
+
+### Puntos de articulación (grafo no dirigido)
+
+Encuentra los vértices cuya eliminación desconecta el grafo. Usa DFS con `disc` (tiempo de descubrimiento) y `low` (nodo más antiguo alcanzable desde el subárbol).
+
+```java
+public <V, D> List<V> puntosDeArticulacion(IGraph<V, D> grafo) {
+    List<V> resultado = new ArrayList<>();
+    HashMap<V, Integer> disc = new HashMap<>();
+    HashMap<V, Integer> low = new HashMap<>();
+    HashMap<V, V> padres = new HashMap<>();
+    Set<V> visitados = new HashSet<>();
+    int[] tiempo = {0};
+
+    for (V v : grafo.vertices()) {
+        if (!visitados.contains(v)) {
+            dfsArticulacion(grafo, v, disc, low, padres, visitados, tiempo, resultado);
+        }
+    }
+    return resultado;
+}
+
+private <V, D> void dfsArticulacion(
+        IGraph<V, D> grafo, V actual,
+        HashMap<V, Integer> disc, HashMap<V, Integer> low,
+        HashMap<V, V> padres, Set<V> visitados,
+        int[] tiempo, List<V> resultado) {
+
+    visitados.add(actual);
+    tiempo[0]++;
+    disc.put(actual, tiempo[0]);
+    low.put(actual, tiempo[0]);
+    int hijosEnArbol = 0;
+
+    for (Edge<V, D> arista : grafo.adyacencias(grafo.construirComparable(actual))) {
+        V vecino = arista.target();
+        if (!visitados.contains(vecino)) {
+            hijosEnArbol++;
+            padres.put(vecino, actual);
+            dfsArticulacion(grafo, vecino, disc, low, padres, visitados, tiempo, resultado);
+
+            if (low.get(vecino) < low.get(actual)) {
+                low.put(actual, low.get(vecino));
+            }
+
+            boolean esRaiz = !padres.containsKey(actual);
+            if (!esRaiz) {
+                if (low.get(vecino) >= disc.get(actual)) {
+                    if (!resultado.contains(actual)) {
+                        resultado.add(actual);
+                    }
+                }
+            }
+        } else {
+            V padre = padres.get(actual);
+            if (!vecino.equals(padre)) {
+                if (disc.get(vecino) < low.get(actual)) {
+                    low.put(actual, disc.get(vecino));
+                }
+            }
+        }
+    }
+
+    boolean esRaizFinal = !padres.containsKey(actual);
+    if (esRaizFinal) {
+        if (hijosEnArbol > 1) {
+            if (!resultado.contains(actual)) {
+                resultado.add(actual);
+            }
+        }
+    }
+}

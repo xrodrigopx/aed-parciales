@@ -374,3 +374,495 @@ bea(origen, G, consumer):
 ```
 
 **BEA calcula distancias mínimas en grafos sin pesos** (número de saltos). Para grafos con pesos usar Dijkstra.
+
+---
+
+## Prim — Árbol generador mínimo (grafo no dirigido)
+
+### Lenguaje natural
+
+Dado un grafo no dirigido con pesos, Prim construye el árbol generador mínimo (AGM): el subgrafo que conecta todos los vértices con el menor costo total posible, sin ciclos. Empieza con un vértice cualquiera en el árbol y en cada paso agrega la arista de menor peso que une un vértice del árbol con uno que aún no está. Repite hasta incluir todos los vértices.
+
+### Precondición
+- El grafo es no dirigido, conexo, y todas las aristas tienen peso ≥ 0.
+- El vértice origen existe en el grafo.
+
+### Postcondición
+- Retorna un nuevo grafo no dirigido con los mismos vértices y exactamente V-1 aristas que forman el árbol generador mínimo.
+
+### Pseudocódigo
+
+```
+prim(G, origen):
+    arbol ← nuevo GrafoNoDirigido con todos los vértices de G
+    U ← {origen}          // vértices ya en el árbol
+    noU ← G.vertices() \ {origen}  // vértices fuera del árbol
+
+    Mientras noU no esté vacío:
+        minArista ← searchMinEdge(G, U, noU)
+        Si minArista = nulo:
+            detener  // grafo no conexo
+        nuevoVertice ← minArista.target()
+        agregar nuevoVertice a U
+        remover nuevoVertice de noU
+        arbol.agregarArista(minArista.source(), minArista.target(), minArista.dato())
+
+    retornar arbol
+
+searchMinEdge(G, U, noU):
+    minArista ← nulo
+    minPeso ← ∞
+    Para cada u en U:
+        Para cada arista en G.adyacencias(u):
+            Si arista.target() en noU Y arista.dato().getWeight() < minPeso:
+                minPeso ← arista.dato().getWeight()
+                minArista ← arista
+    retornar minArista
+```
+
+### Java
+
+```java
+@Override
+public <V, D extends WeightedEdge> IUndirectedGraph<V, D> prim(
+        IUndirectedGraph<V, D> grafo, Comparable<V> source) {
+    V origen = grafo.buscarVertice(source);
+    GrafoNoDirigido<V, D> arbol = new GrafoNoDirigido<>();
+
+    if (origen == null) {
+        return arbol;
+    }
+
+    for (V v : grafo.vertices()) {
+        arbol.agregarVertice(v);
+    }
+
+    Set<V> U = new HashSet<>();
+    Set<V> noU = new HashSet<>();
+    for (V v : grafo.vertices()) {
+        noU.add(v);
+    }
+    U.add(origen);
+    noU.remove(origen);
+
+    while (!noU.isEmpty()) {
+        Edge<V, D> minArista = searchMinEdge(grafo, U, noU);
+        if (minArista == null) {
+            break;
+        }
+        V nuevoVertice = minArista.target();
+        U.add(nuevoVertice);
+        noU.remove(nuevoVertice);
+        arbol.agregarArista(minArista.source(), minArista.target(), minArista.dato());
+    }
+
+    return arbol;
+}
+
+@Override
+public <V, D extends WeightedEdge> Edge<V, D> searchMinEdge(
+        IUndirectedGraph<V, D> grafo, Collection<V> U, Collection<V> noU) {
+    Edge<V, D> minArista = null;
+    double minPeso = Double.MAX_VALUE;
+
+    for (V u : U) {
+        for (Edge<V, D> arista : grafo.adyacencias(grafo.construirComparable(u))) {
+            V vecino = arista.target();
+            if (noU.contains(vecino)) {
+                double peso = arista.dato().getWeight();
+                if (peso < minPeso) {
+                    minPeso = peso;
+                    minArista = arista;
+                }
+            }
+        }
+    }
+    return minArista;
+}
+```
+
+### JUnit
+
+```java
+public class PrimTest extends TestCase {
+
+    public void testPrimArbolTieneV1Aristas() {
+        GrafoNoDirigido<String, WeightedEdge> grafo = new GrafoNoDirigido<>();
+        grafo.agregarVertice("A");
+        grafo.agregarVertice("B");
+        grafo.agregarVertice("C");
+        grafo.agregarVertice("D");
+        grafo.agregarArista("A", "B", new WeightedEdge(2));
+        grafo.agregarArista("A", "C", new WeightedEdge(5));
+        grafo.agregarArista("B", "C", new WeightedEdge(1));
+        grafo.agregarArista("B", "D", new WeightedEdge(3));
+        grafo.agregarArista("C", "D", new WeightedEdge(4));
+
+        AlgoritmosGrafoNoDirigido alg = new AlgoritmosGrafoNoDirigido();
+        IUndirectedGraph<String, WeightedEdge> arbol = alg.prim(grafo, grafo.construirComparable("A"));
+
+        assertEquals(4, arbol.cantidadDeVertices());
+        assertEquals(3, arbol.cantidadDeAristas());
+    }
+
+    public void testPrimGrafoVacio() {
+        GrafoNoDirigido<String, WeightedEdge> grafo = new GrafoNoDirigido<>();
+        AlgoritmosGrafoNoDirigido alg = new AlgoritmosGrafoNoDirigido();
+        IUndirectedGraph<String, WeightedEdge> arbol = alg.prim(grafo, null);
+        assertEquals(0, arbol.cantidadDeVertices());
+    }
+}
+```
+
+---
+
+## Kruskal — Árbol generador mínimo (grafo no dirigido)
+
+### Lenguaje natural
+
+Kruskal construye el árbol generador mínimo ordenando todas las aristas por peso de menor a mayor y agregándolas de a una al resultado. Una arista se agrega solo si los dos vértices que une están en componentes distintas (es decir, unirlos no forma un ciclo). Para verificar si formarían ciclo se usan grupos (union-find simplificado): cada vértice empieza en su propio grupo y cuando se acepta una arista los dos grupos se fusionan.
+
+### Precondición
+- El grafo es no dirigido con aristas pesadas.
+
+### Postcondición
+- Retorna un nuevo grafo no dirigido con exactamente V-1 aristas que forman el árbol generador mínimo.
+
+### Pseudocódigo
+
+```
+kruskal(G):
+    arbol ← nuevo GrafoNoDirigido con todos los vértices de G
+    aristas ← todas las aristas de G ordenadas por peso ascendente
+    grupos ← lista de conjuntos, uno por vértice ({A}, {B}, {C}, ...)
+
+    Para cada arista en aristas:
+        u ← arista.source()
+        v ← arista.target()
+        grupoU ← grupo que contiene a u
+        grupoV ← grupo que contiene a v
+        Si grupoU ≠ grupoV:
+            arbol.agregarArista(u, v, arista.dato())
+            grupoU.agregar todos los de grupoV
+            grupos.remover(grupoV)
+
+    retornar arbol
+```
+
+**Ordenar por peso (selection sort, sin lambdas):**
+```
+Para i = 0 .. n-1:
+    minIdx ← i
+    Para j = i+1 .. n-1:
+        Si aristas[j].dato().getWeight() < aristas[minIdx].dato().getWeight():
+            minIdx ← j
+    intercambiar aristas[i] con aristas[minIdx]
+```
+
+### Java
+
+```java
+@Override
+public <V, D extends WeightedEdge> IUndirectedGraph<V, D> kruskal(IUndirectedGraph<V, D> grafo) {
+    GrafoNoDirigido<V, D> arbol = new GrafoNoDirigido<>();
+    for (V v : grafo.vertices()) {
+        arbol.agregarVertice(v);
+    }
+
+    List<Edge<V, D>> aristas = new ArrayList<>();
+    for (Edge<V, D> arista : grafo.aristas()) {
+        aristas.add(arista);
+    }
+
+    // selection sort por peso — sin lambdas
+    for (int i = 0; i < aristas.size(); i++) {
+        int minIdx = i;
+        for (int j = i + 1; j < aristas.size(); j++) {
+            if (aristas.get(j).dato().getWeight() < aristas.get(minIdx).dato().getWeight()) {
+                minIdx = j;
+            }
+        }
+        Edge<V, D> temp = aristas.get(i);
+        aristas.set(i, aristas.get(minIdx));
+        aristas.set(minIdx, temp);
+    }
+
+    // cada nodo empieza en su propio grupo (union-find simple)
+    List<Set<V>> grupos = new ArrayList<>();
+    for (V v : grafo.vertices()) {
+        Set<V> grupo = new HashSet<>();
+        grupo.add(v);
+        grupos.add(grupo);
+    }
+
+    for (Edge<V, D> arista : aristas) {
+        V source = arista.source();
+        V target = arista.target();
+
+        Set<V> grupoSource = null;
+        Set<V> grupoTarget = null;
+        boolean encontrados = false;
+        for (Set<V> grupo : grupos) {
+            if (!encontrados) {
+                if (grupo.contains(source)) {
+                    grupoSource = grupo;
+                }
+                if (grupo.contains(target)) {
+                    grupoTarget = grupo;
+                }
+                if (grupoSource != null) {
+                    if (grupoTarget != null) {
+                        encontrados = true;
+                    }
+                }
+            }
+        }
+
+        if (grupoSource != grupoTarget) {
+            arbol.agregarArista(source, target, arista.dato());
+            grupoSource.addAll(grupoTarget);
+            grupos.remove(grupoTarget);
+        }
+    }
+
+    return arbol;
+}
+```
+
+### JUnit
+
+```java
+public class KruskalTest extends TestCase {
+
+    public void testKruskalArbolTieneV1Aristas() {
+        GrafoNoDirigido<String, WeightedEdge> grafo = new GrafoNoDirigido<>();
+        grafo.agregarVertice("A");
+        grafo.agregarVertice("B");
+        grafo.agregarVertice("C");
+        grafo.agregarVertice("D");
+        grafo.agregarArista("A", "B", new WeightedEdge(2));
+        grafo.agregarArista("A", "C", new WeightedEdge(5));
+        grafo.agregarArista("B", "C", new WeightedEdge(1));
+        grafo.agregarArista("B", "D", new WeightedEdge(3));
+        grafo.agregarArista("C", "D", new WeightedEdge(4));
+
+        AlgoritmosGrafoNoDirigido alg = new AlgoritmosGrafoNoDirigido();
+        IUndirectedGraph<String, WeightedEdge> arbol = alg.kruskal(grafo);
+
+        assertEquals(4, arbol.cantidadDeVertices());
+        assertEquals(3, arbol.cantidadDeAristas());
+    }
+
+    public void testKruskalEligeMenorPeso() {
+        // A-B:1, A-C:10, B-C:1 -> AGM usa A-B y B-C, costo 2
+        GrafoNoDirigido<String, WeightedEdge> grafo = new GrafoNoDirigido<>();
+        grafo.agregarVertice("A");
+        grafo.agregarVertice("B");
+        grafo.agregarVertice("C");
+        grafo.agregarArista("A", "B", new WeightedEdge(1));
+        grafo.agregarArista("A", "C", new WeightedEdge(10));
+        grafo.agregarArista("B", "C", new WeightedEdge(1));
+
+        AlgoritmosGrafoNoDirigido alg = new AlgoritmosGrafoNoDirigido();
+        IUndirectedGraph<String, WeightedEdge> arbol = alg.kruskal(grafo);
+
+        assertEquals(2, arbol.cantidadDeAristas());
+        assertFalse(arbol.existeArista(grafo.construirComparable("A"), grafo.construirComparable("C")));
+    }
+}
+```
+
+---
+
+## Puntos de articulación (grafo no dirigido)
+
+### Lenguaje natural
+
+Un punto de articulación es un vértice cuya eliminación desconecta el grafo. El algoritmo usa DFS y para cada vértice calcula dos valores: `disc` (tiempo en que fue descubierto) y `low` (el menor `disc` al que puede llegar cualquier vértice en su subárbol mediante aristas de retroceso). Un vértice `u` es punto de articulación si:
+
+- Es la raíz del DFS y tiene más de un hijo en el árbol DFS, o
+- No es raíz y tiene algún hijo `v` tal que `low[v] >= disc[u]` (el hijo no puede "escapar" pasando por encima de `u`).
+
+### Precondición
+- El grafo es no dirigido y conexo.
+
+### Postcondición
+- Retorna la lista de vértices que son puntos de articulación (puede estar vacía si ninguno lo es).
+
+### Pseudocódigo
+
+```
+puntosDeArticulacion(G):
+    disc ← mapa vacío       // tiempo de descubrimiento
+    low  ← mapa vacío       // tiempo mínimo alcanzable
+    padres ← mapa vacío     // predecesor en el árbol DFS
+    visitados ← conjunto vacío
+    tiempo ← 0
+    resultado ← lista vacía
+
+    Para cada v en G.vertices():
+        Si v no en visitados:
+            dfsArticulacion(G, v, disc, low, padres, visitados, tiempo, resultado)
+
+    retornar resultado
+
+dfsArticulacion(G, actual, disc, low, padres, visitados, tiempo, resultado):
+    agregar actual a visitados
+    tiempo ← tiempo + 1
+    disc[actual] ← tiempo
+    low[actual]  ← tiempo
+    hijosEnArbol ← 0
+
+    Para cada arista en G.adyacencias(actual):
+        vecino ← arista.target()
+        Si vecino no en visitados:
+            hijosEnArbol ← hijosEnArbol + 1
+            padres[vecino] ← actual
+            dfsArticulacion(G, vecino, disc, low, padres, visitados, tiempo, resultado)
+            Si low[vecino] < low[actual]:
+                low[actual] ← low[vecino]
+            // condicion de punto de articulacion (no raiz)
+            Si actual no es raiz:
+                Si low[vecino] >= disc[actual]:
+                    Si actual no en resultado:
+                        resultado.agregar(actual)
+        Sino:
+            // arista de retroceso — actualizar low si no es el padre directo
+            Si vecino ≠ padres[actual]:
+                Si disc[vecino] < low[actual]:
+                    low[actual] ← disc[vecino]
+
+    // condicion de raiz
+    Si actual es raiz Y hijosEnArbol > 1:
+        Si actual no en resultado:
+            resultado.agregar(actual)
+```
+
+### Java
+
+```java
+public <V, D> List<V> puntosDeArticulacion(IGraph<V, D> grafo) {
+    List<V> resultado = new ArrayList<>();
+    HashMap<V, Integer> disc = new HashMap<>();
+    HashMap<V, Integer> low = new HashMap<>();
+    HashMap<V, V> padres = new HashMap<>();
+    Set<V> visitados = new HashSet<>();
+    int[] tiempo = {0};
+
+    for (V v : grafo.vertices()) {
+        if (!visitados.contains(v)) {
+            dfsArticulacion(grafo, v, disc, low, padres, visitados, tiempo, resultado);
+        }
+    }
+    return resultado;
+}
+
+private <V, D> void dfsArticulacion(
+        IGraph<V, D> grafo, V actual,
+        HashMap<V, Integer> disc, HashMap<V, Integer> low,
+        HashMap<V, V> padres, Set<V> visitados,
+        int[] tiempo, List<V> resultado) {
+
+    visitados.add(actual);
+    tiempo[0]++;
+    disc.put(actual, tiempo[0]);
+    low.put(actual, tiempo[0]);
+    int hijosEnArbol = 0;
+
+    for (Edge<V, D> arista : grafo.adyacencias(grafo.construirComparable(actual))) {
+        V vecino = arista.target();
+        if (!visitados.contains(vecino)) {
+            hijosEnArbol++;
+            padres.put(vecino, actual);
+            dfsArticulacion(grafo, vecino, disc, low, padres, visitados, tiempo, resultado);
+
+            if (low.get(vecino) < low.get(actual)) {
+                low.put(actual, low.get(vecino));
+            }
+
+            boolean esRaiz = !padres.containsKey(actual);
+            if (!esRaiz) {
+                if (low.get(vecino) >= disc.get(actual)) {
+                    if (!resultado.contains(actual)) {
+                        resultado.add(actual);
+                    }
+                }
+            }
+        } else {
+            V padre = padres.get(actual);
+            if (!vecino.equals(padre)) {
+                if (disc.get(vecino) < low.get(actual)) {
+                    low.put(actual, disc.get(vecino));
+                }
+            }
+        }
+    }
+
+    boolean esRaizFinal = !padres.containsKey(actual);
+    if (esRaizFinal) {
+        if (hijosEnArbol > 1) {
+            if (!resultado.contains(actual)) {
+                resultado.add(actual);
+            }
+        }
+    }
+}
+```
+
+### JUnit
+
+```java
+public class PuntosDeArticulacionTest extends TestCase {
+
+    public void testCaminoLinealB_EsPuntoDeArticulacion() {
+        // A - B - C: B es el unico punto de articulacion
+        GrafoNoDirigido<String, String> grafo = new GrafoNoDirigido<>();
+        grafo.agregarVertice("A");
+        grafo.agregarVertice("B");
+        grafo.agregarVertice("C");
+        grafo.agregarArista("A", "B", "");
+        grafo.agregarArista("B", "C", "");
+
+        AlgoritmosGrafoNoDirigido alg = new AlgoritmosGrafoNoDirigido();
+        List<String> puntos = alg.puntosDeArticulacion(grafo);
+
+        assertEquals(1, puntos.size());
+        assertTrue(puntos.contains("B"));
+    }
+
+    public void testTrianguloSinPuntosDeArticulacion() {
+        // A - B - C - A: todos tienen grado 2, ningun punto de articulacion
+        GrafoNoDirigido<String, String> grafo = new GrafoNoDirigido<>();
+        grafo.agregarVertice("A");
+        grafo.agregarVertice("B");
+        grafo.agregarVertice("C");
+        grafo.agregarArista("A", "B", "");
+        grafo.agregarArista("B", "C", "");
+        grafo.agregarArista("C", "A", "");
+
+        AlgoritmosGrafoNoDirigido alg = new AlgoritmosGrafoNoDirigido();
+        List<String> puntos = alg.puntosDeArticulacion(grafo);
+
+        assertEquals(0, puntos.size());
+    }
+
+    public void testGrafoConDosAristas_AmbosPuntosDeArticulacion() {
+        // A - B - C - D: B y C son puntos de articulacion
+        GrafoNoDirigido<String, String> grafo = new GrafoNoDirigido<>();
+        grafo.agregarVertice("A");
+        grafo.agregarVertice("B");
+        grafo.agregarVertice("C");
+        grafo.agregarVertice("D");
+        grafo.agregarArista("A", "B", "");
+        grafo.agregarArista("B", "C", "");
+        grafo.agregarArista("C", "D", "");
+
+        AlgoritmosGrafoNoDirigido alg = new AlgoritmosGrafoNoDirigido();
+        List<String> puntos = alg.puntosDeArticulacion(grafo);
+
+        assertEquals(2, puntos.size());
+        assertTrue(puntos.contains("B"));
+        assertTrue(puntos.contains("C"));
+    }
+}
+```

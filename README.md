@@ -30,7 +30,8 @@ aed-parciales/
     ├── pseudocodigos/
     ├── soluciones/
     └── codigo-base/
-        └── ut03-01/             ← proyecto Maven provisto por la cátedra
+        ├── ut03-01/             ← proyecto Maven UT3 (árboles genéricos, Trie, Hash)
+        └── ut04-01/             ← proyecto Maven UT4 (grafos dirigidos y no dirigidos)
 ```
 
 ---
@@ -160,7 +161,7 @@ El **Ejercicio 1 de la Parte 1** es casi siempre **inserciones en AVL**. Leer `g
 
 ## Parcial 2
 
-Material basado en la **Unidad Temática 3 (UT3)** y **Unidad Temática 4 (UT4)**: Árboles Genéricos, Trie, Patricia, Hashing, TDA Mapa, TDA Diccionario, Java Collections Framework, Ordenamiento (Inserción, Heapsort, Quicksort), y Grafos Dirigidos (Dijkstra, Floyd, Warshall, DFS, BEA, clasificación topológica).
+Material basado en la **Unidad Temática 3 (UT3)** y **Unidad Temática 4 (UT4)**: Árboles Genéricos, Trie, Patricia, Hashing, TDA Mapa, TDA Diccionario, Java Collections Framework, Ordenamiento (Inserción, Heapsort, Quicksort), Grafos Dirigidos (Dijkstra, Floyd, Warshall, DFS, BEA, clasificación topológica, ciclos, todos los caminos) y Grafos No Dirigidos (BEA, Prim, Kruskal, Puntos de articulación).
 
 ### Cuadernola
 
@@ -200,7 +201,13 @@ Contiene: guía de elección de estructura para UT3, pseudocódigos completos co
 
 | Archivo | Descripción |
 |---------|-------------|
-| `grafo-dirigido.md` | Grafos dirigidos — Dijkstra, Floyd, Warshall, DFS, BEA, clasificación topológica, ciclos, todos los caminos |
+| `grafo-dirigido.md` | Grafos — Dijkstra, Floyd, Warshall, DFS, BEA, clasificación topológica, ciclos, todos los caminos, **Prim**, **Kruskal**, **Puntos de articulación** |
+
+#### Referencia consolidada
+
+| Archivo | Descripción |
+|---------|-------------|
+| `pseudos-completo.md` | **Todos los pseudocódigos en un archivo** — UT3 + Sorting + UT4. Referencia rápida para el parcial. |
 
 #### Ejercicios de parcial — Ordenamiento
 
@@ -212,12 +219,24 @@ Contiene: guía de elección de estructura para UT3, pseudocódigos completos co
 
 ### Soluciones
 
+#### Sorting
+
 | Archivo | Ejercicio | Incluye |
 |---------|-----------|---------|
 | `sorting-insercion.md` | Ordenamiento por inserción | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
 | `sorting-heapsort.md` | Heapsort | Lenguaje Natural, Pre/Post, Pseudocódigo, ejemplo manual 2024-2S, Java, JUnit |
 | `sorting-quicksort.md` | Quicksort (asc. y desc.) | Lenguaje Natural, Pre/Post, Pseudocódigo, Java, JUnit |
-| `AlgoritmosCaminos.java` | Todos los caminos en grafo dirigido (UT4) | Helper Java: `todosLosCaminos`, `caminoCritico`, `holgura` |
+
+#### UT4 — Grafos (patrones de examen)
+
+| Archivo | Patrón de examen | Apareció en |
+|---------|-----------------|-------------|
+| `ejercicio-warshall-conectividad.md` | "¿existe camino entre X e Y?" — BFS + Warshall | 2023-2S |
+| `ejercicio-todos-los-caminos.md` | DFS backtracking con restricción de tipo de nodo | 2024-1S (ambas variantes) |
+| `ejercicio-dijkstra-ruta-optima.md` | Dijkstra — tiempo mínimo + recuperar camino + variante por camión | 2024-2S P1, 2025-1S |
+| `ejercicio-agm-prim.md` | Prim — árbol generador mínimo para red de mantenimiento | 2024-2S P2 |
+| `ejercicio-componente-con-remocion.md` | BFS con remoción — tamaño de componente + pieza crítica | 2025-2S |
+| `AlgoritmosCaminos.java` | Helper Java — `todosLosCaminos`, `caminoCritico`, `holgura` | UT4 general |
 
 ### Código Base — UT03-01
 
@@ -234,6 +253,31 @@ Proyecto Maven provisto por la cátedra en `codigo-base/ut03-01/`.
 **Ejercicios entregables:** 5, 7, 9, 11, 12, 13, 14, 15, 16
 
 **Comandos (dentro de `codigo-base/ut03-01/`):**
+```bash
+mvn compile
+mvn test
+mvn test -Dtest=NombreTest
+```
+
+### Código Base — UT04-01
+
+Proyecto Maven provisto por la cátedra en `codigo-base/ut04-01/`. Contiene las interfaces, implementaciones y tests para todos los ejercicios de grafos de UT4 (Ej 1–12).
+
+**Estructura de paquetes:**
+
+| Paquete | Contenido |
+|---------|-----------|
+| `tda.grafo` | Interfaces `IDirectedIGraph`, `IUndirectedGraph`, `IDirectedGraphAlgorithms`, `IUndirectedGraphAlgorithm` |
+| `tda.grafo.model` | `IGraph`, edges (`Edge`, `DirectedEdge`, `UndirectedEdge`, `WeightedEdge`), results (`IDijkstraResult`, `IFloydWarshallResult`, `Path`) |
+| `tda.grafo.impl` | `GrafoDirigido`, `GrafoNoDirigido`, `AlgoritmosGrafoDirigido`, `AlgoritmosGrafoNoDirigido`, `DijkstraResult`, `FloydWarshallResult`, `WarshallResult` |
+| `utils` | `PrettyGrid` (imprimir matrices), `AlgoritmosCaminos` (helper todos los caminos) |
+| `ej03` | `MainFloyd` — programa interactivo carga desde archivos y responde consultas Floyd |
+
+**Algoritmos implementados en `AlgoritmosGrafoDirigido`:** Dijkstra, Floyd, Warshall, DFS, BEA, clasificación topológica, todos los caminos.
+
+**Algoritmos implementados en `AlgoritmosGrafoNoDirigido`:** BEA, Prim, Kruskal, Puntos de articulación.
+
+**Comandos (dentro de `codigo-base/ut04-01/`):**
 ```bash
 mvn compile
 mvn test

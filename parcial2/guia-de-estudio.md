@@ -23,9 +23,13 @@
 | Floyd-Warshall | `pseudocodigos/grafo-dirigido.md` | `metodos_java.md` |
 | Warshall | `pseudocodigos/grafo-dirigido.md` | `metodos_java.md` |
 | DFS / BPF | `pseudocodigos/grafo-dirigido.md` | `metodos_java.md` |
+| BEA / BFS | `pseudocodigos/grafo-dirigido.md` | `metodos_java.md` |
 | Clasificación topológica | `pseudocodigos/grafo-dirigido.md` | `metodos_java.md` |
 | Detección de ciclos | `pseudocodigos/grafo-dirigido.md` | `metodos_java.md` |
 | Todos los caminos | `pseudocodigos/grafo-dirigido.md` | `metodos_java.md` |
+| Prim (AGM) | `pseudocodigos/grafo-dirigido.md` | `metodos_java.md` |
+| Kruskal (AGM) | `pseudocodigos/grafo-dirigido.md` | `metodos_java.md` |
+| Puntos de articulación | `pseudocodigos/grafo-dirigido.md` | `metodos_java.md` |
 
 ---
 
@@ -230,6 +234,67 @@ El enunciado pide listar todos los caminos entre origen y destino.
 
 ---
 
+### Patrón 13 — Número de saltos / distancia mínima sin pesos
+
+El enunciado pide la distancia mínima en cantidad de aristas (saltos), no en costo. Ejemplo: número de Bacon, grados de separación, distancia en red de ciudades sin pesos.
+
+**Siempre es BEA** (no Dijkstra — Dijkstra es para pesos). BEA garantiza que el primer camino encontrado a cada vértice es el más corto en saltos.
+
+**Flujo:**
+1. Encolar el origen, marcarlo como visitado.
+2. En cada paso: desencolar vértice, visitar, encolar sus vecinos no visitados.
+3. Para contar saltos: guardar la distancia junto al vértice en la cola (o usar nivel del BEA).
+
+```java
+// Contar saltos con mapa de distancias
+Map<V, Integer> distancias = new HashMap<>();
+Queue<V> cola = new ArrayDeque<>();
+distancias.put(origen, 0);
+cola.offer(origen);
+while (!cola.isEmpty()) {
+    V actual = cola.poll();
+    for (Edge<V, D> arista : grafo.adyacencias(grafo.construirComparable(actual))) {
+        V vecino = arista.target();
+        if (!distancias.containsKey(vecino)) {
+            distancias.put(vecino, distancias.get(actual) + 1);
+            cola.offer(vecino);
+        }
+    }
+}
+```
+
+---
+
+### Patrón 14 — Árbol generador mínimo (red de cableado, caminos, conexiones)
+
+El enunciado tiene un grafo **no dirigido** y pide conectar todos los vértices con el menor costo total (sin ciclos). Ejemplo: red de cableado, sistema de caminos de tierra, red eléctrica.
+
+**Dos opciones:**
+- **Prim**: crece desde un vértice de origen, agrega la arista más barata que conecta el árbol con el exterior. Necesita un vértice de inicio.
+- **Kruskal**: ordena todas las aristas por peso, agrega de a una evitando ciclos (union-find). No necesita vértice de inicio.
+
+**Para el parcial son equivalentes** — producen el mismo AGM (puede haber empate si hay aristas de igual peso). Usar el que pida el enunciado.
+
+**Señal clave:** grafo no dirigido + "conectar todos con menor costo" → Prim o Kruskal.
+
+**Diferencia con Dijkstra:** Dijkstra busca el camino más corto desde un origen a todos los demás (no un árbol). Prim/Kruskal construyen el árbol que conecta todos con menor costo total.
+
+---
+
+### Patrón 15 — Nodo cuya eliminación desconecta la red
+
+El enunciado pregunta qué vértice es crítico: si se elimina, parte de la red queda aislada. Ejemplo: servidor cuya caída aísla parte de la red, ciudad cuya desconexión separa regiones.
+
+**Siempre es puntos de articulación** (DFS con disc/low).
+
+**Regla práctica:** un vértice u es punto de articulación si:
+- Es raíz del DFS y tiene más de un hijo directo en el árbol DFS, o
+- No es raíz y tiene un hijo v tal que `low[v] >= disc[u]` (el subárbol de v no puede "subir" por encima de u).
+
+**Error típico:** intentar resolverlo eliminando cada vértice y verificando conectividad — es correcto pero O(V²), mientras el algoritmo con disc/low es O(V+E).
+
+---
+
 ## Errores comunes a evitar
 
 ### UT3
@@ -254,6 +319,11 @@ El enunciado pide listar todos los caminos entre origen y destino.
 | Clasificación topológica: agregar al final de la lista | Agregar **al principio** (en la salida recursiva) |
 | En Floyd, recuperar camino con solo `P[i,j]` | `P[i,j]` es el vértice intermedio, hay que llamar recursivamente a `camino(i,k)` y `camino(k,j)` |
 | Confundir excentricidad de fila con excentricidad de columna | `e(v)` = máximo de la **columna** v (mayor distancia que alguien debe recorrer para llegar a v) |
+| Usar Dijkstra para contar saltos (sin pesos) | Usar BEA — Dijkstra es para costos, BEA es para saltos |
+| Prim sobre grafo dirigido | Prim y Kruskal solo funcionan en grafos **no dirigidos** |
+| En Kruskal, poner null en lugar de tombstone al eliminar un grupo | No se elimina: se fusionan los dos grupos en el union-find |
+| En puntos de articulación, confundir `low[v] >= disc[u]` con `low[v] > disc[u]` | La condición es `>=`: si `low[v] = disc[u]` exactamente, u también es punto de articulación |
+| Marcar la raíz del DFS como punto de articulación si tiene exactamente 1 hijo | La raíz solo es punto de articulación si tiene **más de 1 hijo** en el árbol DFS |
 
 ---
 
@@ -281,9 +351,13 @@ m = largo de la palabra/clave
 | Floyd | O(V³) | Para todos los pares |
 | Warshall | O(V³) | Solo conectividad |
 | DFS | O(V+E) | E = cantidad de aristas |
+| BEA | O(V+E) | Distancia mínima en saltos |
 | Clasificación topológica | O(V+E) | Solo grafos acíclicos |
 | Detección de ciclos | O(V+E) | — |
 | Todos los caminos | exponencial | DFS + backtracking |
+| Prim (naive) | O(V·E) | Busca mínima arista en cada paso |
+| Kruskal | O(E log E) | Dominado por el ordenamiento |
+| Puntos de articulación | O(V+E) | DFS con disc/low |
 
 ---
 

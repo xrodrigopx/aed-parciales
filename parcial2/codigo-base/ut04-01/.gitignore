@@ -1,0 +1,16 @@
+# Claude Code
+CLAUDE.md
+
+# Maven
+target/
+*.class
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db

@@ -44,6 +44,10 @@ Material de estudio consolidado para el segundo parcial de Algoritmos y Estructu
 - [Excentricidad y centro del grafo](#excentricidad-y-centro-del-grafo)
 - [Detección de ciclos](#detección-de-ciclos)
 - [Todos los caminos posibles](#todos-los-caminos-posibles)
+- [BEA — búsqueda en amplitud / número de saltos](#bea--búsqueda-en-amplitud--número-de-saltos)
+- [Prim — árbol generador mínimo](#prim--árbol-generador-mínimo)
+- [Kruskal — árbol generador mínimo](#kruskal--árbol-generador-mínimo)
+- [Puntos de articulación](#puntos-de-articulación)
 - [Variantes de Dijkstra para el parcial](#variantes-de-dijkstra-para-el-parcial)
 - [Variantes de Floyd para el parcial](#variantes-de-floyd-para-el-parcial)
 
@@ -1595,7 +1599,7 @@ fin método
 
 ### Elegir el algoritmo correcto — UT4
 
-**1. ¿Caminos más cortos desde UN origen a todos los demás?**
+**1. ¿Caminos más cortos desde UN origen a todos los demás? (con pesos)**
 → **Dijkstra**. Técnica ávida. Solo funciona con pesos no negativos. O(V²).
 
 **2. ¿Caminos más cortos entre TODOS los pares?**
@@ -1616,20 +1620,32 @@ fin método
 **7. ¿Centro del grafo?**
 → **Floyd** + excentricidad: max de cada columna = e(v). Centro = vértice con e mínima.
 
+**8. ¿Distancia mínima en saltos (sin pesos) o número de Bacon?**
+→ **BEA**. Cola FIFO. El primer camino encontrado a cada vértice es el más corto en cantidad de aristas. O(V+E).
+
+**9. ¿Conectar todos los vértices de un grafo no dirigido con el menor costo total?**
+→ **Prim** (crece desde un origen) o **Kruskal** (ordena aristas globalmente). Ambos producen el Árbol Generador Mínimo (AGM). O(V·E) naive / O(E log E) Kruskal.
+
+**10. ¿Qué vértice, si se elimina, desconecta la red?**
+→ **Puntos de articulación**. DFS con disc/low. O(V+E).
+
 ---
 
 ### Tabla de decisión — UT4
 
 | Problema | Algoritmo | Complejidad |
 |----------|-----------|-------------|
-| Camino mínimo desde 1 origen | Dijkstra | O(V²) |
+| Camino mínimo desde 1 origen (con pesos) | Dijkstra | O(V²) |
 | Caminos mínimos todos los pares | Floyd | O(V³) |
 | Cerradura transitiva | Warshall | O(V³) |
 | Recorrido sistemático | DFS | O(V+E) |
+| Distancia mínima en saltos / número de Bacon | BEA | O(V+E) |
 | Orden topológico | DFS (salida recursiva) | O(V+E) |
 | Detección de ciclos | DFS con conjunto activo | O(V+E) |
 | Centro del grafo | Floyd + excentricidad | O(V³) |
 | Todos los caminos posibles | DFS + backtracking | exponencial |
+| Árbol generador mínimo (AGM) | Prim / Kruskal | O(V·E) / O(E log E) |
+| Nodo cuya eliminación desconecta la red | Puntos de articulación | O(V+E) |
 
 ---
 
@@ -1822,6 +1838,181 @@ todosLosCaminosAux(actual, destino, visitados, camino, resultado):
   camino.pop()
   remover actual de visitados   ← backtracking: desmarcar para otros caminos
 ```
+
+---
+
+### BEA — búsqueda en amplitud / número de saltos
+
+**Cuándo:** distancia mínima en cantidad de aristas (sin pesos), recorrido por niveles, número de Bacon, grados de separación.
+
+**Diferencia clave con DFS/Dijkstra:**
+- DFS va profundo → no garantiza el camino más corto en saltos.
+- Dijkstra minimiza costo → necesita pesos.
+- BEA garantiza el camino más corto en **saltos** → ideal cuando todas las aristas "cuestan" 1.
+
+```
+bea(origen, G):
+  visitados ← {}; cola ← []
+  marcar origen como visitado; encolar origen
+  Mientras cola no vacía:
+    v ← desencolar
+    Para cada w adyacente a v:
+      Si w no visitado:
+        marcar w como visitado; encolar w
+```
+
+**Para calcular distancias (número de saltos):**
+
+```java
+Map<V, Integer> distancias = new HashMap<>();
+Queue<V> cola = new ArrayDeque<>();
+distancias.put(origen, 0);
+cola.offer(origen);
+while (!cola.isEmpty()) {
+    V actual = cola.poll();
+    for (Edge<V, D> arista : grafo.adyacencias(grafo.construirComparable(actual))) {
+        V vecino = arista.target();
+        if (!distancias.containsKey(vecino)) {
+            distancias.put(vecino, distancias.get(actual) + 1);
+            cola.offer(vecino);
+        }
+    }
+}
+// numBacon = distancias.get("Kevin_Bacon")
+```
+
+**Error típico:** usar DFS para calcular número de Bacon — DFS no garantiza el camino mínimo, puede devolver un número mayor al correcto.
+
+---
+
+### Prim — árbol generador mínimo
+
+**Cuándo:** grafo **no dirigido** con pesos, conectar todos los vértices con menor costo total. Prim crece desde un origen eligiendo siempre la arista más barata que sale del árbol hacia fuera.
+
+```
+prim(G, origen):
+  U ← {origen};  noU ← G.vertices() \ {origen}
+  arbol ← grafo vacío con todos los vértices
+
+  Mientras noU no vacío:
+    minArista ← arista de menor peso con source en U y target en noU
+    mover target de noU a U
+    agregar minArista al arbol
+  retornar arbol
+```
+
+**Java (esqueleto):**
+```java
+Set<V> U = new HashSet<>();
+Set<V> noU = new HashSet<>(grafo.vertices());
+U.add(origen);
+noU.remove(origen);
+
+while (!noU.isEmpty()) {
+    Edge<V, D> minArista = searchMinEdge(grafo, U, noU);
+    if (minArista == null) break;   // grafo no conexo
+    U.add(minArista.target());
+    noU.remove(minArista.target());
+    arbol.agregarArista(minArista.source(), minArista.target(), minArista.dato());
+}
+```
+
+**`searchMinEdge`:** recorre todos los vértices de U y sus adyacencias, devuelve la arista con `arista.dato().getWeight()` mínimo cuyo target está en noU.
+
+**Error típico:** olvidar que el grafo resultado debe tener **todos** los vértices del original (no solo los que tienen aristas en el AGM).
+
+---
+
+### Kruskal — árbol generador mínimo
+
+**Cuándo:** igual que Prim (grafo no dirigido con pesos). Kruskal ordena todas las aristas por peso y las agrega una a una, saltando las que formarían ciclo.
+
+**Detectar ciclos con union-find de conjuntos:** cada vértice empieza en su propio grupo. Al aceptar una arista, se fusionan los dos grupos. Si source y target ya están en el mismo grupo → habría ciclo → rechazar.
+
+```
+kruskal(G):
+  arbol ← grafo con todos los vértices, sin aristas
+  aristas ← todas las aristas de G ordenadas por peso ascendente
+  grupos ← lista de conjuntos, uno por vértice
+
+  Para cada arista (u, v, peso) en aristas:
+    grupoU ← grupo que contiene u
+    grupoV ← grupo que contiene v
+    Si grupoU ≠ grupoV:
+      arbol.agregarArista(u, v, peso)
+      fusionar grupoU con grupoV
+  retornar arbol
+```
+
+**Ordenar sin lambdas (selection sort):**
+```java
+for (int i = 0; i < aristas.size(); i++) {
+    int minIdx = i;
+    for (int j = i + 1; j < aristas.size(); j++) {
+        if (aristas.get(j).dato().getWeight() < aristas.get(minIdx).dato().getWeight()) {
+            minIdx = j;
+        }
+    }
+    Edge<V, D> temp = aristas.get(i);
+    aristas.set(i, aristas.get(minIdx));
+    aristas.set(minIdx, temp);
+}
+```
+
+**Prim vs Kruskal:**
+
+| | Prim | Kruskal |
+|--|------|---------|
+| Estrategia | Crece desde un vértice | Agrega aristas globalmente |
+| Necesita origen | Sí | No |
+| Mejor en grafos | Densos | Dispersos |
+| Complejidad | O(V·E) naive | O(E log E) |
+
+---
+
+### Puntos de articulación
+
+**Cuándo:** grafo **no dirigido**, encontrar los vértices cuya eliminación desconecta el grafo.
+
+**Dos valores por vértice:**
+- `disc[v]` — tiempo en que DFS descubrió v (orden de visita).
+- `low[v]` — el menor `disc` alcanzable desde el subárbol de v usando aristas de retroceso (aristas que no son del árbol DFS).
+
+**Reglas:**
+1. `u` es punto de articulación si es **raíz del DFS** y tiene **≥ 2 hijos** en el árbol DFS.
+2. `u` es punto de articulación si **no es raíz** y tiene algún hijo `v` con `low[v] >= disc[u]`.
+
+```
+dfsArticulacion(actual, disc, low, padres, visitados, tiempo, resultado):
+  visitados.add(actual)
+  tiempo++; disc[actual] = time; low[actual] = time
+  hijosEnArbol ← 0
+
+  Para cada vecino de actual:
+    Si vecino no visitado:
+      hijosEnArbol++
+      padres[vecino] = actual
+      dfsArticulacion(vecino, ...)
+      low[actual] = min(low[actual], low[vecino])
+      Si actual no es raíz Y low[vecino] >= disc[actual]:
+          resultado.agregar(actual)
+    Sino si vecino ≠ padre[actual]:
+      low[actual] = min(low[actual], disc[vecino])   // arista de retroceso
+
+  Si actual es raíz Y hijosEnArbol > 1:
+      resultado.agregar(actual)
+```
+
+**Ejemplo (grafo lineal A-B-C):**
+```
+disc: A=1, B=2, C=3
+low:  A=1, B=1, C=2
+
+B no es raíz. Hijo C tiene low[C]=2 >= disc[B]=2 → B es punto de articulación ✓
+A es raíz con 1 solo hijo B → NO es punto de articulación
+```
+
+**Error típico:** confundir la condición `>=` con `>`. Si `low[v] = disc[u]` exactamente, u sigue siendo punto de articulación porque el hijo v puede llegar exactamente hasta u (no puede subir más).
 
 ---
 
