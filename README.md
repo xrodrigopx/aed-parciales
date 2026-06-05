@@ -203,12 +203,6 @@ Contiene: guía de elección de estructura para UT3, pseudocódigos completos co
 |---------|-------------|
 | `grafo-dirigido.md` | Grafos — Dijkstra, Floyd, Warshall, DFS, BEA, clasificación topológica, ciclos, todos los caminos, **Prim**, **Kruskal**, **Puntos de articulación** |
 
-#### Referencia consolidada
-
-| Archivo | Descripción |
-|---------|-------------|
-| `pseudos-completo.md` | **Todos los pseudocódigos en un archivo** — UT3 + Sorting + UT4. Referencia rápida para el parcial. |
-
 #### Ejercicios de parcial — Ordenamiento
 
 | Archivo | Ejercicio | Apareció en |
