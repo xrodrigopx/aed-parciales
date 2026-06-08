@@ -21,8 +21,6 @@ Material de estudio consolidado para el segundo parcial de Algoritmos y Estructu
 - [Patricia (Trie comprimido)](#patricia-trie-comprimido)
 - [Hash — Open Addressing (Sondeo Lineal)](#hash--open-addressing-sondeo-lineal) — `insertar`, `buscar`, `eliminar`, `redimensionar`
 - [Hash — Encadenamiento directo](#hash--encadenamiento-directo)
-- [TDA Mapa — Patrones Java](#tda-mapa--patrones-java)
-- [TDA Diccionario — Patrones Java](#tda-diccionario--patrones-java)
 - [hashCode / equals — Contrato](#hashcode--equals--contrato)
 - [Collections Framework](#collections-framework)
 
@@ -125,7 +123,7 @@ Cuando el enunciado tiene dos operaciones que favorecen estructuras distintas, s
 ```
 al insertar una palabra:
   trie.insertar(palabra, dato)
-  frecuencias.put(palabra, frecuencias.getOrDefault(palabra, 0) + 1)
+  frecuencias.poner(palabra, frecuencias.obtener(palabra) + 1)
 ```
 
 **Costo:** inserción doble, doble de memoria. **Beneficio:** ambas operaciones críticas en su complejidad óptima.
@@ -169,43 +167,6 @@ al insertar una palabra:
 | Nivel | Raíz = nivel 0; resto = nivel padre + 1 |
 | Altura | Longitud del camino más largo desde el nodo hasta una hoja |
 
-**Estructura interna:**
-
-```
-NodoGenerico<T>:
-  dato:  T
-  hijos: List<NodoGenerico<T>>
-
-ArbolGenerico<T>:
-  raiz: NodoGenerico<T>  ← nulo si el árbol está vacío
-```
-
-*Implementación en Java:*
-
-`NodoGenerico`
-```java
-public class NodoGenerico<T extends Comparable<T>> {
-    private T dato;
-    private List<NodoGenerico<T>> hijos;
-
-    public NodoGenerico(T dato) {
-        this.dato = dato;
-        this.hijos = new ArrayList<>();
-    }
-}
-```
-
-`ArbolGenerico`
-```java
-public class ArbolGenerico<T extends Comparable<T>> {
-    private NodoGenerico<T> raiz;
-
-    public ArbolGenerico(T raiz) {
-        this.raiz = new NodoGenerico<>(raiz);
-    }
-}
-```
-
 ---
 
 ### agregarHijo(padre, hijo)
@@ -237,25 +198,6 @@ NodoGenerico.agregarHijo(padre: T, hijo: T): booleano
 
 **Orden:** O(n)
 
-*Implementación en Java:*
-
-`NodoGenerico`
-```java
-public boolean agregarHijo(T padre, T hijo) {
-    if (this.dato.compareTo(padre) == 0) {
-        for (NodoGenerico<T> h : hijos) {
-            if (h.dato.compareTo(hijo) == 0) return false; // ya existe
-        }
-        hijos.add(new NodoGenerico<>(hijo));
-        return true;
-    }
-    for (NodoGenerico<T> h : hijos) {
-        if (h.agregarHijo(padre, hijo)) return true;
-    }
-    return false;
-}
-```
-
 ---
 
 ### buscarNodo (auxiliar recursivo)
@@ -275,20 +217,6 @@ buscarNodo(nodo: NodoGenerico, criterio: T): NodoGenerico
 ```
 
 **Orden:** O(n)
-
-*Implementación en Java:*
-
-`NodoGenerico`
-```java
-public NodoGenerico<T> buscarNodo(Comparable<T> criterio) {
-    if (criterio.compareTo(this.dato) == 0) return this;
-    for (NodoGenerico<T> hijo : hijos) {
-        NodoGenerico<T> encontrado = hijo.buscarNodo(criterio);
-        if (encontrado != null) return encontrado;
-    }
-    return null;
-}
-```
 
 ---
 
@@ -320,25 +248,6 @@ NodoGenerico.eliminar(criterio: T): void
 
 **Orden:** O(n)
 
-*Implementación en Java:*
-
-`NodoGenerico`
-```java
-public void eliminar(Comparable<T> criterio) {
-    int i = 0;
-    while (i < hijos.size()) {
-        if (criterio.compareTo(hijos.get(i).dato) == 0) {
-            hijos.remove(i);
-            return;
-        }
-        i++;
-    }
-    for (NodoGenerico<T> hijo : hijos) {
-        hijo.eliminar(criterio);
-    }
-}
-```
-
 ---
 
 ### obtenerPadre(criterio)
@@ -366,22 +275,6 @@ NodoGenerico.obtenerPadreNodo(criterio: T): NodoGenerico
 
 **Orden:** O(n)
 
-*Implementación en Java:*
-
-`NodoGenerico`
-```java
-public NodoGenerico<T> obtenerPadreNodo(Comparable<T> criterio) {
-    for (NodoGenerico<T> hijo : hijos) {
-        if (criterio.compareTo(hijo.dato) == 0) return this;
-    }
-    for (NodoGenerico<T> hijo : hijos) {
-        NodoGenerico<T> resultado = hijo.obtenerPadreNodo(criterio);
-        if (resultado != null) return resultado;
-    }
-    return null;
-}
-```
-
 ---
 
 ### preOrden / postOrden
@@ -407,25 +300,6 @@ postOrden(nodo: NodoGenerico, resultado: Lista): void
 
 **Orden:** O(n) ambos.
 
-*Implementación en Java:*
-
-`NodoGenerico`
-```java
-public void preOrden(List<T> resultado) {
-    resultado.add(this.dato);
-    for (NodoGenerico<T> hijo : hijos) {
-        hijo.preOrden(resultado);
-    }
-}
-
-public void postOrden(List<T> resultado) {
-    for (NodoGenerico<T> hijo : hijos) {
-        hijo.postOrden(resultado);
-    }
-    resultado.add(this.dato);
-}
-```
-
 ---
 
 ### altura(criterio)
@@ -446,21 +320,6 @@ NodoGenerico.altura(): entero
 
 **Orden:** O(n)
 
-*Implementación en Java:*
-
-`NodoGenerico`
-```java
-public int altura() {
-    if (hijos.isEmpty()) return 0;
-    int max = 0;
-    for (NodoGenerico<T> hijo : hijos) {
-        int h = hijo.altura();
-        if (h > max) max = h;
-    }
-    return max + 1;
-}
-```
-
 ---
 
 ### grado(criterio)
@@ -480,7 +339,7 @@ ArbolGenerico.grado(criterio: T): entero
 
 ## Ejercicios típicos de árbol genérico
 
-Estos métodos aparecen frecuentemente en parciales con el árbol genealógico (Ej 16).
+Estos métodos aparecen frecuentemente en parciales con el árbol genealógico.
 
 ---
 
@@ -496,29 +355,15 @@ listarDescendientes(nombre: T): Lista<T>
   nodo ← buscarNodo(raiz, nombre)
   si nodo = nulo: retornar resultado
   para cada hijo en nodo.hijos:
-      preOrden(hijo, resultado)   ← agrega todos los del subárbol
+      preOrden(hijo, resultado)
   retornar resultado
-```
-
-*Implementación en Java:*
-
-```java
-public List<T> listarDescendientes(T nombre) {
-    List<T> resultado = new ArrayList<>();
-    NodoGenerico<T> nodo = raiz.buscarNodo(nombre);
-    if (nodo == null) return resultado;
-    for (NodoGenerico<T> hijo : nodo.getHijosNodos()) {
-        hijo.preOrden(resultado);
-    }
-    return resultado;
-}
 ```
 
 ---
 
 ### obtenerGeneracion(nivel)
 
-**Lenguaje natural:** Recorre el árbol pasando el nivel actual como parámetro. Cuando el nivel actual coincide con el buscado, agrega el dato al resultado. No sigue bajando más allá del nivel buscado.
+**Lenguaje natural:** Recorre el árbol pasando el nivel actual como parámetro. Cuando el nivel actual coincide con el buscado, agrega el dato al resultado.
 
 **Precondición:** nivel ≥ 0. Raíz está en nivel 0.
 **Postcondición:** lista con todos los nodos en la generación indicada.
@@ -530,7 +375,7 @@ obtenerGeneracion(nivelBuscado: entero): Lista<T>
   obtenerGeneracionRec(raiz, 0, nivelBuscado, resultado)
   retornar resultado
 
-obtenerGeneracionRec(nodo: NodoGenerico, nivelActual: entero, nivelBuscado: entero, resultado: Lista): void
+obtenerGeneracionRec(nodo, nivelActual, nivelBuscado, resultado): void
   si nivelActual = nivelBuscado:
       resultado.agregar(nodo.dato)
       retornar
@@ -538,32 +383,11 @@ obtenerGeneracionRec(nodo: NodoGenerico, nivelActual: entero, nivelBuscado: ente
       obtenerGeneracionRec(hijo, nivelActual + 1, nivelBuscado, resultado)
 ```
 
-*Implementación en Java:*
-
-```java
-public List<T> obtenerGeneracion(int nivelBuscado) {
-    List<T> resultado = new ArrayList<>();
-    if (raiz == null) return resultado;
-    obtenerGeneracionRec(raiz, 0, nivelBuscado, resultado);
-    return resultado;
-}
-
-private void obtenerGeneracionRec(NodoGenerico<T> nodo, int nivelActual, int nivelBuscado, List<T> resultado) {
-    if (nivelActual == nivelBuscado) {
-        resultado.add(nodo.getDato());
-        return;
-    }
-    for (NodoGenerico<T> hijo : nodo.getHijosNodos()) {
-        obtenerGeneracionRec(hijo, nivelActual + 1, nivelBuscado, resultado);
-    }
-}
-```
-
 ---
 
 ### esDescendiente(posibleDesc, ancestro)
 
-**Lenguaje natural:** Busca el nodo ancestro y luego busca el posibleDescendiente dentro de su subárbol. Si se encuentra, es descendiente.
+**Lenguaje natural:** Busca el nodo ancestro y luego busca el posibleDescendiente dentro de su subárbol.
 
 **Postcondición:** verdadero si posibleDesc está en el subárbol de ancestro (sin incluir al ancestro mismo).
 
@@ -574,19 +398,6 @@ esDescendiente(posibleDesc: T, ancestro: T): booleano
   para cada hijo en nodoAnc.hijos:
       si buscarNodo(hijo, posibleDesc) ≠ nulo: retornar verdadero
   retornar falso
-```
-
-*Implementación en Java:*
-
-```java
-public boolean esDescendiente(T posibleDesc, T ancestro) {
-    NodoGenerico<T> nodoAnc = raiz.buscarNodo(ancestro);
-    if (nodoAnc == null) return false;
-    for (NodoGenerico<T> hijo : nodoAnc.getHijosNodos()) {
-        if (hijo.buscarNodo(posibleDesc) != null) return true;
-    }
-    return false;
-}
 ```
 
 ---
@@ -611,7 +422,7 @@ ancestroComun(a: T, b: T): T
       i ← i + 1
   retornar ancestro
 
-obtenerCamino(nodo: NodoGenerico, objetivo: T): Lista<T>
+obtenerCamino(nodo, objetivo: T): Lista<T>
   si nodo = nulo: retornar nulo
   si nodo.dato = objetivo:
       camino ← Lista vacía
@@ -625,43 +436,6 @@ obtenerCamino(nodo: NodoGenerico, objetivo: T): Lista<T>
   retornar nulo
 ```
 
-*Implementación en Java:*
-
-```java
-public T ancestroComun(T a, T b) {
-    List<T> caminoA = obtenerCamino(raiz, a);
-    List<T> caminoB = obtenerCamino(raiz, b);
-    if (caminoA == null) return null;
-    if (caminoB == null) return null;
-    T ancestro = null;
-    int i = 0;
-    while (i < caminoA.size() && i < caminoB.size()) {
-        if (caminoA.get(i).equals(caminoB.get(i))) {
-            ancestro = caminoA.get(i);
-        }
-        i++;
-    }
-    return ancestro;
-}
-
-private List<T> obtenerCamino(NodoGenerico<T> nodo, T objetivo) {
-    if (nodo == null) return null;
-    if (nodo.getDato().compareTo(objetivo) == 0) {
-        List<T> camino = new ArrayList<>();
-        camino.add(nodo.getDato());
-        return camino;
-    }
-    for (NodoGenerico<T> hijo : nodo.getHijosNodos()) {
-        List<T> camino = obtenerCamino(hijo, objetivo);
-        if (camino != null) {
-            camino.add(0, nodo.getDato()); // inserta al frente
-            return camino;
-        }
-    }
-    return null;
-}
-```
-
 ---
 
 ## Trie
@@ -671,35 +445,6 @@ private List<T> obtenerCamino(NodoGenerico<T> nodo, T objetivo) {
 - Verificar si una palabra existe en un diccionario.
 - Predecir texto en teclados o buscadores.
 
-**Estructura interna:**
-
-```
-NodoTrie<T>:
-  hijos:    Map<Character, NodoTrie<T>>
-  esPalabra: booleano   ← ¿termina aquí una palabra válida?
-  dato:      T
-
-Trie<T>:
-  raiz: NodoTrie<T>  ← nulo si el trie está vacío
-```
-
-*Implementación en Java:*
-
-`NodoTrie`
-```java
-public class NodoTrie<T> {
-    private Map<Character, NodoTrie<T>> hijos;
-    private boolean esPalabra;
-    private T dato;
-
-    public NodoTrie() {
-        this.hijos = new HashMap<>();
-        this.esPalabra = false;
-        this.dato = null;
-    }
-}
-```
-
 ---
 
 ### insertar(palabra, dato)
@@ -707,7 +452,7 @@ public class NodoTrie<T> {
 **Lenguaje natural:** Recorre el trie siguiendo cada carácter de la palabra. Si falta un nodo para algún carácter, lo crea. Al terminar la palabra, marca el nodo final como `esPalabra = verdadero`.
 
 **Precondición:** palabra no nula.
-**Postcondición:** la palabra existe en el trie marcada como `esPalabra = verdadero`. Retorna verdadero si fue nueva, falso si ya existía.
+**Postcondición:** la palabra existe en el trie. Retorna verdadero si fue nueva, falso si ya existía.
 
 ```
 NodoTrie.insertar(palabra: String, dato: T): booleano
@@ -724,34 +469,13 @@ NodoTrie.insertar(palabra: String, dato: T): booleano
 
 **Orden:** O(m) donde m = largo de la palabra.
 
-*Implementación en Java:*
-
-`NodoTrie`
-```java
-public boolean insertar(String palabra, T dato) {
-    NodoTrie<T> nodo = this;
-    for (int i = 0; i < palabra.length(); i++) {
-        char c = palabra.charAt(i);
-        if (!nodo.hijos.containsKey(c)) {
-            nodo.hijos.put(c, new NodoTrie<>());
-        }
-        nodo = nodo.hijos.get(c);
-    }
-    boolean esPalabraNueva = !nodo.esPalabra;
-    nodo.esPalabra = true;
-    nodo.dato = dato;
-    return esPalabraNueva;
-}
-```
-
 ---
 
 ### buscar(palabra)
 
-**Lenguaje natural:** Recorre el trie siguiendo cada carácter. Si en algún punto no existe el nodo hijo esperado, retorna nulo. Al terminar, retorna un Entry indicando si la palabra es completa (`esPalabra = verdadero`) o solo un prefijo (`esPalabra = falso`).
+**Lenguaje natural:** Recorre el trie siguiendo cada carácter. Si en algún punto no existe el nodo hijo esperado, retorna nulo.
 
-**Precondición:** palabra no nula.
-**Postcondición:** retorna Entry con `esPalabra=verdadero` si es palabra completa; `esPalabra=falso` si es prefijo pero no palabra; `nulo` si no existe ningún nodo para esa secuencia.
+**Postcondición:** retorna Entry con `esPalabra=verdadero` si es palabra completa; `esPalabra=falso` si es prefijo; `nulo` si no existe.
 
 ```
 NodoTrie.buscar(palabra: String): Entry
@@ -767,40 +491,17 @@ NodoTrie.buscar(palabra: String): Entry
 **Traza (palabras insertadas: "casa", "caso", "cama"):**
 
 ```
-buscar("cas"):
-  c → a → s   →   nodo existe, esPalabra=false
-  Retorna Entry(null, false, "cas")   ← es prefijo, no palabra completa
-
-buscar("casa"):
-  c → a → s → a  →  nodo existe, esPalabra=true
-  Retorna Entry(dato, true, "casa")
-
-buscar("col"):
-  c → o   → nodo.hijos no contiene 'o'   → Retorna null
-```
-
-*Implementación en Java:*
-
-`NodoTrie`
-```java
-public boolean buscar(String palabra) {
-    NodoTrie<T> nodo = this;
-    for (int i = 0; i < palabra.length(); i++) {
-        char c = palabra.charAt(i);
-        if (!nodo.hijos.containsKey(c)) return false;
-        nodo = nodo.hijos.get(c);
-    }
-    return nodo.esPalabra;
-}
+buscar("cas"):  c → a → s → nodo existe, esPalabra=false → prefijo, no palabra
+buscar("casa"): c → a → s → a → esPalabra=true → palabra completa
+buscar("col"):  c → o → no existe hijo 'o' → retorna nulo
 ```
 
 ---
 
 ### predecir(prefijo)
 
-**Lenguaje natural:** Navega hasta el nodo correspondiente al último carácter del prefijo. Desde ahí hace un DFS sobre el subárbol, recolectando todas las palabras (nodos con `esPalabra = verdadero`).
+**Lenguaje natural:** Navega hasta el nodo del último carácter del prefijo. Desde ahí hace DFS recolectando todos los nodos con `esPalabra = verdadero`.
 
-**Precondición:** prefijo no nulo.
 **Postcondición:** lista con todos los strings que comienzan con el prefijo. Lista vacía si no hay coincidencias.
 
 ```
@@ -813,7 +514,7 @@ NodoTrie.predecir(prefijo: String): Lista<String>
   recolectarPalabras(nodo, prefijo, resultado)
   retornar resultado
 
-recolectarPalabras(nodo: NodoTrie, palabraActual: String, resultado: Lista): void
+recolectarPalabras(nodo, palabraActual: String, resultado: Lista): void
   si nodo.esPalabra:
       resultado.agregar(palabraActual)
   para cada (c, hijo) en nodo.hijos:
@@ -822,42 +523,13 @@ recolectarPalabras(nodo: NodoTrie, palabraActual: String, resultado: Lista): voi
 
 **Orden:** O(m) + tamaño del resultado
 
-*Implementación en Java:*
-
-`NodoTrie`
-```java
-public List<String> predecir(String prefijo) {
-    List<String> resultado = new ArrayList<>();
-    NodoTrie<T> nodo = this;
-    for (int i = 0; i < prefijo.length(); i++) {
-        char c = prefijo.charAt(i);
-        if (!nodo.hijos.containsKey(c)) return resultado;
-        nodo = nodo.hijos.get(c);
-    }
-    recolectarPalabras(nodo, prefijo, resultado);
-    return resultado;
-}
-
-private void recolectarPalabras(NodoTrie<T> nodo, String palabraActual, List<String> resultado) {
-    if (nodo.esPalabra) {
-        resultado.add(palabraActual);
-    }
-    for (Map.Entry<Character, NodoTrie<T>> entry : nodo.hijos.entrySet()) {
-        char c = entry.getKey();
-        NodoTrie<T> hijo = entry.getValue();
-        recolectarPalabras(hijo, palabraActual + c, resultado);
-    }
-}
-```
-
 ---
 
 ### eliminar(palabra)
 
-**Lenguaje natural:** Navega hasta el nodo final de la palabra y marca `esPalabra = falso`. No elimina nodos que tengan hijos activos (solo desmarca), para no romper otras palabras que comparten ese prefijo.
+**Lenguaje natural:** Navega hasta el nodo final de la palabra y marca `esPalabra = falso`. No elimina nodos con hijos activos para no romper otras palabras que comparten el prefijo.
 
-**Precondición:** palabra no nula.
-**Postcondición:** si la palabra existía, su nodo tiene `esPalabra = falso`. Retorna verdadero si se eliminó, falso si la palabra no existía.
+**Postcondición:** si existía, su nodo tiene `esPalabra = falso`. Retorna verdadero si se eliminó.
 
 ```
 NodoTrie.eliminar(palabra: String): booleano
@@ -872,24 +544,6 @@ NodoTrie.eliminar(palabra: String): booleano
 ```
 
 **Orden:** O(m)
-
-*Implementación en Java:*
-
-`NodoTrie`
-```java
-public boolean eliminar(String palabra) {
-    NodoTrie<T> nodo = this;
-    for (int i = 0; i < palabra.length(); i++) {
-        char c = palabra.charAt(i);
-        if (!nodo.hijos.containsKey(c)) return false;
-        nodo = nodo.hijos.get(c);
-    }
-    if (!nodo.esPalabra) return false;
-    nodo.esPalabra = false;
-    nodo.dato = null;
-    return true;
-}
-```
 
 ---
 
@@ -922,37 +576,23 @@ Arista (0, 0, 1) → "be"   (caracteres 0 a 1 de S[0] = "bear")
 
 **Casos de uso típicos:**
 - Cuando se necesita O(1) para búsqueda, inserción y eliminación de pares clave-valor.
-- Cuando la memoria contigua (sin punteros a listas externas) es preferible.
 - Ejercicios de análisis de colisiones y factor de carga.
 
 **Conceptos clave:**
 - `h(K) = K.hashCode() % N` — N debe ser primo para mejor distribución
 - **Colisión:** `h(Kᵢ) = h(Kⱼ)` con Kᵢ ≠ Kⱼ → prácticamente inevitable
 - **Sondeo lineal:** `pos = (h0 + i) % N` — busca la siguiente posición libre
-- **loteLibre (tombstone):** una posición eliminada se marca como `loteLibre = verdadero`, no como `null`. Esto distingue "nunca hubo nada aquí" (null) de "hubo algo pero se eliminó" (tombstone), lo cual es crítico para no romper la cadena de búsqueda
+- **loteLibre (tombstone):** posición eliminada marcada como `loteLibre = verdadero`, no `null`. Distingue "nunca hubo nada" (null) de "hubo algo y se eliminó" (tombstone), crítico para no romper la cadena de búsqueda
 - **Factor de carga:** α = M/N — mantener < 0.70 para buen rendimiento
-
-**Estructura interna:**
-
-```
-TNodoHash<K, V>:
-  clave:     K
-  valor:     V
-  loteLibre: booleano   ← tombstone: fue eliminado pero no es null
-
-Hash<K, V>:
-  tabla:             TNodoHash<K, V>[]
-  cantidadElementos: entero
-```
 
 ---
 
 ### insertar(clave, valor)
 
-**Lenguaje natural:** Calcula `h0`. Recorre linealmente buscando la primera posición vacía (null) o tombstone. Si la clave ya existe, no inserta. Si el factor de carga supera 0.70, redimensiona antes de insertar.
+**Lenguaje natural:** Calcula `h0`. Recorre linealmente buscando la primera posición vacía o tombstone. Si la clave ya existe, no inserta. Si el factor de carga supera 0.70, redimensiona antes.
 
 **Precondición:** clave no nula.
-**Postcondición:** el par (clave, valor) queda en la tabla. Retorna verdadero si se insertó, falso si la clave ya existía.
+**Postcondición:** el par queda en la tabla. Retorna verdadero si se insertó, falso si ya existía.
 
 ```
 Hash.insertar(clave: K, valor: V): booleano
@@ -969,7 +609,7 @@ Hash.insertar(clave: K, valor: V): booleano
       sino si tabla[pos].loteLibre:
           si primerLibre = -1: primerLibre ← pos
       sino si tabla[pos].clave = clave:
-          retornar falso   ← ya existe
+          retornar falso
       i ← i + 1
   si primerLibre = -1: retornar falso
   tabla[primerLibre] ← TNodoHash(clave, valor)
@@ -979,39 +619,11 @@ Hash.insertar(clave: K, valor: V): booleano
 
 **Orden:** O(1) promedio, O(n) peor caso.
 
-*Implementación en Java:*
-
-```java
-public boolean insertar(K clave, V valor) {
-    if (clave == null) return false;
-    double factorCarga = (double) cantidadElementos / tabla.length;
-    if (factorCarga > 0.70) redimensionar();
-    int h0 = funcionHash(clave);
-    int primerLibre = -1;
-    for (int i = 0; i < tabla.length; i++) {
-        int pos = (h0 + i) % tabla.length;
-        if (tabla[pos] == null) {
-            if (primerLibre == -1) primerLibre = pos;
-            break;
-        }
-        if (tabla[pos].isLoteLibre()) {
-            if (primerLibre == -1) primerLibre = pos;
-        } else if (tabla[pos].getClave().equals(clave)) {
-            return false; // clave duplicada
-        }
-    }
-    if (primerLibre == -1) return false;
-    tabla[primerLibre] = new TNodoHash<>(clave, valor);
-    cantidadElementos++;
-    return true;
-}
-```
-
 ---
 
 ### buscar(clave)
 
-**Lenguaje natural:** Calcula `h0` y recorre linealmente. Detiene la búsqueda si encuentra `null` (nunca hubo nada ahí). Salta posiciones con tombstone. Retorna el valor si encuentra la clave.
+**Lenguaje natural:** Calcula `h0` y recorre linealmente. Detiene si encuentra `null`. Salta tombstones. Retorna el valor si encuentra la clave.
 
 **Postcondición:** retorna el valor si la clave existe, nulo si no.
 
@@ -1022,50 +634,31 @@ Hash.buscar(clave: K): V
   i ← 0
   mientras i < tabla.tamaño():
       pos ← (h0 + i) mod tabla.tamaño()
-      si tabla[pos] = nulo: retornar nulo   ← nunca hubo nada, fin de la cadena
+      si tabla[pos] = nulo: retornar nulo
       si no tabla[pos].loteLibre:
           si tabla[pos].clave = clave: retornar tabla[pos].valor
       i ← i + 1
   retornar nulo
 ```
 
-**Traza (tabla de tamaño 7, h(K) = K mod 7):**
+**Traza (tabla tamaño 7, h(K) = K mod 7):**
 
 ```
 Insertadas: 15→"A", 8→"B", 22→"C"
 h(15)=1, h(8)=1 (colisión → pos 2), h(22)=1 (colisión → pos 3)
 
 buscar(8):
-  h0=1, pos=1 → tabla[1]={15,"A"} ≠ 8, continuar
-  pos=2 → tabla[2]={8,"B"} = 8 → retornar "B"  ✓
-```
-
-*Implementación en Java:*
-
-```java
-public V buscar(K clave) {
-    if (clave == null) return null;
-    int h0 = funcionHash(clave);
-    for (int i = 0; i < tabla.length; i++) {
-        int pos = (h0 + i) % tabla.length;
-        if (tabla[pos] == null) return null;
-        if (!tabla[pos].isLoteLibre()) {
-            if (tabla[pos].getClave().equals(clave)) return tabla[pos].getValor();
-        }
-    }
-    return null;
-}
+  h0=1, pos=1 → {15,"A"} ≠ 8
+  pos=2 → {8,"B"} = 8 → retornar "B"  ✓
 ```
 
 ---
 
 ### eliminar(clave)
 
-**Lenguaje natural:** Igual que buscar, pero al encontrar la clave marca el nodo como `loteLibre = verdadero` (tombstone) en lugar de poner null. Esto preserva la cadena de búsqueda para otras claves que colisionaron.
+**Lenguaje natural:** Igual que buscar, pero al encontrar la clave marca el nodo como `loteLibre = verdadero` en lugar de poner null. Preserva la cadena de búsqueda.
 
-**Por qué no se puede poner null:** si hubiéramos insertado A, B, C en posiciones 1, 2, 3 (por colisiones) y eliminamos B poniendo null en posición 2, buscar(C) se detendría en posición 2 y retornaría nulo sin llegar a C.
-
-**Postcondición:** si la clave existía, su nodo queda marcado como loteLibre. Retorna verdadero si se eliminó.
+**Por qué no se puede poner null:** si A, B, C colisionan en posiciones 1, 2, 3 y eliminamos B poniendo null, buscar(C) se detiene en posición 2 sin llegar a C.
 
 ```
 Hash.eliminar(clave: K): booleano
@@ -1084,32 +677,11 @@ Hash.eliminar(clave: K): booleano
   retornar falso
 ```
 
-*Implementación en Java:*
-
-```java
-public boolean eliminar(K clave) {
-    if (clave == null) return false;
-    int h0 = funcionHash(clave);
-    for (int i = 0; i < tabla.length; i++) {
-        int pos = (h0 + i) % tabla.length;
-        if (tabla[pos] == null) return false;
-        if (!tabla[pos].isLoteLibre()) {
-            if (tabla[pos].getClave().equals(clave)) {
-                tabla[pos].setLoteLibre(true);
-                cantidadElementos--;
-                return true;
-            }
-        }
-    }
-    return false;
-}
-```
-
 ---
 
 ### redimensionar()
 
-**Lenguaje natural:** Crea una tabla nueva con capacidad primo ≥ 2×tabla_actual. Reinserta todos los elementos activos (que no son tombstone ni null).
+**Lenguaje natural:** Crea tabla nueva con capacidad primo ≥ 2×actual. Reinserta todos los elementos activos (no tombstone ni null).
 
 ```
 Hash.redimensionar(): void
@@ -1122,7 +694,7 @@ Hash.redimensionar(): void
               insertar(posición.clave, posición.valor)
 ```
 
-**Por qué primo:** reduce la probabilidad de clustering primario (agrupamiento de claves en el mismo sector).
+**Por qué primo:** reduce la probabilidad de clustering primario.
 
 ---
 
@@ -1146,7 +718,7 @@ Cada posición de la tabla tiene una lista enlazada de elementos que colisionaro
 ```
 insertar_chaining(clave: K, valor: V): void
   pos ← h(clave)
-  tabla[pos].agregarAlFrente(clave, valor)   ← O(1)
+  tabla[pos].agregarAlFrente(clave, valor)
 
 buscar_chaining(clave: K): V
   pos ← h(clave)
@@ -1164,118 +736,12 @@ eliminar_chaining(clave: K): booleano
 ```
 
 **Complejidades:**
+
 | Operación | Promedio | Peor caso |
 |-----------|---------|-----------|
 | Inserción | O(1) | O(1) |
 | Búsqueda | O(1 + α) | O(n) |
 | Eliminación | O(1 + α) | O(n) |
-
----
-
-## TDA Mapa — Patrones Java
-
-**Definición:** almacena pares (k, v) con clave única. `put(k, v)` reemplaza si k ya existe.
-
-### Contar frecuencias
-
-```java
-Map<String, Integer> frecuencias = new HashMap<>();
-for (String palabra : palabras) {
-    Integer actual = frecuencias.get(palabra);
-    if (actual == null) {
-        frecuencias.put(palabra, 1);
-    } else {
-        frecuencias.put(palabra, actual + 1);
-    }
-}
-```
-
-### Agrupar elementos por clave
-
-```java
-Map<String, List<String>> grupos = new HashMap<>();
-for (String elemento : elementos) {
-    String clave = calcularClave(elemento);
-    List<String> lista = grupos.get(clave);
-    if (lista == null) {
-        lista = new ArrayList<>();
-        grupos.put(clave, lista);
-    }
-    lista.add(elemento);
-}
-```
-
-### Iterar un mapa
-
-```java
-for (Map.Entry<String, Integer> entry : mapa.entrySet()) {
-    String clave = entry.getKey();
-    Integer valor = entry.getValue();
-    // usar clave y valor
-}
-```
-
-### Buscar el máximo por valor
-
-```java
-String claveMax = null;
-int valorMax = Integer.MIN_VALUE;
-for (Map.Entry<String, Integer> entry : mapa.entrySet()) {
-    if (entry.getValue() > valorMax) {
-        valorMax = entry.getValue();
-        claveMax = entry.getKey();
-    }
-}
-```
-
-### Implementaciones Java de Mapa
-
-| Clase | Complejidad | Orden de iteración | Clave null |
-|-------|------------|-------------------|-----------|
-| `HashMap` | O(1) prom. | Sin orden | ✅ |
-| `LinkedHashMap` | O(1) prom. | Orden de inserción | ✅ |
-| `TreeMap` | O(log n) | Natural de claves | ❌ |
-
----
-
-## TDA Diccionario — Patrones Java
-
-**Definición:** como el Mapa, pero permite múltiples valores por clave. `insertar(k, v)` nunca reemplaza.
-
-| TDA | Claves duplicadas | Método |
-|-----|-----------------|--------|
-| **Mapa** | No | `put(k, v)` — reemplaza |
-| **Diccionario** | Sí | `insertar(k, v)` — siempre agrega |
-
-### Implementación con Map<K, List<V>>
-
-```java
-Map<String, List<String>> diccionario = new HashMap<>();
-
-// insertar
-public void insertar(String clave, String valor) {
-    List<String> lista = diccionario.get(clave);
-    if (lista == null) {
-        lista = new ArrayList<>();
-        diccionario.put(clave, lista);
-    }
-    lista.add(valor);
-}
-
-// buscarTodos
-public List<String> buscarTodos(String clave) {
-    List<String> lista = diccionario.get(clave);
-    if (lista == null) return new ArrayList<>();
-    return lista;
-}
-
-// eliminar un valor específico (no todos los de la clave)
-public boolean eliminar(String clave, String valor) {
-    List<String> lista = diccionario.get(clave);
-    if (lista == null) return false;
-    return lista.remove(valor);
-}
-```
 
 ---
 
@@ -1285,98 +751,21 @@ public boolean eliminar(String clave, String valor) {
 
 **Error clásico en parcial:** si `equals` compara por `isbn` pero `hashCode` usa `titulo`, dos libros con mismo isbn pero diferente título tendrán hashCodes distintos → `HashSet` los trata como distintos → viola el contrato.
 
+**Regla:** los mismos atributos usados en `equals` deben usarse en `hashCode`.
+
 ### hashCode estándar por tipo
 
 | Tipo | hashCode() |
 |------|-----------|
 | `Integer` | El propio valor int |
 | `String` | `s[0]*31^(n-1) + s[1]*31^(n-2) + ... + s[n-1]` |
-| Objeto propio | `Objects.hash(attr1, attr2, ...)` |
+| Objeto propio | combinar hashCodes de los atributos identificadores |
 
-### Un solo atributo identifica al objeto
-
-```java
-public class Libro {
-    private String isbn;
-    private String titulo;
-    private int anio;
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null) return false;
-        if (!(o instanceof Libro)) return false;
-        Libro otro = (Libro) o;
-        return this.isbn.equals(otro.isbn);  // identidad lógica = isbn
-    }
-
-    @Override
-    public int hashCode() {
-        return isbn.hashCode();              // mismos atributos que equals
-    }
-}
-```
-
-### Varios atributos identifican al objeto
-
-```java
-@Override
-public boolean equals(Object o) {
-    if (o == null) return false;
-    if (!(o instanceof Alumno)) return false;
-    Alumno otro = (Alumno) o;
-    boolean mismoId = this.id == otro.id;
-    boolean mismoNombre = this.nombre.equals(otro.nombre);
-    if (mismoId) {
-        if (mismoNombre) return true;
-    }
-    return false;
-}
-
-@Override
-public int hashCode() {
-    return Objects.hash(id, nombre);
-}
-```
-
-**Advertencia:** no usar atributos mutables (email, dirección) en `hashCode()`/`equals()`. Si la clave cambia mientras el objeto está en un HashMap, el objeto se "pierde" en la tabla.
+**Advertencia:** no usar atributos mutables en `hashCode()`/`equals()`. Si la clave cambia mientras el objeto está en un HashMap, el objeto se "pierde" en la tabla.
 
 ---
 
 ## Collections Framework
-
-### Pila (ArrayDeque como Stack)
-
-```java
-Deque<String> pila = new ArrayDeque<>();
-pila.push("A");           // inserta al frente — O(1)
-String tope = pila.pop(); // extrae del frente — O(1)
-String ver  = pila.peek();// mira sin extraer  — O(1)
-```
-
-### Cola (ArrayDeque como Queue)
-
-```java
-Queue<String> cola = new ArrayDeque<>();
-cola.offer("A");            // encola al final    — O(1)
-String frente = cola.poll();// desencola al frente — O(1)
-String ver    = cola.peek();// mira sin extraer    — O(1)
-```
-
-### Ordenar una lista
-
-```java
-List<Integer> lista = new ArrayList<>();
-Collections.sort(lista);             // orden natural, estable
-Collections.sort(lista, comparador); // con comparador
-
-// Comparador manual (sin lambda)
-Comparator<Alumno> porNombre = new Comparator<Alumno>() {
-    public int compare(Alumno a, Alumno b) {
-        return a.getNombre().compareTo(b.getNombre());
-    }
-};
-Collections.sort(lista, porNombre);
-```
 
 ### Tabla comparativa de implementaciones
 
@@ -1389,7 +778,6 @@ Collections.sort(lista, porNombre);
 | `HashMap` | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ |
 | `LinkedHashMap` | ✅ (inserción) | ✅ | ✅ | ❌ | ✅ | ❌ |
 | `TreeMap` | ✅ (clave) | ✅ | ✅ | ❌ | ❌ | ❌ |
-| `ConcurrentHashMap` | ❌ | ✅ | ✅ | ❌ | ❌ | ✅ |
 
 ### Diagrama de decisión
 
@@ -1475,27 +863,6 @@ fin método
 mientras j >= 0 Y datos[j].medicion < clave.medicion hacer
 ```
 
-**Java:**
-```java
-public static void insercion(double[] datos, int n) {
-    int i = 1;
-    while (i < n) {
-        double clave = datos[i];
-        int j = i - 1;
-        while (j >= 0) {
-            if (datos[j] > clave) {
-                datos[j + 1] = datos[j];
-                j--;
-            } else {
-                break;
-            }
-        }
-        datos[j + 1] = clave;
-        i++;
-    }
-}
-```
-
 ---
 
 ### Heapsort
@@ -1506,13 +873,11 @@ public static void insercion(double[] datos, int n) {
 
 ```
 heapsort(datos: double[], n: entero): void
-  // Fase 1: construir max-heap
   i ← n / 2 - 1
   mientras i >= 0 hacer
     hundir(datos, i, n)
     i ← i - 1
   fin mientras
-  // Fase 2: ordenar
   i ← n - 1
   mientras i > 0 hacer
     aux ← datos[0]
@@ -1624,7 +989,7 @@ fin método
 → **BEA**. Cola FIFO. El primer camino encontrado a cada vértice es el más corto en cantidad de aristas. O(V+E).
 
 **9. ¿Conectar todos los vértices de un grafo no dirigido con el menor costo total?**
-→ **Prim** (crece desde un origen) o **Kruskal** (ordena aristas globalmente). Ambos producen el Árbol Generador Mínimo (AGM). O(V·E) naive / O(E log E) Kruskal.
+→ **Prim** (crece desde un origen) o **Kruskal** (ordena aristas globalmente). Ambos producen el Árbol Generador Mínimo (AGM).
 
 **10. ¿Qué vértice, si se elimina, desconecta la red?**
 → **Puntos de articulación**. DFS con disc/low. O(V+E).
@@ -1655,11 +1020,6 @@ fin método
 |----------------|---------|---------------|-----------------|-------------|
 | Matriz adyacencia | O(V²) | O(1) | O(V) | Grafos densos, Floyd/Warshall |
 | Lista adyacencia | O(V+E) | O(grado) | O(grado) | Grafos dispersos, DFS |
-
-**Lista de adyacencias en Java:**
-```java
-HashMap<V, List<Edge<V, D>>> adyacencias = new HashMap<>();
-```
 
 ---
 
@@ -1863,25 +1223,21 @@ bea(origen, G):
 
 **Para calcular distancias (número de saltos):**
 
-```java
-Map<V, Integer> distancias = new HashMap<>();
-Queue<V> cola = new ArrayDeque<>();
-distancias.put(origen, 0);
-cola.offer(origen);
-while (!cola.isEmpty()) {
-    V actual = cola.poll();
-    for (Edge<V, D> arista : grafo.adyacencias(grafo.construirComparable(actual))) {
-        V vecino = arista.target();
-        if (!distancias.containsKey(vecino)) {
-            distancias.put(vecino, distancias.get(actual) + 1);
-            cola.offer(vecino);
-        }
-    }
-}
-// numBacon = distancias.get("Kevin_Bacon")
+```
+bea con distancias(origen, G):
+  distancias ← mapa vacío
+  cola ← cola vacía
+  distancias[origen] ← 0
+  encolar origen
+  Mientras cola no vacía:
+    actual ← desencolar
+    Para cada w adyacente a actual:
+      Si w no en distancias:
+          distancias[w] ← distancias[actual] + 1
+          encolar w
 ```
 
-**Error típico:** usar DFS para calcular número de Bacon — DFS no garantiza el camino mínimo, puede devolver un número mayor al correcto.
+**Error típico:** usar DFS para calcular número de Bacon — DFS no garantiza el camino mínimo.
 
 ---
 
@@ -1892,42 +1248,35 @@ while (!cola.isEmpty()) {
 ```
 prim(G, origen):
   U ← {origen};  noU ← G.vertices() \ {origen}
-  arbol ← grafo vacío con todos los vértices
+  arbol ← grafo con todos los vértices, sin aristas
 
   Mientras noU no vacío:
     minArista ← arista de menor peso con source en U y target en noU
-    mover target de noU a U
+    Si minArista = nulo: detener   // grafo no conexo
+    mover minArista.target() de noU a U
     agregar minArista al arbol
   retornar arbol
+
+searchMinEdge(G, U, noU):
+  minArista ← nulo
+  minPeso ← ∞
+  Para cada u en U:
+    Para cada arista en G.adyacencias(u):
+      Si arista.target() en noU Y arista.peso < minPeso:
+          minPeso ← arista.peso
+          minArista ← arista
+  retornar minArista
 ```
 
-**Java (esqueleto):**
-```java
-Set<V> U = new HashSet<>();
-Set<V> noU = new HashSet<>(grafo.vertices());
-U.add(origen);
-noU.remove(origen);
-
-while (!noU.isEmpty()) {
-    Edge<V, D> minArista = searchMinEdge(grafo, U, noU);
-    if (minArista == null) break;   // grafo no conexo
-    U.add(minArista.target());
-    noU.remove(minArista.target());
-    arbol.agregarArista(minArista.source(), minArista.target(), minArista.dato());
-}
-```
-
-**`searchMinEdge`:** recorre todos los vértices de U y sus adyacencias, devuelve la arista con `arista.dato().getWeight()` mínimo cuyo target está en noU.
-
-**Error típico:** olvidar que el grafo resultado debe tener **todos** los vértices del original (no solo los que tienen aristas en el AGM).
+**Error típico:** olvidar que el grafo resultado debe tener **todos** los vértices del original.
 
 ---
 
 ### Kruskal — árbol generador mínimo
 
-**Cuándo:** igual que Prim (grafo no dirigido con pesos). Kruskal ordena todas las aristas por peso y las agrega una a una, saltando las que formarían ciclo.
+**Cuándo:** igual que Prim. Kruskal ordena todas las aristas por peso y las agrega una a una, saltando las que formarían ciclo.
 
-**Detectar ciclos con union-find de conjuntos:** cada vértice empieza en su propio grupo. Al aceptar una arista, se fusionan los dos grupos. Si source y target ya están en el mismo grupo → habría ciclo → rechazar.
+**Detectar ciclos con union-find:** cada vértice empieza en su propio grupo. Al aceptar una arista, se fusionan los dos grupos. Si source y target ya están en el mismo grupo → ciclo → rechazar.
 
 ```
 kruskal(G):
@@ -1944,19 +1293,14 @@ kruskal(G):
   retornar arbol
 ```
 
-**Ordenar sin lambdas (selection sort):**
-```java
-for (int i = 0; i < aristas.size(); i++) {
-    int minIdx = i;
-    for (int j = i + 1; j < aristas.size(); j++) {
-        if (aristas.get(j).dato().getWeight() < aristas.get(minIdx).dato().getWeight()) {
-            minIdx = j;
-        }
-    }
-    Edge<V, D> temp = aristas.get(i);
-    aristas.set(i, aristas.get(minIdx));
-    aristas.set(minIdx, temp);
-}
+**Ordenar por peso (selection sort):**
+```
+Para i = 0 .. n-1:
+  minIdx ← i
+  Para j = i+1 .. n-1:
+    Si aristas[j].peso < aristas[minIdx].peso:
+        minIdx ← j
+  intercambiar aristas[i] con aristas[minIdx]
 ```
 
 **Prim vs Kruskal:**
@@ -1976,28 +1320,42 @@ for (int i = 0; i < aristas.size(); i++) {
 
 **Dos valores por vértice:**
 - `disc[v]` — tiempo en que DFS descubrió v (orden de visita).
-- `low[v]` — el menor `disc` alcanzable desde el subárbol de v usando aristas de retroceso (aristas que no son del árbol DFS).
+- `low[v]` — el menor `disc` alcanzable desde el subárbol de v usando aristas de retroceso.
 
 **Reglas:**
 1. `u` es punto de articulación si es **raíz del DFS** y tiene **≥ 2 hijos** en el árbol DFS.
 2. `u` es punto de articulación si **no es raíz** y tiene algún hijo `v` con `low[v] >= disc[u]`.
 
 ```
-dfsArticulacion(actual, disc, low, padres, visitados, tiempo, resultado):
-  visitados.add(actual)
-  tiempo++; disc[actual] = time; low[actual] = time
+puntosDeArticulacion(G):
+  disc, low, padres ← mapas vacíos
+  visitados ← conjunto vacío
+  tiempo ← 0
+  resultado ← lista vacía
+  Para cada v en G.vertices():
+    Si v no en visitados:
+      dfsArticulacion(G, v, disc, low, padres, visitados, tiempo, resultado)
+  retornar resultado
+
+dfsArticulacion(G, actual, disc, low, padres, visitados, tiempo, resultado):
+  visitados.agregar(actual)
+  tiempo ← tiempo + 1
+  disc[actual] ← tiempo
+  low[actual] ← tiempo
   hijosEnArbol ← 0
 
   Para cada vecino de actual:
     Si vecino no visitado:
-      hijosEnArbol++
-      padres[vecino] = actual
-      dfsArticulacion(vecino, ...)
-      low[actual] = min(low[actual], low[vecino])
+      hijosEnArbol ← hijosEnArbol + 1
+      padres[vecino] ← actual
+      dfsArticulacion(G, vecino, ...)
+      Si low[vecino] < low[actual]:
+        low[actual] ← low[vecino]
       Si actual no es raíz Y low[vecino] >= disc[actual]:
           resultado.agregar(actual)
-    Sino si vecino ≠ padre[actual]:
-      low[actual] = min(low[actual], disc[vecino])   // arista de retroceso
+    Sino si vecino ≠ padres[actual]:
+      Si disc[vecino] < low[actual]:
+        low[actual] ← disc[vecino]   // arista de retroceso
 
   Si actual es raíz Y hijosEnArbol > 1:
       resultado.agregar(actual)
@@ -2012,7 +1370,7 @@ B no es raíz. Hijo C tiene low[C]=2 >= disc[B]=2 → B es punto de articulació
 A es raíz con 1 solo hijo B → NO es punto de articulación
 ```
 
-**Error típico:** confundir la condición `>=` con `>`. Si `low[v] = disc[u]` exactamente, u sigue siendo punto de articulación porque el hijo v puede llegar exactamente hasta u (no puede subir más).
+**Error típico:** confundir `>=` con `>`. Si `low[v] = disc[u]` exactamente, u sigue siendo punto de articulación.
 
 ---
 
