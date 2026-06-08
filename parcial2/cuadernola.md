@@ -28,7 +28,8 @@ Material de estudio consolidado para el segundo parcial de Algoritmos y Estructu
 - [Elegir el algoritmo correcto — Sorting](#elegir-el-algoritmo-correcto--sorting)
 - [Inserción](#inserción) — datos casi ordenados + memoria limitada → O(n) mejor caso
 - [Heapsort](#heapsort) — peor caso garantizado + memoria limitada → O(n log n) siempre
-- [Quicksort](#quicksort) — buen promedio en práctica → O(n log n) promedio
+- [Quicksort](#quicksort) — buen promedio en práctica → O(n log n) promedio, con traza `[88,44,77,33,99,22,66]`
+- [Análisis de orden de tiempo por línea/bloque](#análisis-de-orden-de-tiempo-por-líneabloque) — formato exigido en múltiples exámenes
 
 ### Grafos (UT4)
 - [Elegir el algoritmo correcto — UT4](#elegir-el-algoritmo-correcto--ut4)
@@ -41,12 +42,12 @@ Material de estudio consolidado para el segundo parcial de Algoritmos y Estructu
 - [Clasificación topológica](#clasificación-topológica)
 - [Excentricidad y centro del grafo](#excentricidad-y-centro-del-grafo)
 - [Detección de ciclos](#detección-de-ciclos)
-- [Todos los caminos posibles](#todos-los-caminos-posibles)
+- [Todos los caminos posibles](#todos-los-caminos-posibles) — con variante de filtro por tipo de vértice (switches/trenes)
 - [BEA — búsqueda en amplitud / número de saltos](#bea--búsqueda-en-amplitud--número-de-saltos)
 - [Prim — árbol generador mínimo](#prim--árbol-generador-mínimo)
 - [Kruskal — árbol generador mínimo](#kruskal--árbol-generador-mínimo)
 - [Puntos de articulación](#puntos-de-articulación)
-- [Variantes de Dijkstra para el parcial](#variantes-de-dijkstra-para-el-parcial)
+- [Variantes de Dijkstra para el parcial](#variantes-de-dijkstra-para-el-parcial) — incl. costo transformado (distancia/velocidad)
 - [Variantes de Floyd para el parcial](#variantes-de-floyd-para-el-parcial)
 
 ---
@@ -198,6 +199,13 @@ NodoGenerico.agregarHijo(padre: T, hijo: T): booleano
 
 **Orden:** O(n)
 
+**Ejemplo (árbol: Abuelo → {Padre → {Hijo1, Hijo2}, Tío}):**
+```
+agregarHijo("Padre", "Hijo3") → agrega, retorna verdadero
+agregarHijo("Padre", "Hijo1") → Hijo1 ya existe bajo Padre → retorna falso
+agregarHijo("X", "Hijo3")    → "X" no está en el árbol → retorna falso
+```
+
 ---
 
 ### buscarNodo (auxiliar recursivo)
@@ -217,6 +225,12 @@ buscarNodo(nodo: NodoGenerico, criterio: T): NodoGenerico
 ```
 
 **Orden:** O(n)
+
+**Ejemplo:**
+```
+buscarNodo(raiz, "Hijo1") → Abuelo≠ → busca en hijos → Padre≠ → busca en hijos → Hijo1= → retorna nodo Hijo1
+buscarNodo(raiz, "X")     → recorre todos los nodos → retorna nulo
+```
 
 ---
 
@@ -248,6 +262,14 @@ NodoGenerico.eliminar(criterio: T): void
 
 **Orden:** O(n)
 
+**Ejemplo:**
+```
+Árbol: Abuelo → {Padre → {Hijo1, Hijo2}, Tío}
+eliminar("Padre") → Abuelo busca hijo con dato "Padre" → encontrado en pos 0 → eliminar
+resultado: Abuelo → {Tío}   (Padre, Hijo1, Hijo2 eliminados junto con su subárbol)
+eliminar("Abuelo") → es la raíz → raiz ← nulo
+```
+
 ---
 
 ### obtenerPadre(criterio)
@@ -275,6 +297,14 @@ NodoGenerico.obtenerPadreNodo(criterio: T): NodoGenerico
 
 **Orden:** O(n)
 
+**Ejemplo:**
+```
+Árbol: Abuelo → {Padre → {Hijo1, Hijo2}, Tío}
+obtenerPadre("Hijo1")  → "Padre"
+obtenerPadre("Padre")  → "Abuelo"
+obtenerPadre("Abuelo") → nulo  (es la raíz, no tiene padre)
+```
+
 ---
 
 ### preOrden / postOrden
@@ -300,6 +330,12 @@ postOrden(nodo: NodoGenerico, resultado: Lista): void
 
 **Orden:** O(n) ambos.
 
+**Ejemplo (árbol: Abuelo → {Padre → {Hijo1, Hijo2}, Tío}):**
+```
+preOrden:  [Abuelo, Padre, Hijo1, Hijo2, Tío]
+postOrden: [Hijo1, Hijo2, Padre, Tío, Abuelo]
+```
+
 ---
 
 ### altura(criterio)
@@ -320,6 +356,14 @@ NodoGenerico.altura(): entero
 
 **Orden:** O(n)
 
+**Ejemplo:**
+```
+Árbol: Abuelo → {Padre → {Hijo1, Hijo2}, Tío}
+altura(Hijo1)  = 0   (hoja, sin hijos)
+altura(Padre)  = 1   (1 + max{altura(Hijo1)=0, altura(Hijo2)=0})
+altura(Abuelo) = 2   (1 + max{altura(Padre)=1, altura(Tío)=0})
+```
+
 ---
 
 ### grado(criterio)
@@ -334,6 +378,14 @@ ArbolGenerico.grado(criterio: T): entero
 ```
 
 **Orden:** O(n)
+
+**Ejemplo:**
+```
+Árbol: Abuelo → {Padre → {Hijo1, Hijo2}, Tío}
+grado("Abuelo") = 2   (hijos: Padre, Tío)
+grado("Padre")  = 2   (hijos: Hijo1, Hijo2)
+grado("Hijo1")  = 0   (es hoja)
+```
 
 ---
 
@@ -357,6 +409,14 @@ listarDescendientes(nombre: T): Lista<T>
   para cada hijo en nodo.hijos:
       preOrden(hijo, resultado)
   retornar resultado
+```
+
+**Ejemplo:**
+```
+Árbol: Abuelo → {Padre → {Hijo1, Hijo2}, Tío}
+listarDescendientes("Padre")  → [Hijo1, Hijo2]
+listarDescendientes("Abuelo") → [Padre, Hijo1, Hijo2, Tío]
+listarDescendientes("Hijo1")  → []   (hoja, sin descendientes)
 ```
 
 ---
@@ -383,6 +443,15 @@ obtenerGeneracionRec(nodo, nivelActual, nivelBuscado, resultado): void
       obtenerGeneracionRec(hijo, nivelActual + 1, nivelBuscado, resultado)
 ```
 
+**Ejemplo:**
+```
+Árbol: Abuelo → {Padre → {Hijo1, Hijo2}, Tío}
+obtenerGeneracion(0) → [Abuelo]
+obtenerGeneracion(1) → [Padre, Tío]
+obtenerGeneracion(2) → [Hijo1, Hijo2]
+obtenerGeneracion(3) → []
+```
+
 ---
 
 ### esDescendiente(posibleDesc, ancestro)
@@ -398,6 +467,14 @@ esDescendiente(posibleDesc: T, ancestro: T): booleano
   para cada hijo en nodoAnc.hijos:
       si buscarNodo(hijo, posibleDesc) ≠ nulo: retornar verdadero
   retornar falso
+```
+
+**Ejemplo:**
+```
+Árbol: Abuelo → {Padre → {Hijo1, Hijo2}, Tío}
+esDescendiente("Hijo1", "Abuelo") → verdadero  (Hijo1 está en subárbol de Abuelo)
+esDescendiente("Tío", "Padre")    → falso       (Tío no está en subárbol de Padre)
+esDescendiente("Abuelo", "Hijo1") → falso       (Abuelo es ancestro, no descendiente)
 ```
 
 ---
@@ -436,6 +513,18 @@ obtenerCamino(nodo, objetivo: T): Lista<T>
   retornar nulo
 ```
 
+**Ejemplo:**
+```
+Árbol: Abuelo → {Padre → {Hijo1, Hijo2}, Tío}
+ancestroComun("Hijo1", "Tío"):
+  caminoA = [Abuelo, Padre, Hijo1]
+  caminoB = [Abuelo, Tío]
+  [0]: Abuelo=Abuelo → ancestro=Abuelo; [1]: Padre≠Tío → fin
+  retorna "Abuelo"
+
+ancestroComun("Hijo1", "Hijo2") → retorna "Padre"
+```
+
 ---
 
 ## Trie
@@ -468,6 +557,16 @@ NodoTrie.insertar(palabra: String, dato: T): booleano
 ```
 
 **Orden:** O(m) donde m = largo de la palabra.
+
+**Ejemplo:**
+```
+Trie vacío. insertar("car", dato):
+  c → nodo nuevo; a → nodo nuevo; r → nodo nuevo, esPalabra=true → retorna verdadero
+insertar("car", dato) de nuevo → nodo r ya tiene esPalabra=true → retorna falso
+insertar("ca", dato):
+  c → ya existe; a → ya existe; marcar esPalabra=true en 'a'
+  (ahora "ca" y "car" coexisten compartiendo c→a)
+```
 
 ---
 
@@ -523,6 +622,14 @@ recolectarPalabras(nodo, palabraActual: String, resultado: Lista): void
 
 **Orden:** O(m) + tamaño del resultado
 
+**Ejemplo:**
+```
+Trie con: "casa", "caso", "cama"
+predecir("ca")  → navega c→a → recolecta todo el subárbol → ["casa", "caso", "cama"]
+predecir("cas") → navega c→a→s → recolecta: ["casa", "caso"]
+predecir("col") → 'o' no existe como hijo de 'c' → retorna []
+```
+
 ---
 
 ### eliminar(palabra)
@@ -544,6 +651,15 @@ NodoTrie.eliminar(palabra: String): booleano
 ```
 
 **Orden:** O(m)
+
+**Ejemplo:**
+```
+Trie con: "casa", "caso"
+eliminar("casa") → navega c→a→s→a, pone esPalabra=false → retorna verdadero
+  (nodo 'a' final sigue existiendo porque "caso" comparte c→a→s)
+eliminar("xyz")  → 'x' no existe → retorna falso
+eliminar("casa") nuevamente → esPalabra ya es false → retorna falso
+```
 
 ---
 
@@ -619,6 +735,13 @@ Hash.insertar(clave: K, valor: V): booleano
 
 **Orden:** O(1) promedio, O(n) peor caso.
 
+**Ejemplo (tabla tamaño 7, h(K) = K mod 7):**
+```
+insertar(8,  "X"): h=1 → pos 1 libre → tabla[1]={8,"X"}
+insertar(15, "Y"): h=1 → pos 1 ocupada (8≠15) → pos 2 libre → tabla[2]={15,"Y"}
+insertar(8,  "Z"): h=1 → pos 1: clave=8 ya existe → retorna falso (no reemplaza)
+```
+
 ---
 
 ### buscar(clave)
@@ -677,6 +800,16 @@ Hash.eliminar(clave: K): booleano
   retornar falso
 ```
 
+**Ejemplo:**
+```
+Estado: tabla[1]={8,"X"}, tabla[2]={15,"Y"}
+eliminar(8):
+  h=1 → pos 1: clave=8 → tabla[1].loteLibre=true   (tombstone, no null)
+eliminar(15):
+  h=1 → pos 1: loteLibre → saltar → pos 2: clave=15 → tabla[2].loteLibre=true
+  (si pos 1 fuera null, buscar(15) se detendría ahí sin encontrar 15)
+```
+
 ---
 
 ### redimensionar()
@@ -695,6 +828,16 @@ Hash.redimensionar(): void
 ```
 
 **Por qué primo:** reduce la probabilidad de clustering primario.
+
+**Ejemplo:**
+```
+Tabla tamaño 7 con 5 elementos activos → α = 5/7 ≈ 0.71 > 0.70 → redimensionar
+siguientePrimo(14) = 17 → nueva tabla tamaño 17
+Reinsertar solo los activos (no tombstones) con h(K) = K mod 17:
+  {8,"X"} → h=8 → nueva[8]
+  {15,"Y"} → h=15 → nueva[15]
+  (tombstones se descartan — el redimensionamiento los limpia)
+```
 
 ---
 
@@ -742,6 +885,15 @@ eliminar_chaining(clave: K): booleano
 | Inserción | O(1) | O(1) |
 | Búsqueda | O(1 + α) | O(n) |
 | Eliminación | O(1 + α) | O(n) |
+
+**Ejemplo (tabla tamaño 5, h(K) = K mod 5):**
+```
+insertar(3,"A"): h=3 → lista[3] = [(3,"A")]
+insertar(8,"B"): h=3 → lista[3] = [(8,"B"),(3,"A")]   ← colisión, agregar al frente
+insertar(1,"C"): h=1 → lista[1] = [(1,"C")]
+buscar(8):   h=3 → recorrer lista[3]: 8≠3, 8=8 → retorna "B"
+eliminar(3): h=3 → recorrer lista[3]: 3≠8, 3=3 → eliminar → lista[3]=[(8,"B")]
+```
 
 ---
 
@@ -863,6 +1015,15 @@ fin método
 mientras j >= 0 Y datos[j].medicion < clave.medicion hacer
 ```
 
+**Traza paso a paso (vector `[5, 2, 4, 1, 3]`):**
+
+| i | clave | desplazamientos | resultado |
+|---|-------|----------------|-----------|
+| 1 | 2 | 5>2 → desplazar | [2, 5, 4, 1, 3] |
+| 2 | 4 | 5>4 → desplazar; 2<4 → detener | [2, 4, 5, 1, 3] |
+| 3 | 1 | 5>1, 4>1, 2>1 → desplazar todo | [1, 2, 4, 5, 3] |
+| 4 | 3 | 5>3, 4>3 → desplazar; 2<3 → detener | [1, 2, 3, 4, 5] ✓ |
+
 ---
 
 ### Heapsort
@@ -955,6 +1116,87 @@ fin método
 **Llamada inicial:** `quicksort(datos, 0, n - 1)`
 
 **Variante descendente** (examen 2023-2S): cambiar `datos[j] <= pivote` por `datos[j].medicion >= pivote.medicion`.
+
+**Traza paso a paso (vector `[88, 44, 77, 33, 99, 22, 66]`, pivote = último elemento):**
+
+| Llamada | Segmento | Pivote | Resultado tras particionar | Pos pivote |
+|---------|----------|--------|--------------------------|------------|
+| `quicksort(0,6)` | [88,44,77,33,99,22,66] | 66 | [44,33,22,**66**,99,77,88] | 3 |
+| `quicksort(0,2)` | [44,33,22] | 22 | [**22**,33,44] | 0 |
+| `quicksort(1,2)` | [33,44] | 44 | [33,**44**] | 2 |
+| `quicksort(4,6)` | [99,77,88] | 88 | [77,**88**,99] | 5 |
+
+Resultado final: `[22, 33, 44, 66, 77, 88, 99]`
+
+**Cómo particionar a mano (paso a paso):**
+1. `i = inicio - 1`. `pivote = datos[fin]`.
+2. `j` recorre desde `inicio` hasta `fin-1`:
+   - si `datos[j] <= pivote`: `i++`, intercambiar `datos[i]` ↔ `datos[j]`
+3. Intercambiar `datos[i+1]` ↔ `datos[fin]` → el pivote queda en posición `i+1`, que se retorna.
+
+**Ejemplo de particionar `[88, 44, 77, 33, 99, 22, 66]`, pivote=66:**
+- `i=-1`, `j=0`: 88>66 → saltar
+- `j=1`: 44≤66 → `i=0`, swap(0,1) → [44,88,77,33,99,22,66]
+- `j=2`: 77>66 → saltar
+- `j=3`: 33≤66 → `i=1`, swap(1,3) → [44,33,77,88,99,22,66]
+- `j=4`: 99>66 → saltar
+- `j=5`: 22≤66 → `i=2`, swap(2,5) → [44,33,22,88,99,77,66]
+- swap(i+1,fin) = swap(3,6) → [44,33,22,**66**,99,77,88]
+
+---
+
+## Análisis de orden de tiempo por línea/bloque
+
+Varios exámenes piden explícitamente: _"detallando por línea o bloque relevante, y concluyendo con el análisis global."_ Se espera este formato:
+
+```
+metodo(parametros):
+  operacion simple          // O(1)
+  bucle sobre V vértices:   // O(V) iteraciones
+    operacion simple        // O(1) por iteración
+  bucle sobre E aristas:    // O(E) iteraciones
+    operacion simple        // O(1) por iteración
+  // Total: O(V + E)
+```
+
+**Reglas para calcular el orden:**
+
+| Patrón | Orden |
+|--------|-------|
+| Una asignación o comparación | O(1) |
+| Bucle de n iteraciones con O(1) adentro | O(n) |
+| Bucle anidado n × m con O(1) adentro | O(n·m) |
+| Llamada recursiva que se divide en k subproblemas de n/2 | O(n log n) |
+| BFS/DFS sobre grafo | O(V+E) |
+| Floyd / Warshall (triple bucle sobre V) | O(V³) |
+| Dijkstra naive (buscar mínimo iterando) | O(V²) |
+
+**Ejemplo de análisis (Dijkstra):**
+
+```
+dijkstra(origen, G):
+  inicializar D[v]=∞ para todo v    // O(V)
+  D[origen] = 0                     // O(1)
+  S ← {}                            // O(1)
+  Mientras V ≠ S:                   // O(V) iteraciones
+    w ← min en V-S                  //   O(V) — buscar mínimo iterando
+    agregar w a S                   //   O(1)
+    Para cada v adyacente a w:      //   O(grado(w)) ≤ O(V)
+      relajar D[v]                  //     O(1)
+// Total: O(V) × O(V) = O(V²)
+```
+
+**Ejemplo de análisis (BFS):**
+
+```
+bea(origen, G):
+  inicializar visitados y cola      // O(V)
+  mientras cola no vacía:           // O(V) iteraciones en total
+    v ← desencolar                  //   O(1)
+    para cada w adyacente a v:      //   O(E/V) promedio, O(E) en total
+      si w no visitado: encolar     //     O(1)
+// Total: O(V + E)
+```
 
 ---
 
@@ -1079,6 +1321,20 @@ camino(i, j):
 **Excentricidad de v:** máximo valor en la columna v de la matriz A final.
 **Centro del grafo:** vértice con excentricidad mínima.
 
+**Ejemplo (grafo: 1→2 peso 3, 2→3 peso 2, 1→3 peso 8):**
+```
+Inicial:        k=2 (pasar por 2):
+  1  2  3       A[1,3]: 3+2=5 < 8 → A[1,3]=5, P[1,3]=2
+1 0  3  8   →
+2 ∞  0  2     Final:  1  2  3
+3 ∞  ∞  0             1  0  3  5
+                      2  ∞  0  2
+                      3  ∞  ∞  0
+
+Camino 1→3: P[1,3]=2 → 1→2→3, costo 5
+Excentricidad de v2 = max(col 2) = max(3, 0, ∞) = ∞  (nadie puede llegar a 2 desde 3)
+```
+
 ---
 
 ### Warshall — cerradura transitiva
@@ -1095,6 +1351,35 @@ warshall(C, n):
 ```
 
 **Diferencia clave con Floyd:** Warshall responde "¿existe camino?". Floyd responde "¿cuánto cuesta el camino mínimo?".
+
+**Ejemplo (grafo: 1→2, 2→3, 3→4 — cadena lineal):**
+```
+Inicial (booleano):          Tras k=2:          Tras k=3:          Final (k=4):
+  1 2 3 4                    1 2 3 4            1 2 3 4            1 2 3 4
+1 F T F F                  1 F T T F          1 F T T T          1 F T T T
+2 F F T F        →         2 F F T F    →     2 F F T T    →     2 F F T T
+3 F F F T                  3 F F F T          3 F F F T          3 F F F T
+4 F F F F                  4 F F F F          4 F F F F          4 F F F F
+
+Desde 1 se puede llegar a 2, 3 y 4. Desde 2 se puede llegar a 3 y 4.
+```
+
+**Cuándo NO usar Warshall:** si el enunciado solo pide saber si **un par específico (X, Y)** está conectado, usar BEA/DFS desde X y verificar si Y fue alcanzado → O(V+E). Warshall computa todos los V² pares en O(V³) — innecesario para una sola consulta. Firma típica del patrón: `Boolean conectados(Vertice X, Vertice Y)`.
+
+```
+conectados(X, Y, G):
+  visitados ← conjunto vacío
+  dfs(X, visitados, G)
+  retornar Y en visitados
+
+dfs(actual, visitados, G):
+  agregar actual a visitados
+  Para cada w adyacente a actual:
+    Si w no en visitados:
+      dfs(w, visitados, G)
+```
+
+**Orden:** O(V+E). Si el enunciado pide "optimizar memoria" → prefiere lista de adyacencias como representación.
 
 ---
 
@@ -1121,6 +1406,16 @@ bpf(v, visitados):
 | Avance | Va a un descendiente ya terminado | Solo en dirigidos |
 | Cruzado | Va a otro nodo sin relación ancestral | Solo en dirigidos |
 
+**Ejemplo (grafo: A→B, A→C, B→D, C→D, D→E):**
+```
+DFS desde A:
+  visitar A → ir a B → ir a D → ir a E
+  E sin salida → retrocede a D → retrocede a B → retrocede a A → ir a C
+  C → D ya visitado → retrocede
+Orden de visita: A, B, D, E, C
+Arcos: A-B árbol; B-D árbol; D-E árbol; A-C árbol; C-D cruzado
+```
+
 ---
 
 ### Clasificación topológica
@@ -1141,6 +1436,19 @@ clasificacionTopologicaAux(nodo, visitados, lista):
     Para cada w adyacente a nodo:
       clasificacionTopologicaAux(w, visitados, lista)
     agregar nodo AL PRINCIPIO de lista   ← en la salida recursiva
+```
+
+**Ejemplo (mismo grafo acíclico: A→B, A→C, B→D, C→D, D→E):**
+```
+DFS, insertar al frente al terminar:
+  E termina → [E]
+  D termina → [D, E]
+  B termina → [B, D, E]
+  C termina → [C, B, D, E]
+  A termina → [A, C, B, D, E]
+
+Orden topológico: A C B D E
+Verificación: A→B ✓, A→C ✓, B→D ✓, C→D ✓, D→E ✓
 ```
 
 ---
@@ -1176,6 +1484,16 @@ tieneCiclosAux(v, enRecursion):
   retornar falso
 ```
 
+**Ejemplo:**
+```
+Con ciclo: A→B, B→C, C→A
+  dfsAux(A): enRec={A} → dfsAux(B): enRec={A,B} → dfsAux(C): enRec={A,B,C}
+    vecino A → A en enRec → retorna VERDADERO ✓
+
+Sin ciclo: A→B, B→C
+  dfsAux(A)→dfsAux(B)→dfsAux(C)→sin vecinos→remover C→remover B→remover A → falso ✓
+```
+
 ---
 
 ### Todos los caminos posibles
@@ -1198,6 +1516,47 @@ todosLosCaminosAux(actual, destino, visitados, camino, resultado):
   camino.pop()
   remover actual de visitados   ← backtracking: desmarcar para otros caminos
 ```
+
+**Ejemplo (grafo: A→B, A→C, B→D, C→D. Caminos de A hasta D):**
+```
+todosLosCaminosAux(A,D):
+  camino=[A], visitados={A}
+  → explorar B: camino=[A,B], visitados={A,B}
+    → explorar D: D=destino → resultado=[[A,B,D]]
+    pop D, desmarcar D → camino=[A,B]
+  pop B, desmarcar B → camino=[A]
+  → explorar C: camino=[A,C], visitados={A,C}
+    → explorar D: D=destino → resultado=[[A,B,D],[A,C,D]]
+    pop D, desmarcar D → camino=[A,C]
+  pop C, desmarcar C
+
+Resultado: [[A,B,D], [A,C,D]]
+```
+
+---
+
+#### Variante: filtrar por tipo de vértice
+
+**Cuándo:** el enunciado restringe por qué nodos puede pasar el camino. Ejemplos: "solo a través de switches", "solo por estaciones de tren", "no pasar por nodos de procesamiento directamente". Apareció en **2024-1S examen 1 y examen 2**.
+
+**Modificación:** agregar una condición de tipo en el momento de explorar vecinos. El destino siempre se puede visitar aunque sea del tipo "incorrecto" — solo los nodos intermedios tienen restricción.
+
+```
+todosLosCaminosAux(actual, destino, visitados, camino, resultado):
+  agregar actual a visitados
+  camino.push(actual)
+  Si actual = destino:
+    resultado.agregar(copia de camino)
+  Sino:
+    Para cada w adyacente a actual:
+      Si w no en visitados:
+        Si w = destino O w.tipo = SWITCH:   ← única línea que cambia
+          todosLosCaminosAux(w, destino, visitados, camino, resultado)
+  camino.pop()
+  remover actual de visitados
+```
+
+**Error típico:** bloquear también el destino por tipo. Siempre hay que dejar pasar al destino aunque no sea del tipo "permitido".
 
 ---
 
@@ -1239,6 +1598,18 @@ bea con distancias(origen, G):
 
 **Error típico:** usar DFS para calcular número de Bacon — DFS no garantiza el camino mínimo.
 
+**Ejemplo (grafo no dirigido: A-B, A-C, B-D, C-D, D-E. BEA con distancias desde A):**
+```
+cola=[A], distancias={A:0}
+desencolar A → B(dist=1), C(dist=1) encolar → cola=[B,C]
+desencolar B → D(dist=2) encolar → cola=[C,D]
+desencolar C → D ya visitado → cola=[D]
+desencolar D → E(dist=3) encolar → cola=[E]
+desencolar E → sin nuevos → cola vacía
+
+Distancias: A=0, B=1, C=1, D=2, E=3
+```
+
 ---
 
 ### Prim — árbol generador mínimo
@@ -1269,6 +1640,17 @@ searchMinEdge(G, U, noU):
 ```
 
 **Error típico:** olvidar que el grafo resultado debe tener **todos** los vértices del original.
+
+**Ejemplo (grafo: A-B(4), A-C(2), B-C(1), B-D(5), C-D(8). Desde A):**
+```
+U={A}, noU={B,C,D}
+  aristas→noU: A-B(4), A-C(2) → mínima=A-C(2) → agregar, U={A,C}
+U={A,C}, noU={B,D}
+  aristas→noU: A-B(4), C-B(1), C-D(8) → mínima=C-B(1) → agregar, U={A,C,B}
+U={A,C,B}, noU={D}
+  aristas→noU: B-D(5), C-D(8) → mínima=B-D(5) → agregar, U={A,C,B,D}
+AGM: {A-C(2), C-B(1), B-D(5)}, costo total = 8
+```
 
 ---
 
@@ -1311,6 +1693,17 @@ Para i = 0 .. n-1:
 | Necesita origen | Sí | No |
 | Mejor en grafos | Densos | Dispersos |
 | Complejidad | O(V·E) naive | O(E log E) |
+
+**Ejemplo Kruskal (mismo grafo: A-B(4), A-C(2), B-C(1), B-D(5), C-D(8)):**
+```
+Aristas ordenadas: B-C(1), A-C(2), A-B(4), B-D(5), C-D(8)
+Grupos: {A},{B},{C},{D}
+  B-C(1): B≠C → agregar → {A},{B,C},{D}
+  A-C(2): A≠BC → agregar → {A,B,C},{D}
+  A-B(4): mismo grupo {A,B,C} → ciclo → rechazar
+  B-D(5): ABC≠D → agregar → {A,B,C,D}
+AGM: {B-C(1), A-C(2), B-D(5)}, costo total = 8  ✓ (igual que Prim)
+```
 
 ---
 
@@ -1381,6 +1774,25 @@ A es raíz con 1 solo hijo B → NO es punto de articulación
 | Aristas bloqueadas | Agregar condición `H[w,v] = verdadero` antes de relajar |
 | Parada obligatoria en v | Ejecutar Dijkstra dos veces: origen→v, luego v→destino |
 | Aristas con horario | Condición `H[hora][w,v]` en la relajación |
+| Costo transformado por consulta | Calcular el peso al momento de relajar: `costo = C[w,v] / velocidad` |
+
+**Dijkstra con costo transformado (examen 2025-1S):** el peso real no está guardado en el grafo — se calcula en el momento de relajar. Patrón: para cada camión con velocidad `vel`, ejecutar Dijkstra donde el costo de cada arista es `distancia / vel`.
+
+```
+dijkstraTiempo(origen, G, velocidad):
+  D[origen] = 0; D[v] = ∞ para el resto
+  S ← {}
+  Mientras V ≠ S:
+    w ← vértice en V-S con D[w] mínimo
+    agregar w a S
+    Para cada arista (w→v) con distancia dist en G:
+      tiempoArista ← dist / velocidad          ← transformación del costo
+      Si D[w] + tiempoArista < D[v]:
+          D[v] ← D[w] + tiempoArista
+          P[v] ← w
+```
+
+**Cómo presentarlo en el parcial:** describir la transformación en lenguaje natural ("el tiempo de viaje por cada tramo es la distancia dividida la velocidad del camión") y luego en la línea de relajación. El resto del algoritmo es Dijkstra estándar.
 
 ---
 
