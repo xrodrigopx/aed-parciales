@@ -1,0 +1,11 @@
+CODIGO_LIBRO,TITULO_LIBRO,PRECIO_REPOSICION,CANTIDAD
+1001;"Clean Code";58.90;4
+1002;"Patrones de Diseño";72.50;2
+1003;"El Aleph";28.00;6
+1004;"Algoritmos I";65.00;5
+1005;"Algoritmos II";68.00;3
+1006;"Programacion Funcional";54.25;4
+1007;"Matematica Discreta";49.99;7
+1008;"Introduccion a Java";35.50;8
+1009;"Estructuras de Datos";61.75;5
+1010;"Arquitectura de Software";80.00;2

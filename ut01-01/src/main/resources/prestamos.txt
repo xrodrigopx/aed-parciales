@@ -1,0 +1,11 @@
+CODIGO_LIBRO,TIPO,CANTIDAD
+1001;Prestamo;2
+1003;Prestamo;3
+1004;Prestamo;5
+1002;Devolucion;1
+1006;Prestamo;2
+1007;Prestamo;4
+1008;Prestamo;6
+1009;Devolucion;2
+1010;Prestamo;1
+1005;Prestamo;1
